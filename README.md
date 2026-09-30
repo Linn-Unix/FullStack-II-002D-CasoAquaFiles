@@ -51,6 +51,22 @@ http://localhost:5173/
 
 Si ese puerto está ocupado, Vite utilizará otro, por ejemplo `http://localhost:5174/`.
 
+## Despliegue en Vercel
+
+El proyecto incluye `vercel.json` con la configuración de Vite. Para publicarlo:
+
+**Demo publicada:** [AquaFiles en Vercel](https://full-stack-ii-002-d-caso-aqua-files.vercel.app/)
+
+1. Sube este repositorio a GitHub.
+2. Entra a [vercel.com](https://vercel.com/) y selecciona **Add New Project**.
+3. Importa el repositorio y conserva la configuración detectada:
+        - Framework: `Vite`
+        - Build Command: `npm run build`
+        - Output Directory: `dist`
+4. Presiona **Deploy**.
+
+Cada nuevo push a la rama conectada generará un despliegue automáticamente.
+
 ## Roles y permisos
 
 ### Postulante / Candidato
