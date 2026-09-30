@@ -53,48 +53,67 @@ Si ese puerto está ocupado, Vite utilizará otro, por ejemplo `http://localhost
 
 ## Roles y permisos
 
-### Supervisor Técnico
+### Postulante / Candidato
+
+El candidato inicia su propia postulación desde el formulario público:
+
+- Registrar datos personales y correo.
+- Seleccionar familia de cargo y ubicación.
+- Indicar el cargo al que postula.
+- Adjuntar su CV en PDF o Word.
+- Consultar el estado de su propia candidatura.
+
+No puede ver otros candidatos, el dashboard interno, las notas técnicas ni modificar estados.
+
+### Supervisor Técnico / Analista de Selección
 
 El supervisor tiene acceso a la gestión completa del proceso:
 
 - Ver todos los candidatos registrados.
 - Buscar candidatos por nombre, cargo o ubicación.
 - Consultar currículum y descriptor de cargo.
-- Crear nuevas solicitudes.
-- Avanzar el estado de un candidato.
-- Revisar indicadores de candidatos pendientes, en proceso y finalizados.
+- Evaluar la etapa técnica y aprobar candidatos.
+- Revisar indicadores de candidatos en revisión, aprobados y finalizados.
 - Consultar el resumen de candidatos que aprobaron el filtro técnico.
-- Avisar al psicólogo que existen candidatos listos para evaluación psicolaboral.
+- Derivar el dossier y avisar al psicólogo.
+- No redactar ni alterar el informe psicolaboral definitivo.
 
-### Postulante / Candidato
+### Psicólogo/a / Contraparte de Selección
 
-El candidato tiene acceso únicamente a su propia información:
+El psicólogo trabaja únicamente con candidatos aprobados técnicamente y derivados por el supervisor:
 
-- Consultar su currículum.
-- Ver su cargo y ubicación registrados.
-- Revisar el estado actual de su proceso.
-- Consultar el avance de las etapas del proceso.
+- Consultar el dossier técnico y CV.
+- Agendar la entrevista psicolaboral.
+- Subir el informe psicolaboral final.
+- Marcar la tarea como `Proceso Finalizado`.
+- No modificar la calificación técnica ni eliminar candidatos del pipeline.
 
-El candidato no puede ver la tabla general ni los datos, currículums o estados de otros candidatos.
+## Pantallas
+
+1. **Inicio por rol:** permite ingresar como Postulante, Supervisor o Psicólogo.
+2. **Postulación del candidato:** formulario de datos personales, cargo, ubicación, familia y CV.
+3. **Panel del supervisor:** tabla general, ficha técnica, indicadores y derivación de dossiers.
+4. **Panel psicolaboral:** listado de candidatos aprobados, agenda e informe final.
+5. **Seguimiento del candidato:** estado privado de la candidatura y documento propio.
 
 ## Flujo principal
 
-1. El supervisor realiza el filtro o entrevista técnica.
-2. Si el candidato aprueba, el supervisor crea una solicitud en AquaFiles.
-3. El candidato queda registrado como `Evaluación recibida`.
-4. El supervisor puede revisar el resumen de aprobados técnicamente.
-5. El supervisor selecciona `Avisar al psicólogo`.
-6. El psicólogo puede continuar con la entrevista psicolaboral.
-7. El proceso avanza por las siguientes etapas:
+1. El candidato registra sus datos y adjunta su CV.
+2. La postulación queda en `En revisión técnica`.
+3. El supervisor revisa el dossier y evalúa la etapa técnica.
+4. Si aprueba, el candidato queda en `Aprobado técnicamente`.
+5. El supervisor selecciona `Derivar y avisar`.
+6. El psicólogo agenda la entrevista y el estado pasa a `Agendado`.
+7. El psicólogo sube el informe final y marca `Proceso Finalizado`.
 
 ```text
-Evaluación recibida
+En revisión técnica
         ↓
-Entrevista agendada
+Aprobado técnicamente
         ↓
-Entrevista realizada
+Agendado
         ↓
-Informe enviado
+Proceso Finalizado
 ```
 
 ## Cómo probar el MVP
