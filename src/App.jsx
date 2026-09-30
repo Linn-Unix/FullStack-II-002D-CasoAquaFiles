@@ -19,7 +19,7 @@ function App() {
   const [psychologistNotified, setPsychologistNotified] = useState(false)
   const selectedCandidate = candidates.find((candidate) => candidate.id === selectedId) || candidates[0]
 
-  if (!role) return <RoleSelection candidates={candidates} onSelectRole={setRole} onSelectCandidate={setSelectedId} />
+  if (!role) return <RoleSelection onSelectRole={setRole} onSelectCandidate={setSelectedId} />
 
   return <main className="container py-4">
     <RoleHeader role={role} onLogout={() => setRole(null)} />
@@ -27,13 +27,13 @@ function App() {
   </main>
 }
 
-function RoleSelection({ candidates, onSelectRole, onSelectCandidate }) {
-  function enterCandidate(event) {
-    onSelectCandidate(Number(event.target.value))
+function RoleSelection({ onSelectRole, onSelectCandidate }) {
+  function enterCandidate() {
+    onSelectCandidate(2)
     onSelectRole('candidate')
   }
 
-  return <main className="role-screen"><section className="role-card"><p className="tag">Proyecto AquaFiles - FullStack II</p><h1>Gestión Laboral</h1><p className="lead">Ingresa a tu espacio de trabajo según tu rol en el proceso de selección.</p><div className="role-options"><button onClick={() => onSelectRole('supervisor')}><span className="role-icon"><i className="bi bi-shield-check" /></span><strong>Supervisor Técnico</strong><small>Gestionar candidatos, currículums, estados y derivaciones.</small><span className="role-action">Ingresar <i className="bi bi-arrow-right" /></span></button><label><span className="role-icon candidate-icon"><i className="bi bi-person-badge" /></span><strong>Postulante / Candidato</strong><small>Consultar mi currículum y el avance de mi proceso.</small><select defaultValue="" onChange={enterCandidate}><option value="" disabled>Seleccionar mi perfil</option>{candidates.map((candidate) => <option key={candidate.id} value={candidate.id}>{candidate.name}</option>)}</select></label></div><p className="role-note"><i className="bi bi-lock-fill" /> Cada rol solo accede a la información que le corresponde.</p></section></main>
+  return <main className="role-screen"><section className="role-card"><p className="tag">Proyecto AquaFiles - FullStack II</p><h1>Gestión Laboral</h1><p className="lead">Ingresa a tu espacio de trabajo según tu rol en el proceso de selección.</p><div className="role-options"><button onClick={() => onSelectRole('supervisor')}><span className="role-icon"><i className="bi bi-shield-check" /></span><strong>Supervisor Técnico</strong><small>Gestionar candidatos, currículums, estados y derivaciones.</small><span className="role-action">Ingresar <i className="bi bi-arrow-right" /></span></button><button onClick={enterCandidate}><span className="role-icon candidate-icon"><i className="bi bi-person-badge" /></span><strong>Postulante / Candidato</strong><small>Consultar mi currículum y el avance de mi proceso.</small><span className="role-action">Ingresar a mi perfil <i className="bi bi-arrow-right" /></span></button></div><p className="role-note"><i className="bi bi-lock-fill" /> Cada rol solo accede a la información que le corresponde.</p></section></main>
 }
 
 function RoleHeader({ role, onLogout }) { return <header className="app-header"><div><p className="tag">Proyecto AquaFiles - FullStack II</p><h1>{role === 'supervisor' ? 'Panel del Supervisor' : 'Mi proceso de selección'}</h1><p>{role === 'supervisor' ? 'Gestión completa del proceso técnico y psicolaboral.' : 'Consulta segura de tus antecedentes y estado.'}</p></div><button className="btn btn-outline-secondary" onClick={onLogout}><i className="bi bi-box-arrow-right" /> Cambiar rol</button></header> }
