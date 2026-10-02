@@ -57,15 +57,6 @@ El proyecto incluye `vercel.json` con la configuración de Vite. Para publicarlo
 
 **Demo publicada:** [AquaFiles en Vercel](https://full-stack-ii-002-d-caso-aqua-files.vercel.app/)
 
-1. Sube este repositorio a GitHub.
-2. Entra a [vercel.com](https://vercel.com/) y selecciona **Add New Project**.
-3. Importa el repositorio y conserva la configuración detectada:
-        - Framework: `Vite`
-        - Build Command: `npm run build`
-        - Output Directory: `dist`
-4. Presiona **Deploy**.
-
-Cada nuevo push a la rama conectada generará un despliegue automáticamente.
 
 ## Roles y permisos
 
@@ -157,11 +148,3 @@ npm run preview   # Previsualiza la compilación de producción
 
 Este es un MVP frontend. Los datos y los roles están simulados en memoria para la demostración académica. No existe todavía autenticación real ni backend conectado.
 
-Para una versión productiva se debería agregar:
-
-- Inicio de sesión real.
-- Autorización de permisos desde el backend.
-- Base de datos de candidatos.
-- Almacenamiento seguro de currículums e informes.
-- Notificaciones reales al psicólogo.
-- Registro de auditoría de cambios.
