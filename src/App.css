@@ -1011,3 +1011,61 @@ h2 {
     flex-direction: column;
   }
 }
+
+/* ---------- 18. Navegación y validaciones ---------- */
+
+/* Los roles ahora son enlaces de React Router */
+.role-options a {
+  background: #fbfdfd;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--deep);
+  display: flex;
+  flex-direction: column;
+  padding: 22px;
+  text-decoration: none;
+  transition: .2s;
+}
+
+.role-options a:hover {
+  border-color: var(--aqua);
+  box-shadow: 0 8px 20px #0e9f9a18;
+}
+
+.theme-dark .role-options a {
+  background: var(--dark-surface-alt);
+  border-color: var(--dark-line);
+  color: var(--dark-text);
+}
+
+/* Errores del formulario */
+.application-form .is-invalid,
+.upload-field.is-invalid {
+  border-color: var(--danger);
+}
+
+.field-error {
+  color: var(--danger);
+  display: block;
+  font-size: .75rem;
+  margin: -6px 0 12px;
+}
+
+/* Notas de etapa y tabla */
+.stage-note {
+  background: var(--soft);
+  border-radius: 6px;
+  color: var(--deep);
+  font-size: .78rem;
+  margin-top: 12px;
+  padding: 10px;
+}
+
+.theme-dark .stage-note {
+  background: #244451;
+  color: var(--dark-text);
+}
+
+.table td small {
+  display: block;
+}
