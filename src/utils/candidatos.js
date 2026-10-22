@@ -33,6 +33,3 @@ export function filterCandidates(candidates, search, status) {
 export function countByStatus(candidates, status) {
   return candidates.filter((candidate) => candidate.status === status).length
 }
-export function countByStatus(candidates, status) {
-  return candidates.filter((candidate) => candidate.status === status).length
-}
