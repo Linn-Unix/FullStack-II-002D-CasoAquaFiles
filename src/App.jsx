@@ -1,46 +1,69 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
+// Routes agrupa las rutas y Route define qué página se muestra en cada dirección.
+import { Route, Routes } from 'react-router-dom'
 import './App.css'
-import CandidatoCard from './components/CandidatoCard'
-import SolicitudesPanel from './components/SolicitudesPanel'
-
-const initialCandidates = [
-  { id: 1, name: 'Gosman Radatz', email: 'gosman@correo.cl', position: 'Supervisor de Mantención', family: 'Operaciones', location: 'Puerto Montt', status: 'Proceso Finalizado', technicalApproved: true, cvName: 'CV_Gosman_Radatz.pdf', interviewDate: '2026-09-24', reportName: 'Informe_psicolaboral.pdf' },
-  { id: 2, name: 'Marcos Fonseca', email: 'marcos@correo.cl', position: 'Jefe de Turno Centro', family: 'Operaciones', location: 'Puerto Natales', status: 'Agendado', technicalApproved: true, cvName: 'CV_Marcos_Fonseca.pdf', interviewDate: '', reportName: '' },
-  { id: 3, name: 'Valentina Ríos', email: 'valentina@correo.cl', position: 'Analista de Personas', family: 'Personas', location: 'Puerto Montt', status: 'Aprobado técnicamente', technicalApproved: true, cvName: 'CV_Valentina_Rios.pdf', interviewDate: '', reportName: '' },
-  { id: 4, name: 'Nicolás Vera', email: 'nicolas@correo.cl', position: 'Técnico Acuícola', family: 'Producción', location: 'Chiloé', status: 'En revisión técnica', technicalApproved: false, cvName: 'CV_Nicolas_Vera.pdf', interviewDate: '', reportName: '' },
-]
+import AppNavbar from './components/AppNavbar'
+import { candidatosIniciales } from './data/candidatos'
+import InicioPage from './pages/InicioPage'
+import NoEncontradaPage from './pages/NoEncontradaPage'
+import PostulacionPage from './pages/PostulacionPage'
+import PsicologoPage from './pages/PsicologoPage'
+import SupervisorPage from './pages/SupervisorPage'
 
 function App() {
-  const [role, setRole] = useState(null)
-  const [darkMode, setDarkMode] = useState(false)
-  const [candidates, setCandidates] = useState(initialCandidates)
-  const [selectedId, setSelectedId] = useState(2)
-  const [search, setSearch] = useState('')
-  const [supervisorNotified, setSupervisorNotified] = useState(false)
-  const [psychologistNotified, setPsychologistNotified] = useState(false)
-  const selected = candidates.find((candidate) => candidate.id === selectedId)
-  const updateCandidate = (id, changes) => setCandidates((current) => current.map((candidate) => candidate.id === id ? { ...candidate, ...changes } : candidate))
+  // 1. Estado principal: la lista de candidatos.
+  //    Vive en App para que todas las páginas compartan los mismos datos.
+  const [candidatos, setCandidatos] = useState(candidatosIniciales)
 
-  const themeClass = darkMode ? 'theme-dark' : ''
+  // 2. id de la postulación del usuario que entra como postulante.
+  const [idMiPostulacion, setIdMiPostulacion] = useState(null)
 
-  if (!role) return <div className={themeClass}><RoleSelection onSelectRole={(nextRole) => { if (nextRole === 'candidate') setSelectedId(null); setRole(nextRole) }} darkMode={darkMode} onToggleTheme={() => setDarkMode((current) => !current)} /></div>
-  return <div className={themeClass}><main className="container py-4"><RoleHeader role={role} onLogout={() => setRole(null)} darkMode={darkMode} onToggleTheme={() => setDarkMode((current) => !current)} />{role === 'candidate' && <CandidateView candidate={selected} candidates={candidates} onSubmit={(candidate) => { setCandidates((current) => [candidate, ...current]); setSelectedId(candidate.id); setSupervisorNotified(true) }} />}{role === 'supervisor' && <SupervisorView candidates={candidates} selectedId={selectedId} setSelectedId={setSelectedId} search={search} setSearch={setSearch} updateCandidate={updateCandidate} psychologistNotified={psychologistNotified} setPsychologistNotified={setPsychologistNotified} />}{role === 'psychologist' && <PsychologistView candidates={candidates} selectedId={selectedId} setSelectedId={setSelectedId} updateCandidate={updateCandidate} supervisorNotified={supervisorNotified} />}</main></div>
+  // 3. Modo oscuro activado o no.
+  const [modoOscuro, setModoOscuro] = useState(false)
+
+  // 4. Actualiza los datos de un candidato.
+  //    map() recorre la lista y reemplaza solo el candidato con ese id.
+  function actualizarCandidato(id, cambios) {
+    setCandidatos((actuales) =>
+      actuales.map((candidato) => (candidato.id === id ? { ...candidato, ...cambios } : candidato)),
+    )
+  }
+
+  // 5. Agrega una nueva postulación al inicio de la lista.
+  function agregarCandidato(candidato) {
+    setCandidatos((actuales) => [candidato, ...actuales])
+    setIdMiPostulacion(candidato.id)
+  }
+
+  const miPostulacion = candidatos.find((candidato) => candidato.id === idMiPostulacion)
+
+  // Props del modo oscuro que comparten todas las páginas.
+  const propsTema = { modoOscuro, alCambiarTema: () => setModoOscuro((actual) => !actual) }
+
+  return (
+    <div className={modoOscuro ? 'theme-dark' : ''}>
+      <AppNavbar />
+
+      {/* 6. Rutas de la aplicación: cada dirección muestra una página distinta. */}
+      <Routes>
+        <Route path="/" element={<InicioPage {...propsTema} />} />
+        <Route
+          path="/postulacion"
+          element={<PostulacionPage {...propsTema} candidato={miPostulacion} alEnviar={agregarCandidato} />}
+        />
+        <Route
+          path="/supervisor"
+          element={<SupervisorPage {...propsTema} candidatos={candidatos} actualizarCandidato={actualizarCandidato} />}
+        />
+        <Route
+          path="/psicologo"
+          element={<PsicologoPage {...propsTema} candidatos={candidatos} actualizarCandidato={actualizarCandidato} />}
+        />
+        {/* "*" atrapa cualquier ruta que no exista. */}
+        <Route path="*" element={<NoEncontradaPage />} />
+      </Routes>
+    </div>
+  )
 }
 
-function RoleSelection({ onSelectRole, darkMode, onToggleTheme }) { return <main className="role-screen"><button className="theme-toggle role-theme-toggle" type="button" onClick={onToggleTheme}><i className={`bi ${darkMode ? 'bi-sun-fill' : 'bi-moon-stars-fill'}`} /> {darkMode ? 'Modo claro' : 'Modo oscuro'}</button><section className="role-card"><p className="tag">Proyecto AquaFiles - FullStack II</p><h1>Gestión Laboral</h1><p className="lead">Selecciona tu rol para ingresar a la pantalla correspondiente.</p><div className="role-options three-roles"><RoleButton icon="bi-person-badge" title="Postulante / Candidato" text="Registrar mis datos, adjuntar CV y consultar mi postulación." onClick={() => onSelectRole('candidate')} /><RoleButton icon="bi-shield-check" title="Supervisor Técnico" text="Gestionar candidatos, filtro técnico y derivaciones." onClick={() => onSelectRole('supervisor')} /><RoleButton icon="bi-clipboard2-pulse" title="Psicólogo/a" text="Recibir dossiers, agendar entrevistas y cerrar informes." onClick={() => onSelectRole('psychologist')} /></div><p className="role-note"><i className="bi bi-lock-fill" /> Cada rol solo accede a la información que le corresponde.</p></section></main> }
-function RoleButton({ icon, title, text, onClick }) { return <button onClick={onClick}><span className="role-icon"><i className={`bi ${icon}`} /></span><strong>{title}</strong><small>{text}</small><span className="role-action">Ingresar <i className="bi bi-arrow-right" /></span></button> }
-function RoleHeader({ role, onLogout, darkMode, onToggleTheme }) { const titles = { candidate: 'Mi postulación', supervisor: 'Panel del Supervisor', psychologist: 'Panel Psicolaboral' }; const subtitles = { candidate: 'Consulta tu currículum y el estado de tu proceso.', supervisor: 'Gestión técnica, dossiers y derivaciones.', psychologist: 'Evaluación psicolaboral de candidatos derivados.' }; return <header className="app-header"><div><p className="tag">Proyecto AquaFiles - FullStack II</p><h1>{titles[role]}</h1><p>{subtitles[role]}</p></div><div className="header-actions"><button className="theme-toggle" type="button" onClick={onToggleTheme}><i className={`bi ${darkMode ? 'bi-sun-fill' : 'bi-moon-stars-fill'}`} /> {darkMode ? 'Modo claro' : 'Modo oscuro'}</button><button className="btn btn-outline-secondary" onClick={onLogout}><i className="bi bi-box-arrow-right" /> Cambiar rol</button></div></header> }
-
-function CandidateView({ candidate, candidates, onSubmit }) { return candidate ? <><div className="candidate-welcome"><div><p className="tag">ESPACIO PERSONAL</p><h2>Hola, {candidate.name}</h2><p>Esta es la única postulación visible para tu cuenta.</p></div><span className="private-badge"><i className="bi bi-lock-fill" /> Información privada</span></div><div className="row g-4"><div className="col-lg-7"><div className="panel personal-card"><p className="tag">MIS ANTECEDENTES</p><div className="candidate-large"><div className="candidate-initials">{initials(candidate.name)}</div><div><h2>{candidate.name}</h2><p>{candidate.position}</p><p>{candidate.family} · <i className="bi bi-geo-alt" /> {candidate.location}</p></div></div><hr /><FileRow name={candidate.cvName} icon="bi-file-earmark-pdf-fill" /><p className="privacy-copy">No puedes consultar candidatos, notas técnicas ni criterios privados de evaluación.</p></div></div><div className="col-lg-5"><ProcessCard candidate={candidate} /></div></div></> : <ApplicationForm onSubmit={onSubmit} candidates={candidates} /> }
-function ApplicationForm({ onSubmit }) { function submit(event) { event.preventDefault(); const data = new FormData(event.currentTarget); const name = data.get('name'); const file = data.get('cv'); onSubmit({ id: Date.now(), name, email: data.get('email'), position: data.get('position'), family: data.get('family'), location: data.get('location'), status: 'En revisión técnica', technicalApproved: false, cvName: file?.name || 'CV_pendiente.pdf', interviewDate: '', reportName: '' }) } return <section className="application-card"><p className="tag">POSTULACIÓN</p><h2>Ingresa tus antecedentes</h2><p>Completa tus datos y adjunta tu CV para iniciar la revisión técnica.</p><form onSubmit={submit} className="application-form"><label>Nombre completo<input name="name" required placeholder="Ej. Andrea Muñoz" /></label><label>Correo electrónico<input name="email" type="email" required placeholder="andrea@correo.cl" /></label><div className="form-row"><label>Familia de cargo<select name="family"><option>Operaciones</option><option>Producción</option><option>Personas</option></select></label><label>Ubicación<select name="location"><option>Puerto Montt</option><option>Puerto Natales</option><option>Chiloé</option></select></label></div><label>Cargo al que postula<input name="position" required placeholder="Ej. Técnico Acuícola" /></label><label className="upload-field"><i className="bi bi-cloud-arrow-up" /> Adjuntar CV (PDF o Word)<input name="cv" type="file" accept=".pdf,.doc,.docx" required /></label><button className="btn btn-aqua" type="submit">Enviar postulación <i className="bi bi-send" /></button></form></section> }
-
-function SupervisorView({ candidates, selectedId, setSelectedId, search, setSearch, updateCandidate, psychologistNotified, setPsychologistNotified }) { const selected = candidates.find((candidate) => candidate.id === selectedId) || candidates[0]; const visible = useMemo(() => candidates.filter((candidate) => `${candidate.name} ${candidate.position} ${candidate.location}`.toLowerCase().includes(search.toLowerCase())), [candidates, search]); const approved = candidates.filter((candidate) => candidate.technicalApproved); const solicitudes = visible.map((candidate) => ({ id: candidate.id, candidato: candidate.name, cargo: candidate.position, estado: candidate.status, responsable: candidate.technicalApproved ? 'Supervisor técnico' : 'Pendiente de asignación', ubicacion: candidate.location, familia: candidate.family })); return <><div className="privilege-banner"><i className="bi bi-shield-check" /><div><strong>Acceso de Supervisor Técnico</strong><small>Gestionas la tabla, el filtro técnico y el dossier de antecedentes.</small></div></div><section className="indicadores row g-3 mb-4"><Metric value={candidates.length} label="Candidatos" /><Metric value={candidates.filter((candidate) => candidate.status === 'En revisión técnica').length} label="En revisión" /><Metric value={approved.length} label="Aprobados técnicos" /><Metric value={candidates.filter((candidate) => candidate.status === 'Proceso Finalizado').length} label="Finalizados" /></section><section className="mb-4"><div className="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-2 mb-3"><div><p className="tag mb-1">CANDIDATOS DESTACADOS</p><h2 className="h4 mb-0">Vista rápida del equipo</h2></div><span className="text-secondary small">{candidates.length} perfiles registrados</span></div><div className="row g-3">{candidates.map((candidate) => <CandidatoCard key={candidate.id} nombre={candidate.name} cargo={candidate.position} estado={candidate.status} />)}</div></section><section className="technical-summary mb-4"><div><p className="tag">DOSSIER TÉCNICO</p><h2>Resumen para el psicólogo</h2><p>{approved.length} candidatos aprobaron el filtro técnico.</p></div><button className="btn btn-aqua" onClick={() => setPsychologistNotified(true)} disabled={psychologistNotified}>{psychologistNotified ? 'Psicólogo avisado' : 'Derivar y avisar'} <i className={`bi ${psychologistNotified ? 'bi-check-lg' : 'bi-send'}`} /></button></section><div className="row g-4"><div className="col-lg-8"><div className="panel panel-requests"><div className="panel-heading"><div><h2>Gestión de solicitudes</h2><p>El supervisor puede seleccionar y actualizar cada solicitud.</p></div></div><SolicitudesPanel solicitudes={solicitudes} selectedId={selectedId} onSelect={setSelectedId} search={search} setSearch={setSearch} /></div></div><div className="col-lg-4"><SupervisorDetail candidate={selected} updateCandidate={updateCandidate} /></div></div></> }
-function SupervisorDetail({ candidate, updateCandidate }) { function approve() { updateCandidate(candidate.id, { technicalApproved: true, status: 'Aprobado técnicamente' }) } return <div className="panel expediente"><p className="tag">FICHA TÉCNICA Y DOSSIER</p><div className="candidate-initials">{initials(candidate.name)}</div><h2>{candidate.name}</h2><p>{candidate.position}</p><hr /><p><i className="bi bi-geo-alt" /> {candidate.location}</p><FileRow name={candidate.cvName} icon="bi-file-earmark-pdf" /><button className="btn btn-aqua w-100" onClick={approve} disabled={candidate.technicalApproved}>{candidate.technicalApproved ? 'Aprobado técnicamente' : 'Aprobar etapa técnica'} <i className="bi bi-check-lg" /></button><small className="restriction"><i className="bi bi-info-circle" /> No puedes editar el informe psicolaboral privado.</small></div> }
-
-function PsychologistView({ candidates, selectedId, setSelectedId, updateCandidate, supervisorNotified }) { const approved = candidates.filter((candidate) => candidate.technicalApproved); const selected = approved.find((candidate) => candidate.id === selectedId) || approved[0]; if (!selected) return <div className="empty-state"><i className="bi bi-inbox" /><h2>Sin dossiers derivados</h2><p>El supervisor todavía no ha enviado candidatos aprobados técnicamente.</p></div>; return <><div className="privilege-banner psychologist-banner"><i className="bi bi-clipboard2-pulse" /><div><strong>Acceso de Psicólogo/a</strong><small>{supervisorNotified ? 'Hay una nueva derivación del supervisor para revisar.' : 'Consulta únicamente candidatos aprobados en la fase técnica.'}</small></div>{supervisorNotified && <span className="new-badge">Nueva derivación</span>}</div><div className="row g-4"><div className="col-lg-5"><div className="panel dossier-list"><p className="tag">DOSSIERS RECIBIDOS</p><h2>Candidatos aprobados</h2>{approved.map((candidate) => <button key={candidate.id} className={candidate.id === selected.id ? 'dossier-item active' : 'dossier-item'} onClick={() => setSelectedId(candidate.id)}><span className="candidate-initials">{initials(candidate.name)}</span><span><strong>{candidate.name}</strong><small>{candidate.position}</small></span><i className="bi bi-chevron-right" /></button>)}</div></div><div className="col-lg-7"><PsychologistDetail candidate={selected} updateCandidate={updateCandidate} /></div></div></> }
-function PsychologistDetail({ candidate, updateCandidate }) { function schedule(event) { updateCandidate(candidate.id, { interviewDate: event.target.value, status: 'Agendado' }) } function complete(event) { const file = event.target.files[0]; updateCandidate(candidate.id, { reportName: file?.name || 'Informe_psicolaboral.pdf', status: 'Proceso Finalizado' }) } return <div className="panel psych-detail"><p className="tag">EVALUACIÓN PSICOLABORAL</p><h2>{candidate.name}</h2><p>{candidate.position} · {candidate.location}</p><hr /><FileRow name={candidate.cvName} icon="bi-file-earmark-pdf" /><label className="date-field">Fecha de entrevista<input type="date" value={candidate.interviewDate || ''} onChange={schedule} /></label><label className="upload-field"><i className="bi bi-file-earmark-arrow-up" /> Subir informe psicolaboral final<input type="file" accept=".pdf,.doc,.docx" onChange={complete} /></label>{candidate.reportName && <p className="completed-note"><i className="bi bi-check-circle-fill" /> {candidate.reportName} · tarea completada</p>}<small className="restriction"><i className="bi bi-lock" /> El psicólogo no puede modificar la calificación técnica ni eliminar candidatos.</small></div> }
-function ProcessCard({ candidate }) { const completed = candidate.status === 'Proceso Finalizado' ? 3 : candidate.status === 'Agendado' ? 2 : candidate.technicalApproved ? 1 : 0; return <div className="panel process-card"><p className="tag">ESTADO DE MI POSTULACIÓN</p><span className="badge-status">{candidate.status}</span><h2>Seguimiento</h2>{['En revisión técnica', 'Agendado', 'Proceso Finalizado'].map((stage, index) => <div className={completed >= index + 1 ? 'process-step done' : 'process-step'} key={stage}><span>{completed >= index + 1 ? '✓' : index + 1}</span><div><strong>{stage}</strong><small>{completed >= index + 1 ? 'Completado o iniciado' : 'Pendiente'}</small></div></div>)}</div> }
-function FileRow({ name, icon }) { return <div className="private-file"><i className={`bi ${icon}`} /><div><strong>{name}</strong><small>Documento registrado en AquaFiles</small></div></div> }
-function Metric({ value, label }) { return <article className="col-6 col-md-3"><div className="metric"><strong>{value}</strong><span>{label}</span></div></article> }
-function initials(name) { return name.split(' ').map((word) => word[0]).join('').slice(0, 2) }
 export default App
