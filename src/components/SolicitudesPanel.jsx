@@ -1,58 +1,76 @@
-function SolicitudesPanel({ solicitudes, selectedId, onSelect, search, setSearch }) {
+import { LISTA_ESTADOS } from '../data/candidatos'
+
+// Tabla de solicitudes del supervisor.
+// Recibe por props la lista ya filtrada y las funciones que cambian la búsqueda, el filtro y la selección.
+function SolicitudesPanel({ candidatos, idSeleccionado, alSeleccionar, busqueda, alBuscar, estadoFiltro, alFiltrar }) {
   return (
-    <section className="mt-4">
-      <div className="d-flex flex-column flex-md-row justify-content-between gap-2 mb-3">
-        <div>
-          <p className="tag mb-1">SEGUIMIENTO DEL PIPELINE</p>
-          <h2 className="h4 mb-0">Solicitudes recientes</h2>
-        </div>
-        <button className="btn btn-primary" type="button">
-          Nueva solicitud
-        </button>
+    <section className="p-3">
+      <div className="d-flex justify-content-end mb-2">
+        {/* 1. Mostramos cuántos elementos quedaron después de aplicar los filtros. */}
+        <span className="text-secondary small">{candidatos.length} resultado(s)</span>
       </div>
 
+      {/* 2. Inputs controlados por el estado de React (SupervisorPage). */}
       <div className="row g-2 mb-3">
         <div className="col-12 col-md-8">
           <label className="visually-hidden" htmlFor="buscar-solicitud">Buscar candidato</label>
-          <input id="buscar-solicitud" className="form-control" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar candidato..." />
+          <input
+            id="buscar-solicitud"
+            className="form-control"
+            value={busqueda}
+            onChange={(evento) => alBuscar(evento.target.value)}
+            placeholder="Buscar por nombre, RUT, cargo o ubicación..."
+          />
         </div>
         <div className="col-12 col-md-4">
           <label className="visually-hidden" htmlFor="filtrar-estado">Filtrar por estado</label>
-          <select id="filtrar-estado" className="form-select" defaultValue="">
+          <select
+            id="filtrar-estado"
+            className="form-select"
+            value={estadoFiltro}
+            onChange={(evento) => alFiltrar(evento.target.value)}
+          >
             <option value="">Todos los estados</option>
-            <option>Pendiente</option>
-            <option>En proceso</option>
-            <option>Finalizada</option>
+            {/* 3. map() crea una opción por cada estado del proceso. */}
+            {LISTA_ESTADOS.map((estado) => (
+              <option key={estado} value={estado}>{estado}</option>
+            ))}
           </select>
         </div>
       </div>
 
-      <div className="table-responsive">
-        <table className="table table-hover align-middle">
-          <thead>
-            <tr>
-              <th>Candidato</th>
-              <th>Cargo</th>
-              <th>Estado</th>
-              <th className="d-none d-lg-table-cell">Responsable</th>
-            </tr>
-          </thead>
-          <tbody>
-            {solicitudes.map((solicitud) => (
-              <tr
-                key={solicitud.id}
-                className={solicitud.id === selectedId ? 'selected' : ''}
-                onClick={() => onSelect(solicitud.id)}
-              >
-                <td><strong>{solicitud.candidato}</strong><small>{solicitud.ubicacion}</small></td>
-                <td>{solicitud.cargo}<small>{solicitud.familia}</small></td>
-                <td><span className="badge-status">{solicitud.estado}</span></td>
-                <td className="d-none d-lg-table-cell">{solicitud.responsable}</td>
+      {/* 4. Si no hay resultados mostramos un mensaje. */}
+      {candidatos.length === 0 ? (
+        <div className="alert alert-warning mb-0">No se encontraron solicitudes.</div>
+      ) : (
+        <div className="table-responsive">
+          <table className="table table-hover align-middle">
+            <thead>
+              <tr>
+                <th>Candidato</th>
+                <th>Cargo</th>
+                <th>Estado</th>
+                <th className="d-none d-lg-table-cell">Ubicación</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {/* 5. Creamos una fila por cada candidato. key identifica cada fila. */}
+              {candidatos.map((candidato) => (
+                <tr
+                  key={candidato.id}
+                  className={candidato.id === idSeleccionado ? 'selected' : ''}
+                  onClick={() => alSeleccionar(candidato.id)}
+                >
+                  <td><strong>{candidato.nombre}</strong><small>{candidato.rut}</small></td>
+                  <td>{candidato.cargo}<small>{candidato.familia}</small></td>
+                  <td><span className="badge-status">{candidato.estado}</span></td>
+                  <td className="d-none d-lg-table-cell">{candidato.ubicacion}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </section>
   )
 }

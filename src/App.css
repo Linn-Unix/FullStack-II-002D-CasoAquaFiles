@@ -1069,3 +1069,6 @@ h2 {
 .table td small {
   display: block;
 }
+
+/* Altura de la pantalla de inicio descontando el navbar */
+.role-screen { min-height:calc(100vh - 56px); }

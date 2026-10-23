@@ -71,3 +71,31 @@ export const candidatosIniciales = [
     informe: '',
   },
 ]
+
+// API en español usada por las pantallas de la aplicación.
+export const ESTADOS = {
+  REVISION: STATUS.REVIEW,
+  APROBADO: STATUS.APPROVED,
+  RECHAZADO: STATUS.REJECTED,
+  DERIVADO: STATUS.DERIVED,
+  AGENDADO: STATUS.SCHEDULED,
+  FINALIZADO: STATUS.FINISHED,
+}
+
+export const LISTA_ESTADOS = Object.values(ESTADOS)
+export const FAMILIAS = FAMILIES
+export const UBICACIONES = LOCATIONS
+
+export const candidatosIniciales = initialCandidates.map((candidate) => ({
+  id: candidate.id,
+  nombre: candidate.name,
+  rut: candidate.rut,
+  correo: candidate.email,
+  cargo: candidate.position,
+  familia: candidate.family,
+  ubicacion: candidate.location,
+  estado: Object.values(STATUS).find((status) => status === candidate.status),
+  nombreCv: candidate.cvName,
+  fechaEntrevista: candidate.interviewDate,
+  informe: candidate.reportName,
+}))
