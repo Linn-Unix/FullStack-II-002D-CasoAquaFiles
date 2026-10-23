@@ -33,3 +33,18 @@ export function filterCandidates(candidates, search, status) {
 export function countByStatus(candidates, status) {
   return candidates.filter((candidate) => candidate.status === status).length
 }
+
+export const obtenerIniciales = (nombre) => initials(nombre)
+
+export function filtrarCandidatos(candidatos, busqueda, estado) {
+  const texto = busqueda.trim().toLowerCase()
+
+  return candidatos.filter((candidato) => {
+    const buscable = `${candidato.nombre} ${candidato.rut} ${candidato.cargo} ${candidato.ubicacion}`.toLowerCase()
+    return buscable.includes(texto) && (estado === '' || candidato.estado === estado)
+  })
+}
+
+export function contarPorEstado(candidatos, estado) {
+  return candidatos.filter((candidato) => candidato.estado === estado).length
+}

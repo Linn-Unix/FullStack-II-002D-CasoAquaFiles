@@ -65,3 +65,13 @@ export function validateApplication(values) {
 
   return errors
 }
+
+export function validarPostulacion(valores) {
+  return validateApplication({
+    name: valores.nombre,
+    rut: valores.rut,
+    email: valores.correo,
+    position: valores.cargo,
+    cv: valores.cv,
+  })
+}
