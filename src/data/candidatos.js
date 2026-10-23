@@ -1,70 +1,74 @@
-export const STATUS = {
-  REVIEW: 'En revisión técnica',
-  APPROVED: 'Aprobado técnicamente',
-  REJECTED: 'Rechazado técnicamente',
-  DERIVED: 'Derivado a psicólogo',
-  SCHEDULED: 'Agendado',
-  FINISHED: 'Proceso Finalizado',
+// 1. Estados posibles de un candidato dentro del proceso de selección.
+//    Usamos un objeto para no escribir los textos a mano en cada archivo.
+export const ESTADOS = {
+  REVISION: 'En revisión técnica',
+  APROBADO: 'Aprobado técnicamente',
+  RECHAZADO: 'Rechazado técnicamente',
+  DERIVADO: 'Derivado a psicólogo',
+  AGENDADO: 'Agendado',
+  FINALIZADO: 'Proceso Finalizado',
 }
 
-export const STATUS_LIST = Object.values(STATUS)
+// 2. Object.values() convierte el objeto en un arreglo. Se usa para el filtro por estado.
+export const LISTA_ESTADOS = Object.values(ESTADOS)
 
-export const FAMILIES = ['Operaciones', 'Producción', 'Personas']
+// 3. Opciones de los select del formulario.
+export const FAMILIAS = ['Operaciones', 'Producción', 'Personas']
+export const UBICACIONES = ['Puerto Montt', 'Puerto Natales', 'Chiloé']
 
-export const LOCATIONS = ['Puerto Montt', 'Puerto Natales', 'Chiloé']
-
-export const initialCandidates = [
+// 4. Datos simulados (todavía no hay backend ni base de datos).
+export const candidatosIniciales = [
   {
     id: 1,
-    name: 'Gosman Radatz',
+    nombre: 'Gosman Radatz',
     rut: '15.678.432-K',
-    email: 'gosman@correo.cl',
-    position: 'Supervisor de Mantención',
-    family: 'Operaciones',
-    location: 'Puerto Montt',
-    status: STATUS.FINISHED,
-    cvName: 'CV_Gosman_Radatz.pdf',
-    interviewDate: '2026-09-24',
-    reportName: 'Informe_psicolaboral.pdf',
+    correo: 'gosman@correo.cl',
+    cargo: 'Supervisor de Mantención',
+    familia: 'Operaciones',
+    ubicacion: 'Puerto Montt',
+    estado: ESTADOS.FINALIZADO,
+    nombreCv: 'CV_Gosman_Radatz.pdf',
+    fechaEntrevista: '2026-09-24',
+    informe: 'Informe_psicolaboral.pdf',
   },
   {
     id: 2,
-    name: 'Marcos Fonseca',
+    nombre: 'Marcos Fonseca',
     rut: '18.923.456-2',
-    email: 'marcos@correo.cl',
-    position: 'Jefe de Turno Centro',
-    family: 'Operaciones',
-    location: 'Puerto Natales',
-    status: STATUS.SCHEDULED,
-    cvName: 'CV_Marcos_Fonseca.pdf',
-    interviewDate: '2026-10-28',
-    reportName: '',
+    correo: 'marcos@correo.cl',
+    cargo: 'Jefe de Turno Centro',
+    familia: 'Operaciones',
+    ubicacion: 'Puerto Natales',
+    estado: ESTADOS.AGENDADO,
+    nombreCv: 'CV_Marcos_Fonseca.pdf',
+    fechaEntrevista: '2026-10-28',
+    informe: '',
   },
   {
     id: 3,
-    name: 'Valentina Ríos',
+    nombre: 'Valentina Ríos',
     rut: '20.456.789-1',
-    email: 'valentina@correo.cl',
-    position: 'Analista de Personas',
-    family: 'Personas',
-    location: 'Puerto Montt',
-    status: STATUS.APPROVED,
-    cvName: 'CV_Valentina_Rios.pdf',
-    interviewDate: '',
-    reportName: '',
+    correo: 'valentina@correo.cl',
+    cargo: 'Analista de Personas',
+    familia: 'Personas',
+    ubicacion: 'Puerto Montt',
+    estado: ESTADOS.APROBADO,
+    nombreCv: 'CV_Valentina_Rios.pdf',
+    fechaEntrevista: '',
+    informe: '',
   },
   {
     id: 4,
-    name: 'Nicolás Vera',
+    nombre: 'Nicolás Vera',
     rut: '19.876.543-0',
-    email: 'nicolas@correo.cl',
-    position: 'Técnico Acuícola',
-    family: 'Producción',
-    location: 'Chiloé',
-    status: STATUS.REVIEW,
-    cvName: 'CV_Nicolas_Vera.pdf',
-    interviewDate: '',
-    reportName: '',
+    correo: 'nicolas@correo.cl',
+    cargo: 'Técnico Acuícola',
+    familia: 'Producción',
+    ubicacion: 'Chiloé',
+    estado: ESTADOS.REVISION,
+    nombreCv: 'CV_Nicolas_Vera.pdf',
+    fechaEntrevista: '',
+    informe: '',
   },
 ]
 
