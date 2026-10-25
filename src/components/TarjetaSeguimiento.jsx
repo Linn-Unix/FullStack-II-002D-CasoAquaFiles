@@ -1,4 +1,5 @@
 import { ESTADOS } from '../data/candidatos'
+import EstadoBadge from './EstadoBadge'
 
 // 1. Pasos que ve el candidato en su seguimiento.
 const PASOS = [ESTADOS.REVISION, ESTADOS.APROBADO, ESTADOS.AGENDADO, ESTADOS.FINALIZADO]
@@ -30,7 +31,7 @@ function TarjetaSeguimiento({ candidato }) {
   return (
     <div className="panel process-card">
       <p className="tag">ESTADO DE MI POSTULACIÓN</p>
-      <span className="badge-status">{candidato.estado}</span>
+      <EstadoBadge estado={candidato.estado} />
       <h2>Seguimiento</h2>
 
       {/* 4. map() crea un paso por cada elemento de PASOS. */}

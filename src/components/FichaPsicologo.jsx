@@ -1,5 +1,6 @@
 import { ESTADOS } from '../data/candidatos'
 import ArchivoFila from './ArchivoFila'
+import EstadoBadge from './EstadoBadge'
 
 // Ficha del candidato seleccionado en el panel del psicólogo.
 function FichaPsicologo({ candidato, actualizarCandidato }) {
@@ -24,7 +25,7 @@ function FichaPsicologo({ candidato, actualizarCandidato }) {
       <p className="tag">EVALUACIÓN PSICOLABORAL</p>
       <h2>{candidato.nombre}</h2>
       <p>{candidato.cargo} · {candidato.ubicacion}</p>
-      <span className="badge-status">{candidato.estado}</span>
+      <EstadoBadge estado={candidato.estado} />
       <hr />
       <ArchivoFila nombre={candidato.nombreCv} icono="bi-file-earmark-pdf" />
 
