@@ -8,6 +8,6 @@ export default defineConfig({
   test: {
     environment: 'jsdom', // simula un navegador para probar componentes
     globals: true,
-    setupFiles: './src/setupTests.js',
+    setupFiles: './src/setupTest.js',
   },
 })
