@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { candidatosIniciales, ESTADOS } from '../data/candidatos'
-import { contarPorEstado, filtrarCandidatos, obtenerIniciales } from './candidatos'
+import { contarPorEstado, filtrarCandidatos, obtenerColorEstado, obtenerIniciales } from './candidatos'
 
 describe('filtrarCandidatos', () => {
   it('filtra por texto sin importar mayúsculas', () => {
@@ -25,5 +25,15 @@ describe('utilidades', () => {
   })
   it('cuenta candidatos por estado', () => {
     expect(contarPorEstado(candidatosIniciales, ESTADOS.AGENDADO)).toBe(1)
+  })
+})
+
+describe('obtenerColorEstado', () => {
+  it('devuelve un color distinto para cada estado', () => {
+    expect(obtenerColorEstado(ESTADOS.REVISION)).toBe('text-bg-warning')
+    expect(obtenerColorEstado(ESTADOS.RECHAZADO)).toBe('text-bg-danger')
+  })
+  it('usa un color neutro si el estado no existe', () => {
+    expect(obtenerColorEstado('Otro')).toBe('text-bg-light')
   })
 })

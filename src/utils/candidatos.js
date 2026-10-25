@@ -1,3 +1,5 @@
+import { ESTADOS } from '../data/candidatos'
+
 // 1. Obtiene las iniciales de un nombre. Ej: "Valentina Ríos" → "VR"
 export function obtenerIniciales(nombre) {
   return nombre
@@ -32,4 +34,19 @@ export function filtrarCandidatos(candidatos, busqueda, estado) {
 // 3. Cuenta cuántos candidatos tienen un estado. Se usa en los indicadores.
 export function contarPorEstado(candidatos, estado) {
   return candidatos.filter((candidato) => candidato.estado === estado).length
+}
+
+// 4. Color de Bootstrap para cada estado del proceso.
+const COLORES_ESTADO = {
+  [ESTADOS.REVISION]: 'text-bg-warning',
+  [ESTADOS.APROBADO]: 'text-bg-success',
+  [ESTADOS.RECHAZADO]: 'text-bg-danger',
+  [ESTADOS.DERIVADO]: 'text-bg-info',
+  [ESTADOS.AGENDADO]: 'text-bg-primary',
+  [ESTADOS.FINALIZADO]: 'text-bg-secondary',
+}
+
+// Devuelve la clase de color según el estado. Si no existe, usa un color neutro.
+export function obtenerColorEstado(estado) {
+  return COLORES_ESTADO[estado] ?? 'text-bg-light'
 }
