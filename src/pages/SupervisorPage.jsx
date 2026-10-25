@@ -25,6 +25,9 @@ function SupervisorPage({ candidatos, actualizarCandidato, modoOscuro, alCambiar
   const seleccionado = candidatos.find((candidato) => candidato.id === idSeleccionado) ?? filtrados[0]
   const pendientes = contarPorEstado(candidatos, ESTADOS.REVISION)
 
+  // Las postulaciones nuevas se agregan al inicio de la lista, así que las 3 primeras son las más recientes.
+  const recientes = candidatos.slice(0, 3)
+
   // 4. Indicadores calculados a partir de los datos (se actualizan solos).
   const indicadores = [
     { titulo: 'Candidatos', valor: candidatos.length },
@@ -61,10 +64,10 @@ function SupervisorPage({ candidatos, actualizarCandidato, modoOscuro, alCambiar
       </section>
 
       <section className="mb-4">
-        <p className="tag mb-1">CANDIDATOS DESTACADOS</p>
-        <h2 className="h4 mb-3">Vista rápida del equipo</h2>
+        <p className="tag mb-1">ÚLTIMAS POSTULACIONES</p>
+        <h2 className="h4 mb-3">Postulaciones recientes</h2>
         <div className="row g-3">
-          {candidatos.map((candidato) => (
+          {recientes.map((candidato) => (
             <CandidatoCard key={candidato.id} nombre={candidato.nombre} cargo={candidato.cargo} estado={candidato.estado} />
           ))}
         </div>
