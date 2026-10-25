@@ -239,6 +239,32 @@ Próximos pasos para una versión productiva:
 
 ---
 
+## Rutas de la aplicación
+
+| Ruta | Pantalla | Rol |
+| :--- | :--- | :--- |
+| `/` | Selección de rol | Todos |
+| `/postulacion` | Formulario de postulación y seguimiento | Postulante |
+| `/supervisor` | Panel del supervisor técnico | Supervisor Técnico |
+| `/psicologo` | Panel psicolaboral | Psicólogo/a |
+| `*` | Página no encontrada (404) | Todos |
+
+## Pruebas unitarias (Vitest)
+
+```bash
+npm run test       # modo observador
+npm run test:run   # ejecuta todas las pruebas una vez
+```
+
+| Archivo | Qué prueba |
+| :--- | :--- |
+| `src/utils/validaciones.test.js` | Validación de RUT, correo y formulario de postulación |
+| `src/utils/candidatos.test.js` | Búsqueda, filtro por estado e indicadores |
+| `src/components/CandidatoCard.test.jsx` | Renderizado del componente con props |
+| `src/components/FormularioPostulacion.test.jsx` | Mensajes de error y envío del formulario |
+| `src/App.test.jsx` | Navegación con React Router, navbar y flujo supervisor → psicólogo |
+    
+
 ## Información técnica
 
 ### Tecnologías
