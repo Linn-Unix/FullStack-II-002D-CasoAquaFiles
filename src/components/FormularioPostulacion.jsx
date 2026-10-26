@@ -59,6 +59,7 @@ function FormularioPostulacion({ alEnviar }) {
       nombreCv: valores.cv.name,
       fechaEntrevista: '',
       informe: '',
+      observaciones: '',
     })
   }
 
