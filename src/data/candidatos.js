@@ -16,6 +16,9 @@ export const LISTA_ESTADOS = Object.values(ESTADOS)
 export const FAMILIAS = ['Operaciones', 'Producción', 'Personas']
 export const UBICACIONES = ['Puerto Montt', 'Puerto Natales', 'Chiloé']
 
+// Centros de costos de ejemplo. Deben confirmarse con AquaChile.
+export const CENTROS_COSTO = ['Cultivo y engorda', 'Planta de proceso', 'Mantención', 'Administración y personas']
+
 // 4. Datos simulados (todavía no hay backend ni base de datos).
 export const candidatosIniciales = [
   {
@@ -26,6 +29,7 @@ export const candidatosIniciales = [
     cargo: 'Supervisor de Mantención',
     familia: 'Operaciones',
     ubicacion: 'Puerto Montt',
+    centroCosto: 'Mantención',
     estado: ESTADOS.FINALIZADO,
     nombreCv: 'CV_Gosman_Radatz.pdf',
     fechaEntrevista: '2026-09-24',
@@ -39,6 +43,7 @@ export const candidatosIniciales = [
     cargo: 'Jefe de Turno Centro',
     familia: 'Operaciones',
     ubicacion: 'Puerto Natales',
+    centroCosto: 'Cultivo y engorda',
     estado: ESTADOS.AGENDADO,
     nombreCv: 'CV_Marcos_Fonseca.pdf',
     fechaEntrevista: '2026-10-28',
@@ -52,6 +57,7 @@ export const candidatosIniciales = [
     cargo: 'Analista de Personas',
     familia: 'Personas',
     ubicacion: 'Puerto Montt',
+    centroCosto: 'Administración y personas',
     estado: ESTADOS.APROBADO,
     nombreCv: 'CV_Valentina_Rios.pdf',
     fechaEntrevista: '',
@@ -65,6 +71,7 @@ export const candidatosIniciales = [
     cargo: 'Técnico Acuícola',
     familia: 'Producción',
     ubicacion: 'Chiloé',
+    centroCosto: 'Cultivo y engorda',
     estado: ESTADOS.REVISION,
     nombreCv: 'CV_Nicolas_Vera.pdf',
     fechaEntrevista: '',
