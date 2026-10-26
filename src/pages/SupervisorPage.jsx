@@ -10,15 +10,16 @@ import { contarPorEstado, filtrarCandidatos } from '../utils/candidatos'
 // Página del supervisor técnico (ruta "/supervisor").
 // Recibe por props la lista de candidatos y la función para actualizarlos.
 function SupervisorPage({ candidatos, actualizarCandidato, modoOscuro, alCambiarTema }) {
-  // 1. Estados de esta página: texto buscado, estado filtrado y candidato seleccionado.
+  // 1. Estados de esta página: texto buscado, filtros y candidato seleccionado.
   const [busqueda, setBusqueda] = useState('')
   const [estadoFiltro, setEstadoFiltro] = useState('')
+  const [centroFiltro, setCentroFiltro] = useState('')
   const [idSeleccionado, setIdSeleccionado] = useState(null)
 
-  // 2. useMemo recalcula la lista filtrada solo cuando cambian candidatos, búsqueda o filtro.
+  // 2. useMemo recalcula la lista filtrada solo cuando cambian candidatos, búsqueda o filtros.
   const filtrados = useMemo(
-    () => filtrarCandidatos(candidatos, busqueda, estadoFiltro),
-    [candidatos, busqueda, estadoFiltro],
+    () => filtrarCandidatos(candidatos, busqueda, estadoFiltro, centroFiltro),
+    [candidatos, busqueda, estadoFiltro, centroFiltro],
   )
 
   // 3. Candidato seleccionado. Si no hay ninguno, usamos el primero de la lista.
@@ -91,6 +92,8 @@ function SupervisorPage({ candidatos, actualizarCandidato, modoOscuro, alCambiar
               alBuscar={setBusqueda}
               estadoFiltro={estadoFiltro}
               alFiltrar={setEstadoFiltro}
+              centroFiltro={centroFiltro}
+              alFiltrarCentro={setCentroFiltro}
             />
           </div>
         </div>

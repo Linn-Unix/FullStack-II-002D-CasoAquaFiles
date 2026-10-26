@@ -54,6 +54,16 @@ describe('Flujo del proceso', () => {
     expect(screen.getByText('1 resultado(s)')).toBeInTheDocument()
   })
 
+  it('el supervisor filtra por centro de costos', async () => {
+    const usuario = userEvent.setup()
+    renderizarApp('/supervisor')
+
+    await usuario.selectOptions(screen.getByLabelText(/filtrar por centro de costos/i), 'Mantención')
+
+    expect(screen.getByRole('row', { name: /gosman radatz/i })).toBeInTheDocument()
+    expect(screen.getByText('1 resultado(s)')).toBeInTheDocument()
+  })
+
   it('el supervisor rechaza a un candidato en revisión', async () => {
     const usuario = userEvent.setup()
     renderizarApp('/supervisor')
