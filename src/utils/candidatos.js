@@ -11,8 +11,9 @@ export function obtenerIniciales(nombre) {
     .toUpperCase()
 }
 
-// 2. Filtra la lista de candidatos según el texto buscado y el estado seleccionado.
-export function filtrarCandidatos(candidatos, busqueda, estado) {
+// 2. Filtra la lista de candidatos según el texto buscado, el estado y el centro de costos.
+//    centroCosto tiene un valor por defecto (''), así que se puede omitir.
+export function filtrarCandidatos(candidatos, busqueda, estado, centroCosto = '') {
   // Pasamos la búsqueda a minúsculas para que no importen las mayúsculas.
   const texto = busqueda.trim().toLowerCase()
 
@@ -27,7 +28,10 @@ export function filtrarCandidatos(candidatos, busqueda, estado) {
     // ¿No hay estado seleccionado ("") o el estado coincide?
     const estadoOk = estado === '' || candidato.estado === estado
 
-    return textoOk && estadoOk
+    // ¿No hay centro seleccionado o el centro coincide?
+    const centroOk = centroCosto === '' || candidato.centroCosto === centroCosto
+
+    return textoOk && estadoOk && centroOk
   })
 }
 

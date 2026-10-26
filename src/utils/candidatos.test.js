@@ -14,6 +14,11 @@ describe('filtrarCandidatos', () => {
     expect(resultado[0].nombre).toBe('Nicolás Vera')
   })
 
+  it('filtra por centro de costos', () => {
+    const resultado = filtrarCandidatos(candidatosIniciales, '', '', 'Cultivo y engorda')
+    expect(resultado.map((c) => c.nombre)).toEqual(['Marcos Fonseca', 'Nicolás Vera'])
+  })
+
   it('combina texto y estado', () => {
     expect(filtrarCandidatos(candidatosIniciales, 'chiloé', ESTADOS.FINALIZADO)).toHaveLength(0)
   })
