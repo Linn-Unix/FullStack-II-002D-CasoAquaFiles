@@ -49,7 +49,16 @@ function App() {
         <Route path="/" element={<InicioPage {...propsTema} />} />
         <Route
           path="/postulacion"
-          element={<PostulacionPage {...propsTema} candidato={miPostulacion} alEnviar={agregarCandidato} />}
+          element={
+            <PostulacionPage
+              {...propsTema}
+              candidato={miPostulacion}
+              candidatos={candidatos}
+              alEnviar={agregarCandidato}
+              alConsultar={setIdMiPostulacion}
+              alSalir={() => setIdMiPostulacion(null)}
+            />
+          }
         />
         <Route
           path="/supervisor"
