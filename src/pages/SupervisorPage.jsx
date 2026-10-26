@@ -98,7 +98,8 @@ function SupervisorPage({ candidatos, actualizarCandidato, modoOscuro, alCambiar
           </div>
         </div>
         <div className="col-lg-4">
-          <FichaSupervisor candidato={seleccionado} actualizarCandidato={actualizarCandidato} />
+          {/* key reinicia la ficha (y su edición) cada vez que se selecciona otro candidato. */}
+          <FichaSupervisor key={seleccionado?.id} candidato={seleccionado} actualizarCandidato={actualizarCandidato} />
         </div>
       </div>
     </main>
