@@ -35,6 +35,7 @@ describe('FormularioPostulacion', () => {
       rut: '12.345.678-5',
       estado: 'En revisión técnica',
       nombreCv: 'cv_andrea.pdf',
+      centroCosto: 'Cultivo y engorda',
     })
   })
 })

@@ -30,6 +30,7 @@ function FichaSupervisor({ candidato, actualizarCandidato }) {
       <p><i className="bi bi-person-vcard" /> {candidato.rut}</p>
       <p><i className="bi bi-envelope" /> {candidato.correo}</p>
       <p><i className="bi bi-geo-alt" /> {candidato.ubicacion}</p>
+      <p><i className="bi bi-building" /> {candidato.centroCosto}</p>
       <ArchivoFila nombre={candidato.nombreCv} icono="bi-file-earmark-pdf" />
 
       {/* 3. En revisión técnica: el supervisor puede aprobar o rechazar. */}

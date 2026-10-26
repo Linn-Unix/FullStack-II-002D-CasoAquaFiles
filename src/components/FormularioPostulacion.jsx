@@ -1,6 +1,6 @@
 // useState permite guardar información que cambia mientras el usuario usa el formulario.
 import { useState } from 'react'
-import { ESTADOS, FAMILIAS, UBICACIONES } from '../data/candidatos'
+import { CENTROS_COSTO, ESTADOS, FAMILIAS, UBICACIONES } from '../data/candidatos'
 import { validarPostulacion } from '../utils/validaciones'
 
 // Valores iniciales del formulario (vacío).
@@ -10,6 +10,7 @@ const formularioVacio = {
   correo: '',
   familia: FAMILIAS[0],
   ubicacion: UBICACIONES[0],
+  centroCosto: CENTROS_COSTO[0],
   cargo: '',
   cv: null,
 }
@@ -53,6 +54,7 @@ function FormularioPostulacion({ alEnviar }) {
       cargo: valores.cargo.trim(),
       familia: valores.familia,
       ubicacion: valores.ubicacion,
+      centroCosto: valores.centroCosto,
       estado: ESTADOS.REVISION, // toda postulación nueva parte en revisión técnica
       nombreCv: valores.cv.name,
       fechaEntrevista: '',
@@ -109,6 +111,15 @@ function FormularioPostulacion({ alEnviar }) {
             </select>
           </label>
         </div>
+
+        <label>
+          Centro de costos
+          <select name="centroCosto" value={valores.centroCosto} onChange={manejarCambio}>
+            {CENTROS_COSTO.map((centro) => (
+              <option key={centro}>{centro}</option>
+            ))}
+          </select>
+        </label>
 
         <label>
           Cargo al que postula
