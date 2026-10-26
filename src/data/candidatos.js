@@ -1,4 +1,4 @@
-﻿﻿// 1. Estados posibles de un candidato dentro del proceso de selección.
+﻿// 1. Estados posibles de un candidato dentro del proceso de selección.
 //    Usamos un objeto para no escribir los textos a mano en cada archivo.
 export const ESTADOS = {
   REVISION: 'En revisión técnica',
