@@ -64,6 +64,48 @@ describe('Flujo del proceso', () => {
     expect(screen.getByText('1 resultado(s)')).toBeInTheDocument()
   })
 
+  it('el supervisor edita el cargo de un candidato', async () => {
+    const usuario = userEvent.setup()
+    renderizarApp('/supervisor')
+
+    await usuario.click(screen.getByRole('row', { name: /nicolás vera/i }))
+    await usuario.click(screen.getByRole('button', { name: /editar datos/i }))
+    await usuario.clear(screen.getByLabelText('Cargo'))
+    await usuario.type(screen.getByLabelText('Cargo'), 'Jefe de Centro')
+    await usuario.click(screen.getByRole('button', { name: /guardar cambios/i }))
+
+    const fila = screen.getByRole('row', { name: /nicolás vera/i })
+    expect(within(fila).getByText('Jefe de Centro')).toBeInTheDocument()
+  })
+
+  it('no guarda un cargo demasiado corto', async () => {
+    const usuario = userEvent.setup()
+    renderizarApp('/supervisor')
+
+    await usuario.click(screen.getByRole('row', { name: /nicolás vera/i }))
+    await usuario.click(screen.getByRole('button', { name: /editar datos/i }))
+    await usuario.clear(screen.getByLabelText('Cargo'))
+    await usuario.type(screen.getByLabelText('Cargo'), 'AB')
+    await usuario.click(screen.getByRole('button', { name: /guardar cambios/i }))
+
+    expect(screen.getByText(/al menos 3 caracteres/i)).toBeInTheDocument()
+  })
+
+  it('el psicólogo ve las observaciones del supervisor', async () => {
+    const usuario = userEvent.setup()
+    renderizarApp('/supervisor')
+
+    await usuario.click(screen.getByRole('row', { name: /valentina ríos/i }))
+    await usuario.type(screen.getByLabelText(/observaciones técnicas/i), 'Buen manejo de equipos')
+    await usuario.click(screen.getByRole('button', { name: /guardar observaciones/i }))
+    await usuario.click(screen.getByRole('button', { name: /derivar al psicólogo/i }))
+    await usuario.click(screen.getByRole('link', { name: /cambiar rol/i }))
+    await usuario.click(screen.getByRole('link', { name: /psicólogo/i }))
+    await usuario.click(screen.getByRole('button', { name: /valentina ríos/i }))
+
+    expect(screen.getByText('Buen manejo de equipos')).toBeInTheDocument()
+  })
+
   it('el supervisor rechaza a un candidato en revisión', async () => {
     const usuario = userEvent.setup()
     renderizarApp('/supervisor')

@@ -34,6 +34,7 @@ export const candidatosIniciales = [
     nombreCv: 'CV_Gosman_Radatz.pdf',
     fechaEntrevista: '2026-09-24',
     informe: 'Informe_psicolaboral.pdf',
+    observaciones: 'Experiencia sólida en mantención de equipos.',
   },
   {
     id: 2,
@@ -48,6 +49,7 @@ export const candidatosIniciales = [
     nombreCv: 'CV_Marcos_Fonseca.pdf',
     fechaEntrevista: '2026-10-28',
     informe: '',
+    observaciones: '',
   },
   {
     id: 3,
@@ -62,6 +64,7 @@ export const candidatosIniciales = [
     nombreCv: 'CV_Valentina_Rios.pdf',
     fechaEntrevista: '',
     informe: '',
+    observaciones: '',
   },
   {
     id: 4,
@@ -76,5 +79,6 @@ export const candidatosIniciales = [
     nombreCv: 'CV_Nicolas_Vera.pdf',
     fechaEntrevista: '',
     informe: '',
+    observaciones: '',
   },
 ]

@@ -1072,3 +1072,22 @@ h2 {
 
 /* Altura de la pantalla de inicio descontando el navbar */
 .role-screen { min-height:calc(100vh - 56px); }
+/* ---------- 20. Edición de datos en la ficha ---------- */
+.edit-box {
+  background: var(--soft);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  padding: 12px;
+}
+
+.edit-box .form-label {
+  color: var(--deep);
+}
+
+.theme-dark .edit-box {
+  background: #244451;
+}
+
+.theme-dark .edit-box .form-label {
+  color: var(--dark-text);
+}

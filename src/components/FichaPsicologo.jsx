@@ -29,6 +29,12 @@ function FichaPsicologo({ candidato, actualizarCandidato }) {
       <hr />
       <ArchivoFila nombre={candidato.nombreCv} icono="bi-file-earmark-pdf" />
 
+      {/* Observaciones del supervisor: el psicólogo solo puede leerlas. */}
+      <div className="stage-note">
+        <strong className="d-block mb-1">Observaciones técnicas del supervisor</strong>
+        {candidato.observaciones || 'Sin observaciones.'}
+      </div>
+
       <label className="date-field">
         Fecha de entrevista (Teams)
         <input type="date" value={candidato.fechaEntrevista} onChange={agendar} disabled={finalizado} />
