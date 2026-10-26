@@ -1,6 +1,7 @@
 import { ESTADOS } from '../data/candidatos'
 import { obtenerIniciales } from '../utils/candidatos'
 import ArchivoFila from './ArchivoFila'
+import EstadoBadge from './EstadoBadge'
 
 // Ficha del candidato seleccionado en el panel del supervisor.
 // Recibe el candidato y la función para actualizarlo (viene de App).
@@ -24,7 +25,7 @@ function FichaSupervisor({ candidato, actualizarCandidato }) {
       <div className="candidate-initials">{obtenerIniciales(candidato.nombre)}</div>
       <h2>{candidato.nombre}</h2>
       <p>{candidato.cargo} · {candidato.familia}</p>
-      <span className="badge-status">{candidato.estado}</span>
+      <EstadoBadge estado={candidato.estado} />
       <hr />
       <p><i className="bi bi-person-vcard" /> {candidato.rut}</p>
       <p><i className="bi bi-envelope" /> {candidato.correo}</p>

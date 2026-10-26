@@ -104,9 +104,11 @@ Trabaja solo con candidatos aprobados técnicamente y derivados por el superviso
 **Estados del candidato:**
 
 ```text
-En revisión técnica
+En revisión técnica ──→ Rechazado técnicamente
         ↓
 Aprobado técnicamente
+        ↓
+Derivado a psicólogo
         ↓
 Agendado
         ↓
@@ -239,6 +241,32 @@ Próximos pasos para una versión productiva:
 
 ---
 
+## Rutas de la aplicación
+
+| Ruta | Pantalla | Rol |
+| :--- | :--- | :--- |
+| `/` | Selección de rol | Todos |
+| `/postulacion` | Formulario de postulación y seguimiento | Postulante |
+| `/supervisor` | Panel del supervisor técnico | Supervisor Técnico |
+| `/psicologo` | Panel psicolaboral | Psicólogo/a |
+| `*` | Página no encontrada (404) | Todos |
+
+## Pruebas unitarias (Vitest)
+
+```bash
+npm run test       # modo observador
+npm run test:run   # ejecuta todas las pruebas una vez
+```
+
+| Archivo | Qué prueba |
+| :--- | :--- |
+| `src/utils/validaciones.test.js` | Validación de RUT, correo y formulario de postulación |
+| `src/utils/candidatos.test.js` | Búsqueda, filtro por estado e indicadores |
+| `src/components/CandidatoCard.test.jsx` | Renderizado del componente con props |
+| `src/components/FormularioPostulacion.test.jsx` | Mensajes de error y envío del formulario |
+| `src/App.test.jsx` | Navegación con React Router, navbar y flujo supervisor → psicólogo |
+    
+
 ## Información técnica
 
 ### Tecnologías
@@ -255,20 +283,26 @@ Próximos pasos para una versión productiva:
 ```text
 FullStack-II-002D-CasoAquaFiles/
 ├── docs/
-│   ├── Actividad_Bases_MVP_AquaChile_DSY1104.md   # Análisis y bases del MVP
-│   ├── Actividad_Bases_MVP_AquaChile_DSY1104.pdf  # Mismo documento en PDF
-│   └── diagrama_flujo_mvp.png                     # Diagrama de flujo (PlantUML)
-├── public/                                        # Íconos y archivos estáticos
-├── src/                                           # Código de la página
-│   ├── assets/                                    # Imágenes
-│   ├── App.jsx                                    # Pantallas, roles, flujo y componentes
-│   ├── App.css                                    # Estilos de AquaFiles y diseño responsive
-│   ├── index.css                                  # Estilos globales
-│   └── main.jsx                                   # Entrada de React y Bootstrap
-├── index.html
-├── package.json
+│   ├── Actividad_Bases_MVP_AquaChile_DSY1104.md
+│   ├── Actividad_Bases_MVP_AquaChile_DSY1104.pdf
+│   ├── diagrama_flujo_mvp.png
+│   └── evidencias/
+│       └── vitest.png                 # Evidencia de las pruebas
+├── public/
+├── src/
+│   ├── components/                    # Componentes reutilizables
+│   ├── data/
+│   │   └── candidatos.js              # Datos simulados y estados
+│   ├── pages/                         # Una página por ruta
+│   ├── utils/
+│   │   ├── candidatos.js              # Búsqueda y filtros
+│   │   └── validaciones.js            # Validación de RUT, correo y CV
+│   ├── App.jsx                        # Estado global y rutas
+│   ├── App.test.jsx                   # Pruebas de rutas y flujo
+│   ├── main.jsx                       # Entrada de React y Router
+│   └── setupTests.js                  # Configuración de Vitest
+├── vercel.json
 ├── vite.config.ts
-├── vercel.json                                    # Configuración de despliegue
 └── README.md
 ```
 

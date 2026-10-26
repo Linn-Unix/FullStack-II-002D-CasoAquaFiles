@@ -1,4 +1,4 @@
-// 1. Estados posibles de un candidato dentro del proceso de selección.
+﻿// 1. Estados posibles de un candidato dentro del proceso de selección.
 //    Usamos un objeto para no escribir los textos a mano en cada archivo.
 export const ESTADOS = {
   REVISION: 'En revisión técnica',
@@ -71,31 +71,3 @@ export const candidatosIniciales = [
     informe: '',
   },
 ]
-
-// API en español usada por las pantallas de la aplicación.
-export const ESTADOS = {
-  REVISION: STATUS.REVIEW,
-  APROBADO: STATUS.APPROVED,
-  RECHAZADO: STATUS.REJECTED,
-  DERIVADO: STATUS.DERIVED,
-  AGENDADO: STATUS.SCHEDULED,
-  FINALIZADO: STATUS.FINISHED,
-}
-
-export const LISTA_ESTADOS = Object.values(ESTADOS)
-export const FAMILIAS = FAMILIES
-export const UBICACIONES = LOCATIONS
-
-export const candidatosIniciales = initialCandidates.map((candidate) => ({
-  id: candidate.id,
-  nombre: candidate.name,
-  rut: candidate.rut,
-  correo: candidate.email,
-  cargo: candidate.position,
-  familia: candidate.family,
-  ubicacion: candidate.location,
-  estado: Object.values(STATUS).find((status) => status === candidate.status),
-  nombreCv: candidate.cvName,
-  fechaEntrevista: candidate.interviewDate,
-  informe: candidate.reportName,
-}))

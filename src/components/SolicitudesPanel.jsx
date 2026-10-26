@@ -1,4 +1,5 @@
 import { LISTA_ESTADOS } from '../data/candidatos'
+import EstadoBadge from './EstadoBadge'
 
 // Tabla de solicitudes del supervisor.
 // Recibe por props la lista ya filtrada y las funciones que cambian la búsqueda, el filtro y la selección.
@@ -63,7 +64,7 @@ function SolicitudesPanel({ candidatos, idSeleccionado, alSeleccionar, busqueda,
                 >
                   <td><strong>{candidato.nombre}</strong><small>{candidato.rut}</small></td>
                   <td>{candidato.cargo}<small>{candidato.familia}</small></td>
-                  <td><span className="badge-status">{candidato.estado}</span></td>
+                  <td><EstadoBadge estado={candidato.estado} /></td>
                   <td className="d-none d-lg-table-cell">{candidato.ubicacion}</td>
                 </tr>
               ))}
