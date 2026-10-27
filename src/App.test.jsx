@@ -34,7 +34,7 @@ describe('Navegación con React Router', () => {
     const usuario = userEvent.setup()
     renderizarApp('/', ROLES.PSICOLOGO)
     const menu = screen.getByRole('navigation')
-    await usuario.click(within(menu).getByRole('link', { name: 'Panel psicolaboral' }))
+    await usuario.click(within(menu).getByRole('link', { name: 'Evaluaciones' }))
     expect(screen.getByRole('heading', { name: 'Panel de Evaluaciones' })).toBeInTheDocument()
   })
 
@@ -42,8 +42,8 @@ describe('Navegación con React Router', () => {
     renderizarApp('/postulacion', ROLES.POSTULANTE)
     const menu = screen.getByRole('navigation')
     expect(within(menu).getByRole('link', { name: 'Mi postulación' })).toBeInTheDocument()
-    expect(within(menu).queryByRole('link', { name: 'Panel supervisor' })).not.toBeInTheDocument()
-    expect(within(menu).queryByRole('link', { name: 'Panel psicolaboral' })).not.toBeInTheDocument()
+    expect(within(menu).queryByRole('link', { name: 'Reclutamiento' })).not.toBeInTheDocument()
+    expect(within(menu).queryByRole('link', { name: 'Evaluaciones' })).not.toBeInTheDocument()
   })
 
   it('el postulante no puede entrar al panel del supervisor', () => {
@@ -61,6 +61,14 @@ describe('Navegación con React Router', () => {
   it('sin elegir un rol no se puede entrar a ninguna pantalla', () => {
     renderizarApp('/supervisor')
     expect(screen.getByText(/primero selecciona tu rol/i)).toBeInTheDocument()
+  })
+
+  it('el analista llega al dashboard desde el menú', async () => {
+    const usuario = userEvent.setup()
+    renderizarApp('/supervisor', ROLES.SUPERVISOR)
+    const menu = screen.getByRole('navigation')
+    await usuario.click(within(menu).getByRole('link', { name: 'Dashboard' }))
+    expect(screen.getByRole('heading', { name: 'Dashboard' })).toBeInTheDocument()
   })
 
   it('muestra la página 404 en una ruta que no existe', () => {
