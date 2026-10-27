@@ -58,3 +58,14 @@ const COLORES_ESTADO = {
 export function obtenerColorEstado(estado) {
   return COLORES_ESTADO[estado] ?? 'text-bg-light'
 }
+
+export function formatearFecha(fecha) {
+  if (!fecha) return 'Sin fecha'
+  return fecha.split('-').reverse().join('-')
+}
+
+export function obtenerEtapa(estado) {
+  if (estado === ESTADOS.REVISION) return 'Pendiente'
+  if (estado === ESTADOS.FINALIZADO || estado === ESTADOS.RECHAZADO) return 'Finalizada'
+  return 'En proceso'
+}
