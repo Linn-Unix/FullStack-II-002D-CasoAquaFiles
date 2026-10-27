@@ -5,9 +5,8 @@ export const ROLES = {
   PSICOLOGO: 'psicologo',
 }
 
-// 2. Nombre que se muestra en el menú para cada rol.
 export const NOMBRES_ROL = {
   [ROLES.POSTULANTE]: 'Postulante',
-  [ROLES.SUPERVISOR]: 'Supervisor Técnico',
-  [ROLES.PSICOLOGO]: 'Psicólogo/a',
+  [ROLES.SUPERVISOR]: 'Analista de Reclutamiento',
+  [ROLES.PSICOLOGO]: 'Profesional Evaluador',
 }

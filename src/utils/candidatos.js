@@ -11,6 +11,10 @@ export function obtenerIniciales(nombre) {
     .toUpperCase()
 }
 
+export function obtenerFechaHoy() {
+  return new Date().toISOString().slice(0, 10)
+}
+
 // 2. Filtra la lista de candidatos según el texto buscado, el estado y el centro de costos.
 //    centroCosto tiene un valor por defecto (''), así que se puede omitir.
 export function filtrarCandidatos(candidatos, busqueda, estado, centroCosto = '') {
@@ -72,5 +76,12 @@ export function obtenerEstadoPostulante(estado) {
 
 // 6. Convierte una fecha "2026-10-28" al formato chileno "28-10-2026".
 export function formatearFecha(fecha) {
+  if (!fecha) return 'Sin fecha'
   return fecha.split('-').reverse().join('-')
+}
+
+export function obtenerEtapa(estado) {
+  if (estado === ESTADOS.REVISION) return 'Pendiente'
+  if (estado === ESTADOS.FINALIZADO || estado === ESTADOS.RECHAZADO) return 'Finalizada'
+  return 'En proceso'
 }

@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import CandidatoCard from '../components/CandidatoCard'
 import Encabezado from '../components/Encabezado'
 import FichaSupervisor from '../components/FichaSupervisor'
+import FormularioPostulacion from '../components/FormularioPostulacion'
 import IndicadorCard from '../components/IndicadorCard'
 import SolicitudesPanel from '../components/SolicitudesPanel'
 import { ESTADOS } from '../data/candidatos'
@@ -9,12 +10,21 @@ import { contarPorEstado, filtrarCandidatos } from '../utils/candidatos'
 
 // Página del supervisor técnico (ruta "/supervisor").
 // Recibe por props la lista de candidatos y la función para actualizarlos.
-function SupervisorPage({ candidatos, actualizarCandidato, modoOscuro, alCambiarTema }) {
+function SupervisorPage({ candidatos, actualizarCandidato, alCrearSolicitud, modoOscuro, alCambiarTema }) {
   // 1. Estados de esta página: texto buscado, filtros y candidato seleccionado.
   const [busqueda, setBusqueda] = useState('')
   const [estadoFiltro, setEstadoFiltro] = useState('')
   const [centroFiltro, setCentroFiltro] = useState('')
   const [idSeleccionado, setIdSeleccionado] = useState(null)
+  const [mostrarFormulario, setMostrarFormulario] = useState(false)
+  const [mensaje, setMensaje] = useState('')
+
+  function registrarSolicitud(candidato) {
+    alCrearSolicitud(candidato)
+    setIdSeleccionado(candidato.id)
+    setMostrarFormulario(false)
+    setMensaje(`Solicitud creada para ${candidato.nombre}.`)
+  }
 
   // 2. useMemo recalcula la lista filtrada solo cuando cambian candidatos, búsqueda o filtros.
   const filtrados = useMemo(
@@ -40,7 +50,7 @@ function SupervisorPage({ candidatos, actualizarCandidato, modoOscuro, alCambiar
   return (
     <main className="container py-4">
       <Encabezado
-        titulo="Panel del Supervisor"
+        titulo="Panel de Reclutamiento"
         subtitulo="Gestión técnica, dossiers y derivaciones."
         modoOscuro={modoOscuro}
         alCambiarTema={alCambiarTema}
@@ -49,7 +59,7 @@ function SupervisorPage({ candidatos, actualizarCandidato, modoOscuro, alCambiar
       <div className="privilege-banner">
         <i className="bi bi-shield-check" />
         <div>
-          <strong>Acceso de Supervisor Técnico</strong>
+          <strong>Acceso de Analista de Reclutamiento</strong>
           <small>
             {pendientes > 0
               ? `Tienes ${pendientes} postulación(es) pendiente(s) de revisión técnica.`
@@ -57,6 +67,31 @@ function SupervisorPage({ candidatos, actualizarCandidato, modoOscuro, alCambiar
           </small>
         </div>
       </div>
+
+      {mensaje && (
+        <div className="alert alert-success d-flex justify-content-between align-items-center" role="status">
+          <span><i className="bi bi-check-circle-fill" /> {mensaje}</span>
+          <button className="btn-close" type="button" aria-label="Cerrar mensaje" onClick={() => setMensaje('')} />
+        </div>
+      )}
+
+      <div className="d-flex justify-content-end mb-4">
+        <button className="btn btn-aqua" type="button" onClick={() => setMostrarFormulario((actual) => !actual)}>
+          <i className="bi bi-plus-lg" /> {mostrarFormulario ? 'Cerrar formulario' : 'Nueva solicitud'}
+        </button>
+      </div>
+
+      {mostrarFormulario && (
+        <div className="mb-4">
+          <FormularioPostulacion
+            alEnviar={registrarSolicitud}
+            etiqueta="NUEVA SOLICITUD"
+            titulo="Registrar candidato y solicitud de evaluación"
+            descripcion="Completa los datos del candidato. La solicitud se crea con la fecha de hoy y en revisión técnica."
+            textoBoton="Registrar solicitud"
+          />
+        </div>
+      )}
 
       <section className="row g-3 mb-4">
         {indicadores.map((indicador) => (

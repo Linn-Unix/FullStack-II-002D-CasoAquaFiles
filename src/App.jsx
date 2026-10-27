@@ -6,6 +6,7 @@ import AppNavbar from './components/AppNavbar'
 import RutaProtegida from './components/RutaProtegida'
 import { candidatosIniciales } from './data/candidatos'
 import { ROLES } from './data/roles'
+import DashboardPage from './pages/DashboardPage'
 import InicioPage from './pages/InicioPage'
 import NoEncontradaPage from './pages/NoEncontradaPage'
 import PostulacionPage from './pages/PostulacionPage'
@@ -20,8 +21,6 @@ function App({ rolInicial = null }) {
 
   // 2. id de la postulación del usuario que entra como postulante.
   const [idMiPostulacion, setIdMiPostulacion] = useState(null)
-
-  // 2.1- Rol elegido en la pantalla de inicio. Decide qué pantallas se pueden ver.
   const [rol, setRol] = useState(rolInicial)
 
   // 3. Modo oscuro activado o no.
@@ -39,6 +38,10 @@ function App({ rolInicial = null }) {
   function agregarCandidato(candidato) {
     setCandidatos((actuales) => [candidato, ...actuales])
     setIdMiPostulacion(candidato.id)
+  }
+
+  function crearSolicitud(candidato) {
+    setCandidatos((actuales) => [candidato, ...actuales])
   }
 
   const miPostulacion = candidatos.find((candidato) => candidato.id === idMiPostulacion)
@@ -72,7 +75,7 @@ function App({ rolInicial = null }) {
           path="/supervisor"
           element={
             <RutaProtegida rolActual={rol} rolesPermitidos={[ROLES.SUPERVISOR]}>
-              <SupervisorPage {...propsTema} candidatos={candidatos} actualizarCandidato={actualizarCandidato} />
+              <SupervisorPage {...propsTema} candidatos={candidatos} actualizarCandidato={actualizarCandidato} alCrearSolicitud={crearSolicitud} />
             </RutaProtegida>
           }
         />
@@ -81,6 +84,14 @@ function App({ rolInicial = null }) {
           element={
             <RutaProtegida rolActual={rol} rolesPermitidos={[ROLES.PSICOLOGO]}>
               <PsicologoPage {...propsTema} candidatos={candidatos} actualizarCandidato={actualizarCandidato} />
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <RutaProtegida rolActual={rol} rolesPermitidos={[ROLES.SUPERVISOR]}>
+              <DashboardPage {...propsTema} candidatos={candidatos} />
             </RutaProtegida>
           }
         />

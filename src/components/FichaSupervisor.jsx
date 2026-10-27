@@ -151,7 +151,7 @@ function FichaSupervisor({ candidato, actualizarCandidato }) {
       {/* 12. Aprobado: el supervisor puede derivarlo al psicólogo. */}
       {puedeDerivar && (
         <button className="btn btn-aqua w-100 mt-3" type="button" onClick={() => actualizarCandidato(candidato.id, { estado: ESTADOS.DERIVADO })}>
-          Derivar al psicólogo <i className="bi bi-send" />
+          Derivar al evaluador <i className="bi bi-send" />
         </button>
       )}
 

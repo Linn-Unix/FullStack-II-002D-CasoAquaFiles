@@ -25,6 +25,7 @@ describe('FormularioPostulacion', () => {
     await usuario.type(screen.getByLabelText(/nombre completo/i), 'Andrea Muñoz')
     await usuario.type(screen.getByLabelText(/rut/i), '12.345.678-5')
     await usuario.type(screen.getByLabelText(/correo electrónico/i), 'andrea@correo.cl')
+    await usuario.type(screen.getByLabelText(/teléfono/i), '+56 9 1234 5678')
     await usuario.type(screen.getByLabelText(/cargo al que postula/i), 'Técnico Acuícola')
     await usuario.upload(screen.getByLabelText(/adjuntar cv/i), new File(['cv'], 'cv_andrea.pdf', { type: 'application/pdf' }))
     await usuario.click(screen.getByRole('button', { name: /enviar postulación/i }))
@@ -33,6 +34,7 @@ describe('FormularioPostulacion', () => {
     expect(alEnviar.mock.calls[0][0]).toMatchObject({
       nombre: 'Andrea Muñoz',
       rut: '12.345.678-5',
+      telefono: '+56 9 1234 5678',
       estado: 'En revisión técnica',
       nombreCv: 'cv_andrea.pdf',
       centroCosto: 'Cultivo y engorda',

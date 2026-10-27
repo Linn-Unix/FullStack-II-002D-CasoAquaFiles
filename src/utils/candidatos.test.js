@@ -12,18 +12,18 @@ import {
 describe('filtrarCandidatos', () => {
   it('filtra por texto sin importar mayúsculas', () => {
     const resultado = filtrarCandidatos(candidatosIniciales, 'puerto montt', '')
-    expect(resultado.map((c) => c.nombre)).toEqual(['Gosman Radatz', 'Valentina Ríos'])
+    expect(resultado.map((c) => c.nombre)).toEqual(['Juanito Pérez', 'Pedro Soto'])
   })
 
   it('filtra por estado', () => {
     const resultado = filtrarCandidatos(candidatosIniciales, '', ESTADOS.REVISION)
     expect(resultado).toHaveLength(1)
-    expect(resultado[0].nombre).toBe('Nicolás Vera')
+    expect(resultado[0].nombre).toBe('Camila Rojas')
   })
 
   it('filtra por centro de costos', () => {
     const resultado = filtrarCandidatos(candidatosIniciales, '', '', 'Cultivo y engorda')
-    expect(resultado.map((c) => c.nombre)).toEqual(['Marcos Fonseca', 'Nicolás Vera'])
+    expect(resultado.map((c) => c.nombre)).toEqual(['María González', 'Camila Rojas'])
   })
 
   it('combina texto y estado', () => {

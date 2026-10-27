@@ -7,7 +7,7 @@ function RutaProtegida({ rolActual, rolesPermitidos, children }) {
   if (rolesPermitidos.includes(rolActual)) {
     return children
   }
-
+  // 2. Si no tiene permiso, mostramos un aviso en vez de la información.
   // 2. Si no tiene permiso, mostramos un aviso en vez de la información.
   return (
     <main className="container py-5">

@@ -19,7 +19,7 @@ function PsicologoPage({ candidatos, actualizarCandidato, modoOscuro, alCambiarT
   return (
     <main className="container py-4">
       <Encabezado
-        titulo="Panel Psicolaboral"
+        titulo="Panel de Evaluaciones"
         subtitulo="Evaluación psicolaboral de candidatos derivados."
         modoOscuro={modoOscuro}
         alCambiarTema={alCambiarTema}
@@ -37,7 +37,7 @@ function PsicologoPage({ candidatos, actualizarCandidato, modoOscuro, alCambiarT
           <div className="privilege-banner psychologist-banner">
             <i className="bi bi-clipboard2-pulse" />
             <div>
-              <strong>Acceso de Psicólogo/a</strong>
+              <strong>Acceso de Profesional Evaluador</strong>
               <small>Solo ves candidatos aprobados técnicamente y derivados por el supervisor.</small>
             </div>
             {nuevasDerivaciones > 0 && <span className="new-badge">{nuevasDerivaciones} nueva(s) derivación(es)</span>}
@@ -67,7 +67,7 @@ function PsicologoPage({ candidatos, actualizarCandidato, modoOscuro, alCambiarT
               </div>
             </div>
             <div className="col-lg-7">
-              <FichaPsicologo candidato={seleccionado} actualizarCandidato={actualizarCandidato} />
+              <FichaPsicologo key={seleccionado?.id} candidato={seleccionado} actualizarCandidato={actualizarCandidato} />
             </div>
           </div>
         </>

@@ -1,6 +1,7 @@
 // useState permite guardar información que cambia mientras el usuario usa el formulario.
 import { useState } from 'react'
 import { CENTROS_COSTO, ESTADOS, FAMILIAS, UBICACIONES } from '../data/candidatos'
+import { obtenerFechaHoy } from '../utils/candidatos'
 import { validarPostulacion } from '../utils/validaciones'
 
 // Valores iniciales del formulario (vacío).
@@ -8,6 +9,7 @@ const formularioVacio = {
   nombre: '',
   rut: '',
   correo: '',
+  telefono: '',
   familia: FAMILIAS[0],
   ubicacion: UBICACIONES[0],
   centroCosto: CENTROS_COSTO[0],
@@ -16,7 +18,13 @@ const formularioVacio = {
 }
 
 // Recibe por props la función alEnviar, que viene del componente padre (App).
-function FormularioPostulacion({ alEnviar }) {
+function FormularioPostulacion({
+  alEnviar,
+  etiqueta = 'POSTULACIÓN',
+  titulo = 'Ingresa tus antecedentes',
+  descripcion = 'Completa tus datos y adjunta tu CV para iniciar la revisión técnica.',
+  textoBoton = 'Enviar postulación',
+}) {
   // 1. "valores" guarda lo que escribe el usuario en cada campo.
   const [valores, setValores] = useState(formularioVacio)
 
@@ -51,6 +59,9 @@ function FormularioPostulacion({ alEnviar }) {
       nombre: valores.nombre.trim(),
       rut: valores.rut.trim(),
       correo: valores.correo.trim(),
+      telefono: valores.telefono.trim(),
+      fechaSolicitud: obtenerFechaHoy(),
+      responsable: '',
       cargo: valores.cargo.trim(),
       familia: valores.familia,
       ubicacion: valores.ubicacion,
@@ -60,14 +71,16 @@ function FormularioPostulacion({ alEnviar }) {
       fechaEntrevista: '',
       informe: '',
       observaciones: '',
+      resultado: '',
+      observacionesEvaluacion: '',
     })
   }
 
   return (
     <section className="application-card">
-      <p className="tag">POSTULACIÓN</p>
-      <h2>Ingresa tus antecedentes</h2>
-      <p>Completa tus datos y adjunta tu CV para iniciar la revisión técnica.</p>
+      <p className="tag">{etiqueta}</p>
+      <h2>{titulo}</h2>
+      <p>{descripcion}</p>
 
       {/* noValidate desactiva la validación del navegador para usar la nuestra. */}
       <form onSubmit={manejarEnvio} className="application-form" noValidate>
@@ -92,6 +105,12 @@ function FormularioPostulacion({ alEnviar }) {
           </label>
           {errores.correo && <span className="field-error">{errores.correo}</span>}
         </div>
+
+        <label>
+          Teléfono
+          <input name="telefono" value={valores.telefono} onChange={manejarCambio} className={errores.telefono ? 'is-invalid' : ''} placeholder="+56 9 1234 5678" />
+        </label>
+        {errores.telefono && <span className="field-error">{errores.telefono}</span>}
 
         <div className="form-row">
           <label>
@@ -137,7 +156,7 @@ function FormularioPostulacion({ alEnviar }) {
         {errores.cv && <span className="field-error">{errores.cv}</span>}
 
         <button className="btn btn-aqua mt-3" type="submit">
-          Enviar postulación <i className="bi bi-send" />
+          {textoBoton} <i className="bi bi-send" />
         </button>
       </form>
     </section>
