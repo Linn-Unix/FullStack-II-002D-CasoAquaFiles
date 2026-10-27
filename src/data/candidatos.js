@@ -16,6 +16,9 @@ export const LISTA_ESTADOS = Object.values(ESTADOS)
 export const FAMILIAS = ['Operaciones', 'Producción', 'Personas']
 export const UBICACIONES = ['Puerto Montt', 'Puerto Natales', 'Chiloé']
 
+export const EVALUADORES = ['Ps. Ana Fuentes', 'Ps. Luis Morales']
+export const RESULTADOS = ['Recomendable', 'Recomendable con observaciones', 'No recomendable']
+
 // Centros de costos de ejemplo. Deben confirmarse con AquaChile.
 export const CENTROS_COSTO = ['Cultivo y engorda', 'Planta de proceso', 'Mantención', 'Administración y personas']
 
@@ -35,6 +38,8 @@ export const candidatosIniciales = [
     fechaEntrevista: '2026-09-24',
     informe: 'Informe_psicolaboral.pdf',
     observaciones: 'Experiencia sólida en mantención de equipos.',
+    resultado: 'Recomendable',
+    observacionesEvaluacion: 'Buena tolerancia a la presión y trabajo en equipo.',
   },
   {
     id: 2,
@@ -50,6 +55,8 @@ export const candidatosIniciales = [
     fechaEntrevista: '2026-10-28',
     informe: '',
     observaciones: '',
+    resultado: '',
+    observacionesEvaluacion: '',
   },
   {
     id: 3,
@@ -65,6 +72,8 @@ export const candidatosIniciales = [
     fechaEntrevista: '',
     informe: '',
     observaciones: '',
+    resultado: '',
+    observacionesEvaluacion: '',
   },
   {
     id: 4,
@@ -80,5 +89,7 @@ export const candidatosIniciales = [
     fechaEntrevista: '',
     informe: '',
     observaciones: '',
+    resultado: '',
+    observacionesEvaluacion: '',
   },
 ]
