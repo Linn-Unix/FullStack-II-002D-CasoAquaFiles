@@ -1,31 +1,33 @@
 import BotonRol from '../components/BotonRol'
 import BotonTema from '../components/BotonTema'
-import { ROLES } from '../data/roles'
 
-// 1. Datos de cada rol. Se recorren con map() para crear las tarjetas.
-const roles = [
-  { rol: ROLES.POSTULANTE, ruta: '/postulacion', icono: 'bi-person-badge', titulo: 'Postulante / Candidato', texto: 'Registrar mis datos, adjuntar CV y consultar mi postulación.' },
-  { rol: ROLES.SUPERVISOR, ruta: '/supervisor', icono: 'bi-shield-check', titulo: 'Analista de Reclutamiento', texto: 'Registrar candidatos, crear solicitudes, hacer el filtro técnico y derivar.' },
-  { rol: ROLES.PSICOLOGO, ruta: '/psicologo', icono: 'bi-clipboard2-pulse', titulo: 'Profesional Evaluador', texto: 'Revisar solicitudes asignadas, agendar entrevistas y registrar la evaluación.' },
-]
-
-// Página de inicio (ruta "/"): selección de rol.
-function InicioPage({ modoOscuro, alCambiarTema, alElegirRol }) {
+// Página de inicio (ruta "/").
+// El postulante entra directo. El personal de AquaChile debe iniciar sesión.
+function InicioPage({ modoOscuro, alCambiarTema, alEntrarComoPostulante }) {
   return (
     <main className="role-screen">
       <BotonTema className="role-theme-toggle" modoOscuro={modoOscuro} alCambiar={alCambiarTema} />
       <section className="role-card">
         <p className="tag">AquaChile · Gestión Laboral</p>
         <h1>Gestión Laboral</h1>
-        <p className="lead">Selecciona tu rol para ingresar a la pantalla correspondiente.</p>
-        <div className="role-options three-roles">
-          {/* 2. {...rol} envía todas las propiedades del objeto como props. */}
-          {roles.map(({ rol, ...datos }) => (
-            <BotonRol key={rol} {...datos} alElegir={() => alElegirRol(rol)} />
-          ))}
+        <p className="lead">¿Cómo quieres ingresar?</p>
+        <div className="role-options">
+          <BotonRol
+            ruta="/postulacion"
+            icono="bi-person-badge"
+            titulo="Postulante / Candidato"
+            texto="Registrar mis datos, adjuntar CV y consultar mi postulación."
+            alElegir={alEntrarComoPostulante}
+          />
+          <BotonRol
+            ruta="/login"
+            icono="bi-shield-lock"
+            titulo="Personal AquaChile"
+            texto="Analistas de reclutamiento y profesionales evaluadores. Requiere usuario y contraseña."
+          />
         </div>
         <p className="role-note">
-          <i className="bi bi-lock-fill" /> Cada rol solo accede a la información que le corresponde.
+          <i className="bi bi-lock-fill" /> La información interna del proceso solo la ve el personal con sesión iniciada.
         </p>
       </section>
     </main>
