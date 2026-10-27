@@ -42,11 +42,11 @@ describe('utilidades', () => {
 
 describe('obtenerColorEstado', () => {
   it('devuelve un color distinto para cada estado', () => {
-    expect(obtenerColorEstado(ESTADOS.REVISION)).toBe('text-bg-warning')
-    expect(obtenerColorEstado(ESTADOS.RECHAZADO)).toBe('text-bg-danger')
+    expect(obtenerColorEstado(ESTADOS.REVISION)).toBe('estado-revision')
+    expect(obtenerColorEstado(ESTADOS.RECHAZADO)).toBe('estado-rechazado')
   })
   it('usa un color neutro si el estado no existe', () => {
-    expect(obtenerColorEstado('Otro')).toBe('text-bg-light')
+    expect(obtenerColorEstado('Otro')).toBe('estado-neutro')
   })
 })
 
