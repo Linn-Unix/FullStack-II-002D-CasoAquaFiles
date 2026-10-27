@@ -4,9 +4,9 @@ import { NOMBRES_ROL, ROLES } from '../data/roles'
 // 1. Enlaces del menú. Usamos un arreglo para recorrerlo con map().
 const enlaces = [
   { ruta: '/postulacion', texto: 'Mi postulación', rol: ROLES.POSTULANTE },
-  { ruta: '/supervisor', texto: 'Panel supervisor', rol: ROLES.SUPERVISOR },
+  { ruta: '/supervisor', texto: 'Reclutamiento', rol: ROLES.SUPERVISOR },
   { ruta: '/dashboard', texto: 'Dashboard', rol: ROLES.SUPERVISOR },
-  { ruta: '/psicologo', texto: 'Panel psicolaboral', rol: ROLES.PSICOLOGO },
+  { ruta: '/psicologo', texto: 'Evaluaciones', rol: ROLES.PSICOLOGO },
 ]
 
 // Este componente contiene la navegación principal.

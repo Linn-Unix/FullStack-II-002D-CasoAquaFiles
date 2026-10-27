@@ -50,7 +50,7 @@ function SupervisorPage({ candidatos, actualizarCandidato, alCrearSolicitud, mod
   return (
     <main className="container py-4">
       <Encabezado
-        titulo="Panel del Supervisor"
+        titulo="Panel de Reclutamiento"
         subtitulo="Gestión técnica, dossiers y derivaciones."
         modoOscuro={modoOscuro}
         alCambiarTema={alCambiarTema}
@@ -59,7 +59,7 @@ function SupervisorPage({ candidatos, actualizarCandidato, alCrearSolicitud, mod
       <div className="privilege-banner">
         <i className="bi bi-shield-check" />
         <div>
-          <strong>Acceso de Supervisor Técnico</strong>
+          <strong>Acceso de Analista de Reclutamiento</strong>
           <small>
             {pendientes > 0
               ? `Tienes ${pendientes} postulación(es) pendiente(s) de revisión técnica.`

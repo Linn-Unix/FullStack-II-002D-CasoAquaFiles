@@ -18,23 +18,23 @@ describe('Navegación con React Router', () => {
   it('muestra los tres roles en el inicio', () => {
     renderizarApp('/')
     expect(screen.getByRole('link', { name: /postulante/i })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /supervisor técnico/i })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /psicólogo/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /analista de reclutamiento/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /profesional evaluador/i })).toBeInTheDocument()
   })
 
   it('navega al panel del supervisor', async () => {
     const usuario = userEvent.setup()
     renderizarApp('/')
-    await usuario.click(screen.getByRole('link', { name: /supervisor técnico/i }))
-    expect(screen.getByRole('heading', { name: 'Panel del Supervisor' })).toBeInTheDocument()
+    await usuario.click(screen.getByRole('link', { name: /analista de reclutamiento/i }))
+    expect(screen.getByRole('heading', { name: 'Panel de Reclutamiento' })).toBeInTheDocument()
   })
 
   it('navega desde el menú del navbar', async () => {
     const usuario = userEvent.setup()
     renderizarApp('/psicologo', ROLES.PSICOLOGO)
     const menu = screen.getByRole('navigation')
-    await usuario.click(within(menu).getByRole('link', { name: 'Panel psicolaboral' }))
-    expect(screen.getByRole('heading', { name: 'Panel Psicolaboral' })).toBeInTheDocument()
+    await usuario.click(within(menu).getByRole('link', { name: 'Evaluaciones' }))
+    expect(screen.getByRole('heading', { name: 'Panel de Evaluaciones' })).toBeInTheDocument()
   })
 
   it('muestra la página 404 en una ruta que no existe', () => {
@@ -116,9 +116,9 @@ describe('Flujo del proceso', () => {
     await usuario.click(screen.getByRole('row', { name: /valentina ríos/i }))
     await usuario.type(screen.getByLabelText(/observaciones técnicas/i), 'Buen manejo de equipos')
     await usuario.click(screen.getByRole('button', { name: /guardar observaciones/i }))
-    await usuario.click(screen.getByRole('button', { name: /derivar al psicólogo/i }))
+    await usuario.click(screen.getByRole('button', { name: /derivar al evaluador/i }))
     await usuario.click(screen.getByRole('link', { name: 'Inicio' }))
-    await usuario.click(screen.getByRole('link', { name: /psicólogo/i }))
+    await usuario.click(screen.getByRole('link', { name: /profesional evaluador/i }))
     await usuario.click(screen.getByRole('button', { name: /valentina ríos/i }))
 
     expect(screen.getByText('Buen manejo de equipos')).toBeInTheDocument()
@@ -139,9 +139,9 @@ describe('Flujo del proceso', () => {
     renderizarApp('/supervisor', ROLES.SUPERVISOR)
 
     await usuario.click(screen.getByRole('row', { name: /valentina ríos/i }))
-    await usuario.click(screen.getByRole('button', { name: /derivar al psicólogo/i }))
+    await usuario.click(screen.getByRole('button', { name: /derivar al evaluador/i }))
     await usuario.click(screen.getByRole('link', { name: 'Inicio' }))
-    await usuario.click(screen.getByRole('link', { name: /psicólogo/i }))
+    await usuario.click(screen.getByRole('link', { name: /profesional evaluador/i }))
 
     expect(screen.getByRole('button', { name: /valentina ríos/i })).toBeInTheDocument()
   })

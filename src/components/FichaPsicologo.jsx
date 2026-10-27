@@ -41,7 +41,7 @@ function FichaPsicologo({ candidato, actualizarCandidato }) {
 
   return (
     <div className="panel psych-detail">
-      <p className="tag">EVALUACIÓN PSICOLABORAL</p>
+      <p className="tag">EVALUACIÓN PROFESIONAL</p>
       <h2>{candidato.nombre}</h2>
       <p>{candidato.cargo} · {candidato.ubicacion}</p>
       <EstadoBadge estado={candidato.estado} />
