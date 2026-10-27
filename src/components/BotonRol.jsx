@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom'
 
 // Tarjeta de rol en la pantalla de inicio. "ruta" es la página a la que lleva.
-function BotonRol({ icono, titulo, texto, ruta }) {
+function BotonRol({ icono, titulo, texto, ruta, alElegir }) {
   return (
-    <Link to={ruta}>
+    <Link to={ruta} onClick={alElegir}>
       <span className="role-icon">
         <i className={`bi ${icono}`} />
       </span>
