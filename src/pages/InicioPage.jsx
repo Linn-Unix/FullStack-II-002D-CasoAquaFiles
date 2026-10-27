@@ -5,8 +5,8 @@ import { ROLES } from '../data/roles'
 // 1. Datos de cada rol. Se recorren con map() para crear las tarjetas.
 const roles = [
   { rol: ROLES.POSTULANTE, ruta: '/postulacion', icono: 'bi-person-badge', titulo: 'Postulante / Candidato', texto: 'Registrar mis datos, adjuntar CV y consultar mi postulación.' },
-  { rol: ROLES.SUPERVISOR, ruta: '/supervisor', icono: 'bi-shield-check', titulo: 'Supervisor Técnico', texto: 'Gestionar candidatos, filtro técnico y derivaciones.' },
-  { rol: ROLES.PSICOLOGO, ruta: '/psicologo', icono: 'bi-clipboard2-pulse', titulo: 'Psicólogo/a', texto: 'Recibir dossiers, agendar entrevistas y cerrar informes.' },
+  { rol: ROLES.SUPERVISOR, ruta: '/supervisor', icono: 'bi-shield-check', titulo: 'Analista de Reclutamiento', texto: 'Registrar candidatos, crear solicitudes, hacer el filtro técnico y derivar.' },
+  { rol: ROLES.PSICOLOGO, ruta: '/psicologo', icono: 'bi-clipboard2-pulse', titulo: 'Profesional Evaluador', texto: 'Revisar solicitudes asignadas, agendar entrevistas y registrar la evaluación.' },
 ]
 
 // Página de inicio (ruta "/"): selección de rol.
