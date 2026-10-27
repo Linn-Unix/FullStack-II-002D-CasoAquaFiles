@@ -33,7 +33,7 @@ describe('filtrarCandidatos', () => {
 
 describe('utilidades', () => {
   it('obtiene las iniciales del nombre', () => {
-    expect(obtenerIniciales('Valentina Ríos')).toBe('VR')
+    expect(obtenerIniciales('Pedro Soto')).toBe('PS')
   })
   it('cuenta candidatos por estado', () => {
     expect(contarPorEstado(candidatosIniciales, ESTADOS.AGENDADO)).toBe(1)
