@@ -1091,3 +1091,15 @@ h2 {
 .theme-dark .edit-box .form-label {
   color: var(--dark-text);
 }
+/* ---------- 21. Vista del postulante ---------- */
+/* Badge neutro: el color no revela decisiones internas de RR. HH. */
+.badge-postulante {
+  background: var(--soft);
+  color: var(--deep);
+  font-size: .75rem;
+}
+
+.theme-dark .badge-postulante {
+  background: #244451;
+  color: var(--dark-text);
+}
