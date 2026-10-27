@@ -67,8 +67,8 @@ describe('Flujo del proceso', () => {
 
     await usuario.selectOptions(screen.getByLabelText(/filtrar por estado/i), 'En revisión técnica')
 
-    expect(screen.getByRole('row', { name: /nicolás vera/i })).toBeInTheDocument()
-    expect(screen.queryByRole('row', { name: /gosman radatz/i })).not.toBeInTheDocument()
+    expect(screen.getByRole('row', { name: /camila rojas/i })).toBeInTheDocument()
+    expect(screen.queryByRole('row', { name: /juanito pérez/i })).not.toBeInTheDocument()
     expect(screen.getByText('1 resultado(s)')).toBeInTheDocument()
   })
 
@@ -78,7 +78,7 @@ describe('Flujo del proceso', () => {
 
     await usuario.selectOptions(screen.getByLabelText(/filtrar por centro de costos/i), 'Mantención')
 
-    expect(screen.getByRole('row', { name: /gosman radatz/i })).toBeInTheDocument()
+    expect(screen.getByRole('row', { name: /juanito pérez/i })).toBeInTheDocument()
     expect(screen.getByText('1 resultado(s)')).toBeInTheDocument()
   })
 
@@ -86,13 +86,13 @@ describe('Flujo del proceso', () => {
     const usuario = userEvent.setup()
     renderizarApp('/supervisor', ROLES.SUPERVISOR)
 
-    await usuario.click(screen.getByRole('row', { name: /nicolás vera/i }))
+    await usuario.click(screen.getByRole('row', { name: /camila rojas/i }))
     await usuario.click(screen.getByRole('button', { name: /editar datos/i }))
     await usuario.clear(screen.getByLabelText('Cargo'))
     await usuario.type(screen.getByLabelText('Cargo'), 'Jefe de Centro')
     await usuario.click(screen.getByRole('button', { name: /guardar cambios/i }))
 
-    const fila = screen.getByRole('row', { name: /nicolás vera/i })
+    const fila = screen.getByRole('row', { name: /camila rojas/i })
     expect(within(fila).getByText('Jefe de Centro')).toBeInTheDocument()
   })
 
@@ -100,7 +100,7 @@ describe('Flujo del proceso', () => {
     const usuario = userEvent.setup()
     renderizarApp('/supervisor', ROLES.SUPERVISOR)
 
-    await usuario.click(screen.getByRole('row', { name: /nicolás vera/i }))
+    await usuario.click(screen.getByRole('row', { name: /camila rojas/i }))
     await usuario.click(screen.getByRole('button', { name: /editar datos/i }))
     await usuario.clear(screen.getByLabelText('Cargo'))
     await usuario.type(screen.getByLabelText('Cargo'), 'AB')
@@ -113,13 +113,13 @@ describe('Flujo del proceso', () => {
     const usuario = userEvent.setup()
     renderizarApp('/supervisor', ROLES.SUPERVISOR)
 
-    await usuario.click(screen.getByRole('row', { name: /valentina ríos/i }))
+    await usuario.click(screen.getByRole('row', { name: /pedro soto/i }))
     await usuario.type(screen.getByLabelText(/observaciones técnicas/i), 'Buen manejo de equipos')
     await usuario.click(screen.getByRole('button', { name: /guardar observaciones/i }))
     await usuario.click(screen.getByRole('button', { name: /derivar al evaluador/i }))
     await usuario.click(screen.getByRole('link', { name: 'Inicio' }))
     await usuario.click(screen.getByRole('link', { name: /profesional evaluador/i }))
-    await usuario.click(screen.getByRole('button', { name: /valentina ríos/i }))
+    await usuario.click(screen.getByRole('button', { name: /pedro soto/i }))
 
     expect(screen.getByText('Buen manejo de equipos')).toBeInTheDocument()
   })
@@ -128,7 +128,7 @@ describe('Flujo del proceso', () => {
     const usuario = userEvent.setup()
     renderizarApp('/supervisor', ROLES.SUPERVISOR)
 
-    await usuario.click(screen.getByRole('row', { name: /nicolás vera/i }))
+    await usuario.click(screen.getByRole('row', { name: /camila rojas/i }))
     await usuario.click(screen.getByRole('button', { name: /rechazar/i }))
 
     expect(screen.getByText(/etapa técnica cerrada/i)).toBeInTheDocument()
@@ -138,19 +138,19 @@ describe('Flujo del proceso', () => {
     const usuario = userEvent.setup()
     renderizarApp('/supervisor', ROLES.SUPERVISOR)
 
-    await usuario.click(screen.getByRole('row', { name: /valentina ríos/i }))
+    await usuario.click(screen.getByRole('row', { name: /pedro soto/i }))
     await usuario.click(screen.getByRole('button', { name: /derivar al evaluador/i }))
     await usuario.click(screen.getByRole('link', { name: 'Inicio' }))
     await usuario.click(screen.getByRole('link', { name: /profesional evaluador/i }))
 
-    expect(screen.getByRole('button', { name: /valentina ríos/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /pedro soto/i })).toBeInTheDocument()
   })
 
   it('el psicólogo registra el resultado y las observaciones de evaluación', async () => {
     const usuario = userEvent.setup()
     renderizarApp('/psicologo', ROLES.PSICOLOGO)
 
-    await usuario.click(screen.getByRole('button', { name: /marcos fonseca/i }))
+    await usuario.click(screen.getByRole('button', { name: /maría gonzález/i }))
     await usuario.selectOptions(screen.getByLabelText(/resultado de la evaluación/i), 'Recomendable con observaciones')
     await usuario.type(screen.getByLabelText(/observaciones de la evaluación/i), 'Requiere seguimiento durante la adaptación.')
     await usuario.click(screen.getByRole('button', { name: /guardar evaluación/i }))
