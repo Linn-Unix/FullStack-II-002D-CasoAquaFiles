@@ -1,12 +1,13 @@
 import ArchivoFila from '../components/ArchivoFila'
+import ConsultaPostulacion from '../components/ConsultaPostulacion'
 import Encabezado from '../components/Encabezado'
 import FormularioPostulacion from '../components/FormularioPostulacion'
 import TarjetaSeguimiento from '../components/TarjetaSeguimiento'
 import { obtenerIniciales } from '../utils/candidatos'
 
 // Página del postulante (ruta "/postulacion").
-// "candidato" es su postulación: si todavía no existe, mostramos el formulario.
-function PostulacionPage({ candidato, alEnviar, modoOscuro, alCambiarTema }) {
+// "candidato" es su postulación: si todavía no existe, mostramos la consulta por RUT y el formulario.
+function PostulacionPage({ candidato, candidatos, alEnviar, alConsultar, alSalir, modoOscuro, alCambiarTema }) {
   return (
     <main className="container py-4">
       <Encabezado
@@ -16,9 +17,12 @@ function PostulacionPage({ candidato, alEnviar, modoOscuro, alCambiarTema }) {
         alCambiarTema={alCambiarTema}
       />
 
-      {/* Renderizado condicional: formulario o seguimiento. */}
+      {/* Renderizado condicional: consulta + formulario, o seguimiento. */}
       {!candidato ? (
-        <FormularioPostulacion alEnviar={alEnviar} />
+        <>
+          <ConsultaPostulacion candidatos={candidatos} alEncontrar={alConsultar} />
+          <FormularioPostulacion alEnviar={alEnviar} />
+        </>
       ) : (
         <>
           <div className="candidate-welcome">
@@ -27,7 +31,12 @@ function PostulacionPage({ candidato, alEnviar, modoOscuro, alCambiarTema }) {
               <h2>Hola, {candidato.nombre}</h2>
               <p>Esta es la única postulación visible para tu cuenta.</p>
             </div>
-            <span className="private-badge"><i className="bi bi-lock-fill" /> Información privada</span>
+            <div className="d-flex flex-wrap align-items-center gap-2">
+              <span className="private-badge"><i className="bi bi-lock-fill" /> Información privada</span>
+              <button className="btn btn-outline-secondary btn-sm" type="button" onClick={alSalir}>
+                <i className="bi bi-box-arrow-right" /> Salir
+              </button>
+            </div>
           </div>
 
           <div className="row g-4">

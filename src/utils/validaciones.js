@@ -2,10 +2,16 @@
 const EXTENSIONES_CV = ['pdf', 'doc', 'docx']
 const TAMANO_MAXIMO_CV = 5 * 1024 * 1024
 
+// 0. Quita puntos, guion y espacios de un RUT. Ej: "12.345.678-5" → "123456785"
+//    Sirve para comparar RUT escritos con o sin formato.
+export function limpiarRut(rut) {
+  return rut.replace(/[.\-\s]/g, '').toUpperCase()
+}
+
 // 1. Valida un RUT chileno con el algoritmo del dígito verificador (módulo 11).
 export function esRutValido(rut) {
-  // 1.1- Quitamos puntos, guion y espacios. Ej: "12.345.678-5" → "123456785"
-  const valor = rut.replace(/[.\-\s]/g, '').toUpperCase()
+  // 1.1- Dejamos solo números y el dígito verificador.
+  const valor = limpiarRut(rut)
 
   // 1.2- Debe tener 7 u 8 números seguidos de un dígito o K.
   if (!/^\d{7,8}[0-9K]$/.test(valor)) return false

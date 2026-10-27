@@ -106,6 +106,19 @@ describe('Flujo del proceso', () => {
     expect(screen.getByText('Buen manejo de equipos')).toBeInTheDocument()
   })
 
+  it('el postulante consulta su estado con el RUT', async () => {
+    const usuario = userEvent.setup()
+    renderizarApp('/postulacion')
+
+    await usuario.type(screen.getByLabelText(/rut de tu postulación/i), '19.876.543-0')
+    await usuario.click(screen.getByRole('button', { name: /consultar/i }))
+
+    expect(screen.getByRole('heading', { name: 'Hola, Nicolás Vera' })).toBeInTheDocument()
+
+    await usuario.click(screen.getByRole('button', { name: /salir/i }))
+    expect(screen.getByRole('heading', { name: 'Ingresa tus antecedentes' })).toBeInTheDocument()
+  })
+
   it('el supervisor rechaza a un candidato en revisión', async () => {
     const usuario = userEvent.setup()
     renderizarApp('/supervisor')
