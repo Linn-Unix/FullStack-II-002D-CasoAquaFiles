@@ -33,6 +33,11 @@ export function esCorreoValido(correo) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo.trim())
 }
 
+export function esTelefonoValido(telefono) {
+  const valor = (telefono ?? '').replace(/\s/g, '')
+  return /^\+56(?:9|2)\d{8}$/.test(valor)
+}
+
 // 3. Valida todo el formulario de postulación.
 //    Devuelve un objeto con los errores. Si está vacío {}, el formulario es válido.
 export function validarPostulacion(valores) {
@@ -46,6 +51,9 @@ export function validarPostulacion(valores) {
   }
   if (!esCorreoValido(valores.correo)) {
     errores.correo = 'Ingresa un correo válido. Ej: nombre@correo.cl'
+  }
+  if (!esTelefonoValido(valores.telefono)) {
+    errores.telefono = 'Ingresa un teléfono válido. Ej: +56 9 1234 5678'
   }
   if (valores.cargo.trim().length < 3) {
     errores.cargo = 'Indica el cargo al que postulas.'

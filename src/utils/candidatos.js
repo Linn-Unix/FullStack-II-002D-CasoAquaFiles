@@ -11,6 +11,10 @@ export function obtenerIniciales(nombre) {
     .toUpperCase()
 }
 
+export function obtenerFechaHoy() {
+  return new Date().toISOString().slice(0, 10)
+}
+
 // 2. Filtra la lista de candidatos según el texto buscado, el estado y el centro de costos.
 //    centroCosto tiene un valor por defecto (''), así que se puede omitir.
 export function filtrarCandidatos(candidatos, busqueda, estado, centroCosto = '') {

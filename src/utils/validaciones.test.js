@@ -6,6 +6,7 @@ const valoresValidos = {
   nombre: 'Andrea Muñoz',
   rut: '12.345.678-5',
   correo: 'andrea@correo.cl',
+  telefono: '+56 9 1234 5678',
   familia: 'Producción',
   ubicacion: 'Chiloé',
   cargo: 'Técnico Acuícola',
@@ -40,8 +41,8 @@ describe('validarPostulacion', () => {
   })
 
   it('devuelve errores cuando faltan datos', () => {
-    const errores = validarPostulacion({ ...valoresValidos, nombre: '', rut: '', correo: '', cargo: '', cv: null })
-    expect(Object.keys(errores)).toEqual(['nombre', 'rut', 'correo', 'cargo', 'cv'])
+    const errores = validarPostulacion({ ...valoresValidos, nombre: '', rut: '', correo: '', telefono: '', cargo: '', cv: null })
+    expect(Object.keys(errores)).toEqual(['nombre', 'rut', 'correo', 'telefono', 'cargo', 'cv'])
   })
 
   it('rechaza un CV que no es PDF ni Word', () => {
