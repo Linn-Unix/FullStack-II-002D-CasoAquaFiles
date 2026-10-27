@@ -67,7 +67,7 @@ function PsicologoPage({ candidatos, actualizarCandidato, modoOscuro, alCambiarT
               </div>
             </div>
             <div className="col-lg-7">
-              <FichaPsicologo candidato={seleccionado} actualizarCandidato={actualizarCandidato} />
+              <FichaPsicologo key={seleccionado?.id} candidato={seleccionado} actualizarCandidato={actualizarCandidato} />
             </div>
           </div>
         </>

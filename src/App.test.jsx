@@ -144,4 +144,18 @@ describe('Flujo del proceso', () => {
 
     expect(screen.getByRole('button', { name: /valentina ríos/i })).toBeInTheDocument()
   })
+
+  it('el psicólogo registra el resultado y las observaciones de evaluación', async () => {
+    const usuario = userEvent.setup()
+    renderizarApp('/psicologo')
+
+    await usuario.click(screen.getByRole('button', { name: /marcos fonseca/i }))
+    await usuario.selectOptions(screen.getByLabelText(/resultado de la evaluación/i), 'Recomendable con observaciones')
+    await usuario.type(screen.getByLabelText(/observaciones de la evaluación/i), 'Requiere seguimiento durante la adaptación.')
+    await usuario.click(screen.getByRole('button', { name: /guardar evaluación/i }))
+
+    expect(screen.getByText('Evaluación guardada')).toBeInTheDocument()
+    expect(screen.getByDisplayValue('Recomendable con observaciones')).toBeInTheDocument()
+    expect(screen.getByDisplayValue('Requiere seguimiento durante la adaptación.')).toBeInTheDocument()
+  })
 })
