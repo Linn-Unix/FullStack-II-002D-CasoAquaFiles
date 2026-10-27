@@ -15,19 +15,37 @@ function renderizarApp(ruta = '/', rol = null) {
   )
 }
 
+// Inicia sesión como personal interno desde el formulario de "/login".
+async function iniciarSesion(usuario, nombreUsuario) {
+  await usuario.click(screen.getByRole('link', { name: /personal aquachile/i }))
+  await usuario.type(screen.getByLabelText('Usuario'), nombreUsuario)
+  await usuario.type(screen.getByLabelText('Contraseña'), 'aqua123')
+  await usuario.click(screen.getByRole('button', { name: /ingresar/i }))
+}
+
 describe('Navegación con React Router', () => {
-  it('muestra los tres roles en el inicio', () => {
+  it('el inicio muestra el acceso del postulante y del personal', () => {
     renderizarApp('/')
     expect(screen.getByRole('link', { name: /postulante/i })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /analista de reclutamiento/i })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /profesional evaluador/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /personal aquachile/i })).toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: /analista de reclutamiento/i })).not.toBeInTheDocument()
   })
 
-  it('navega al panel del supervisor', async () => {
+  it('el analista inicia sesión y llega a su panel', async () => {
     const usuario = userEvent.setup()
     renderizarApp('/')
-    await usuario.click(screen.getByRole('link', { name: /analista de reclutamiento/i }))
+    await iniciarSesion(usuario, 'analista')
     expect(screen.getByRole('heading', { name: 'Panel de Reclutamiento' })).toBeInTheDocument()
+    expect(screen.getByText(/rosa martínez/i)).toBeInTheDocument()
+  })
+
+  it('no inicia sesión con una contraseña incorrecta', async () => {
+    const usuario = userEvent.setup()
+    renderizarApp('/login')
+    await usuario.type(screen.getByLabelText('Usuario'), 'analista')
+    await usuario.type(screen.getByLabelText('Contraseña'), '1234')
+    await usuario.click(screen.getByRole('button', { name: /ingresar/i }))
+    expect(screen.getByRole('alert')).toHaveTextContent('Usuario o contraseña incorrectos.')
   })
 
   it('navega desde el menú del navbar', async () => {
@@ -58,9 +76,9 @@ describe('Navegación con React Router', () => {
     expect(screen.queryByText(/dossiers recibidos/i)).not.toBeInTheDocument()
   })
 
-  it('sin elegir un rol no se puede entrar a ninguna pantalla', () => {
+  it('sin iniciar sesión no se puede entrar al panel del analista', () => {
     renderizarApp('/supervisor')
-    expect(screen.getByText(/primero selecciona tu rol/i)).toBeInTheDocument()
+    expect(screen.getByText(/debes iniciar sesión/i)).toBeInTheDocument()
   })
 
   it('el analista llega al dashboard desde el menú', async () => {
@@ -151,8 +169,8 @@ describe('Flujo del proceso', () => {
     await usuario.type(screen.getByLabelText(/observaciones técnicas/i), 'Buen manejo de equipos')
     await usuario.click(screen.getByRole('button', { name: /guardar observaciones/i }))
     await usuario.click(screen.getByRole('button', { name: /derivar al evaluador/i }))
-    await usuario.click(screen.getByRole('link', { name: 'Inicio' }))
-    await usuario.click(screen.getByRole('link', { name: /profesional evaluador/i }))
+    await usuario.click(screen.getByRole('button', { name: /cerrar sesión/i }))
+    await iniciarSesion(usuario, 'evaluador')
     await usuario.click(screen.getByRole('button', { name: /pedro soto/i }))
 
     expect(screen.getByText('Buen manejo de equipos')).toBeInTheDocument()
@@ -220,8 +238,8 @@ describe('Flujo del proceso', () => {
 
     await usuario.click(screen.getByRole('row', { name: /pedro soto/i }))
     await usuario.click(screen.getByRole('button', { name: /derivar al evaluador/i }))
-    await usuario.click(screen.getByRole('link', { name: 'Inicio' }))
-    await usuario.click(screen.getByRole('link', { name: /profesional evaluador/i }))
+    await usuario.click(screen.getByRole('button', { name: /cerrar sesión/i }))
+    await iniciarSesion(usuario, 'evaluador')
 
     expect(screen.getByRole('button', { name: /pedro soto/i })).toBeInTheDocument()
   })

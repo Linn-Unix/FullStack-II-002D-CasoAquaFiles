@@ -8,12 +8,13 @@ import { candidatosIniciales } from './data/candidatos'
 import { ROLES } from './data/roles'
 import DashboardPage from './pages/DashboardPage'
 import InicioPage from './pages/InicioPage'
+import LoginPage from './pages/LoginPage'
 import NoEncontradaPage from './pages/NoEncontradaPage'
 import PostulacionPage from './pages/PostulacionPage'
 import PsicologoPage from './pages/PsicologoPage'
 import SupervisorPage from './pages/SupervisorPage'
 
-// rolInicial permite partir con un rol ya elegido (se usa en las pruebas).
+// rolInicial permite partir con una sesión ya iniciada (se usa en las pruebas).
 function App({ rolInicial = null }) {
   // 1. Estado principal: la lista de candidatos.
   //    Vive en App para que todas las páginas compartan los mismos datos.
@@ -21,12 +22,16 @@ function App({ rolInicial = null }) {
 
   // 2. id de la postulación del usuario que entra como postulante.
   const [idMiPostulacion, setIdMiPostulacion] = useState(null)
-  const [rol, setRol] = useState(rolInicial)
 
-  // 3. Modo oscuro activado o no.
+  // 3. Sesión actual: el rol y el nombre de quien entró.
+  //    El postulante entra sin cuenta. El personal interno entra con usuario y contraseña.
+  const [rol, setRol] = useState(rolInicial)
+  const [nombreUsuario, setNombreUsuario] = useState('')
+
+  // 4. Modo oscuro activado o no.
   const [modoOscuro, setModoOscuro] = useState(false)
 
-  // 4. Actualiza los datos de un candidato.
+  // 5. Actualiza los datos de un candidato.
   //    map() recorre la lista y reemplaza solo el candidato con ese id.
   function actualizarCandidato(id, cambios) {
     setCandidatos((actuales) =>
@@ -34,7 +39,7 @@ function App({ rolInicial = null }) {
     )
   }
 
-  // 5. Agrega una nueva postulación al inicio de la lista.
+  // 6. Agrega una nueva postulación al inicio de la lista.
   function agregarCandidato(candidato) {
     setCandidatos((actuales) => [candidato, ...actuales])
     setIdMiPostulacion(candidato.id)
@@ -44,6 +49,23 @@ function App({ rolInicial = null }) {
     setCandidatos((actuales) => [candidato, ...actuales])
   }
 
+  // 7. Inicio y cierre de sesión.
+  function iniciarSesion(usuario) {
+    setRol(usuario.rol)
+    setNombreUsuario(usuario.nombre)
+  }
+
+  function entrarComoPostulante() {
+    setRol(ROLES.POSTULANTE)
+    setNombreUsuario('')
+  }
+
+  function cerrarSesion() {
+    setRol(null)
+    setNombreUsuario('')
+    setIdMiPostulacion(null)
+  }
+
   const miPostulacion = candidatos.find((candidato) => candidato.id === idMiPostulacion)
 
   // Props del modo oscuro que comparten todas las páginas.
@@ -51,11 +73,12 @@ function App({ rolInicial = null }) {
 
   return (
     <div className={modoOscuro ? 'theme-dark' : ''}>
-      <AppNavbar rol={rol} />
+      <AppNavbar rol={rol} nombreUsuario={nombreUsuario} alCerrarSesion={cerrarSesion} />
 
-      {/* 6. Rutas de la aplicación. RutaProtegida solo deja entrar al rol correspondiente. */}
+      {/* 8. Rutas de la aplicación. RutaProtegida solo deja entrar al rol correspondiente. */}
       <Routes>
-        <Route path="/" element={<InicioPage {...propsTema} alElegirRol={setRol} />} />
+        <Route path="/" element={<InicioPage {...propsTema} alEntrarComoPostulante={entrarComoPostulante} />} />
+        <Route path="/login" element={<LoginPage {...propsTema} alIniciarSesion={iniciarSesion} />} />
         <Route
           path="/postulacion"
           element={

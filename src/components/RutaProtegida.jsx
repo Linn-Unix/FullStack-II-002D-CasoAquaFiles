@@ -7,7 +7,7 @@ function RutaProtegida({ rolActual, rolesPermitidos, children }) {
   if (rolesPermitidos.includes(rolActual)) {
     return children
   }
-  // 2. Si no tiene permiso, mostramos un aviso en vez de la información.
+
   // 2. Si no tiene permiso, mostramos un aviso en vez de la información.
   return (
     <main className="container py-5">
@@ -17,9 +17,12 @@ function RutaProtegida({ rolActual, rolesPermitidos, children }) {
         <p>
           {rolActual
             ? 'Tu rol no tiene permiso para ver esta información.'
-            : 'Primero selecciona tu rol para ingresar.'}
+            : 'Debes iniciar sesión para ver esta información.'}
         </p>
-        <Link className="btn btn-aqua" to="/">Elegir rol</Link>
+        <div className="d-flex gap-2 justify-content-center">
+          <Link className="btn btn-aqua" to="/login">Iniciar sesión</Link>
+          <Link className="btn btn-outline-secondary" to="/">Volver al inicio</Link>
+        </div>
       </div>
     </main>
   )

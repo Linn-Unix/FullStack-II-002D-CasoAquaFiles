@@ -1,7 +1,7 @@
-import { Link } from 'react-router-dom'
 import BotonTema from './BotonTema'
 
 // Encabezado de cada panel. El título y el subtítulo llegan por props.
+// Para salir se usa el botón "Cerrar sesión" del menú.
 function Encabezado({ titulo, subtitulo, modoOscuro, alCambiarTema }) {
   return (
     <header className="app-header">
@@ -12,10 +12,6 @@ function Encabezado({ titulo, subtitulo, modoOscuro, alCambiarTema }) {
       </div>
       <div className="header-actions">
         <BotonTema modoOscuro={modoOscuro} alCambiar={alCambiarTema} />
-        {/* Link vuelve a la selección de rol (ruta "/"). */}
-        <Link className="btn btn-outline-secondary" to="/">
-          <i className="bi bi-box-arrow-right" /> Cambiar rol
-        </Link>
       </div>
     </header>
   )
