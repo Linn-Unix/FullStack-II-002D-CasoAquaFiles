@@ -4,8 +4,9 @@ import { NOMBRES_ROL, ROLES } from '../data/roles'
 // 1. Enlaces del menú. Cada enlace indica qué rol lo puede ver.
 const enlaces = [
   { ruta: '/postulacion', texto: 'Mi postulación', rol: ROLES.POSTULANTE },
-  { ruta: '/supervisor', texto: 'Panel supervisor', rol: ROLES.SUPERVISOR },
-  { ruta: '/psicologo', texto: 'Panel psicolaboral', rol: ROLES.PSICOLOGO },
+  { ruta: '/supervisor', texto: 'Reclutamiento', rol: ROLES.SUPERVISOR },
+  { ruta: '/dashboard', texto: 'Dashboard', rol: ROLES.SUPERVISOR },
+  { ruta: '/psicologo', texto: 'Evaluaciones', rol: ROLES.PSICOLOGO },
 ]
 
 // Navegación principal. Recibe por props el rol actual.
