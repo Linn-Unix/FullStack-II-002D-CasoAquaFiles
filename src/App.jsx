@@ -35,6 +35,10 @@ function App() {
     setIdMiPostulacion(candidato.id)
   }
 
+  function crearSolicitud(candidato) {
+    setCandidatos((actuales) => [candidato, ...actuales])
+  }
+
   const miPostulacion = candidatos.find((candidato) => candidato.id === idMiPostulacion)
 
   // Props del modo oscuro que comparten todas las páginas.
@@ -53,7 +57,12 @@ function App() {
         />
         <Route
           path="/supervisor"
-          element={<SupervisorPage {...propsTema} candidatos={candidatos} actualizarCandidato={actualizarCandidato} />}
+          element={          <SupervisorPage
+            {...propsTema}
+            candidatos={candidatos}
+            actualizarCandidato={actualizarCandidato}
+            alCrearSolicitud={crearSolicitud}
+          />}
         />
         <Route
           path="/psicologo"
