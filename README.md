@@ -5,7 +5,7 @@
  **Demo publicada:** [AquaFiles en Vercel](https://full-stack-ii-002-d-caso-aqua-files.vercel.app/)
 
 ```text
-Postulante → Supervisor Técnico → Filtro técnico → Derivación al psicólogo → Evaluación psicolaboral → Resultado
+Postulante → Analista de Reclutamiento → Filtro técnico → Derivación al evaluador → Evaluación psicolaboral → Resultado
 ```
 
 ---
@@ -22,45 +22,55 @@ Hoy el proceso de selección se apoya en planillas Excel, Planner y archivos rep
 
 ---
 
+## Requerimientos del caso cubiertos
+
+| Requerimiento | Cómo se cumple |
+| :--- | :--- |
+| RF01 Ingreso con roles simulados | Selección de rol en el inicio y rutas protegidas por rol |
+| RF02 Registrar candidatos | Formulario con nombre, RUT, correo, teléfono, cargo, familia, ubicación, centro de costos y CV |
+| RF03 Editar y consultar candidato | Ficha del analista con "Editar datos" |
+| RF04 Crear solicitudes | Botón "Nueva solicitud" en el panel del analista |
+| RF05 Cargo, familia, fecha y responsable | Fecha de solicitud automática; el Dashboard muestra fecha y responsable de cada solicitud |
+| RF06 Listado y detalle | Tabla de solicitudes y ficha del candidato |
+| RF07 Buscar y filtrar | Búsqueda por texto y filtros por estado y centro de costos |
+| RF08 Estados | Pendiente → En proceso → Finalizada (columna "Etapa" del dashboard) |
+| RF09 Evaluación | Fecha de entrevista, resultado y observaciones del evaluador |
+| RF10 Dashboard | Página Dashboard del analista con indicadores y etapa de cada solicitud |
+
+> Todos los datos son **ficticios**. No se usan nombres, RUT, teléfonos ni correos reales.
+
+---
+
 ## Roles y permisos
 
-Cada rol accede solo a la información que le corresponde.
+> 🔒 **Acceso por rol:** cada rol solo puede entrar a su propia pantalla. Si alguien intenta abrir otra dirección, ve "Acceso restringido". El postulante solo ve estados generales ("En revisión técnica", "Agendado", "Proceso finalizado") y nunca las decisiones ni las observaciones internas.
 
 ### Postulante / Candidato
 
-Inicia su propia postulación desde el formulario público:
+- Registrar sus datos (nombre, RUT, correo, teléfono, cargo, familia, ubicación y centro de costos) y adjuntar su CV.
+- Consultar el estado de su postulación con su RUT.
 
-- Registrar nombre completo y correo electrónico.
-- Seleccionar familia de cargo y ubicación.
-- Indicar el cargo al que postula.
-- Adjuntar su CV en PDF o Word.
-- Consultar el estado de su propia candidatura.
+**No puede:** ver otros candidatos, decisiones internas, observaciones ni el dashboard.
 
-**No puede:** ver otros candidatos, el dashboard interno ni las notas técnicas, ni modificar estados.
+### Analista de Reclutamiento
 
-### Supervisor Técnico / Analista de Selección
+- Registrar candidatos y crear solicitudes ("Nueva solicitud").
+- Buscar y filtrar por texto, estado y centro de costos.
+- Editar datos del candidato y escribir observaciones técnicas.
+- Aprobar o rechazar la etapa técnica.
+- Derivar al evaluador a los candidatos aprobados.
+- Revisar el Dashboard con los indicadores del proceso.
 
-Gestiona el proceso completo:
+**No puede:** redactar ni modificar la evaluación psicolaboral.
 
-- Ver todos los candidatos registrados en la tabla general.
-- Buscar candidatos por nombre, cargo o ubicación.
-- Consultar la ficha técnica, el currículum y el descriptor de cargo.
-- Aprobar la etapa técnica de un candidato.
-- Revisar indicadores de candidatos en revisión, aprobados y finalizados.
-- Derivar el dossier y avisar al psicólogo.
+### Profesional Evaluador
 
-**No puede:** redactar ni alterar el informe psicolaboral definitivo, ni la pauta psicológica privada.
+- Ver solo las solicitudes derivadas.
+- Agendar la entrevista y leer las observaciones del analista.
+- Registrar el resultado y las observaciones de la evaluación.
+- Subir el informe final y cerrar el proceso.
 
-### Psicólogo/a Evaluador/a
-
-Trabaja solo con candidatos aprobados técnicamente y derivados por el supervisor:
-
-- Consultar el dossier técnico y el CV.
-- Registrar la fecha de la entrevista psicolaboral.
-- Subir el informe psicolaboral final.
-- Cerrar el proceso como `Proceso Finalizado`.
-
-**No puede:** modificar la calificación técnica ni eliminar candidatos del pipeline.
+**No puede:** modificar la calificación técnica ni eliminar candidatos.
 
 ---
 
@@ -68,38 +78,39 @@ Trabaja solo con candidatos aprobados técnicamente y derivados por el superviso
 
 | # | Pantalla | Usuario | Qué permite hacer |
 | :---: | :--- | :--- | :--- |
-| 1 | **Inicio por rol** | Todos | Ingresar como Postulante / Candidato, Supervisor Técnico o Psicólogo/a. |
-| 2 | **Postulación del candidato** | Postulante | Completar sus datos, cargo, ubicación y familia de cargo, y adjuntar el CV. |
-| 3 | **Panel del supervisor (Gestión Laboral)** | Supervisor Técnico | Ver la tabla general, la ficha técnica y los indicadores, y derivar dossiers. |
-| 4 | **Panel psicolaboral** | Psicólogo/a | Ver los dossiers recibidos, registrar la entrevista y subir el informe final. |
-| 5 | **Seguimiento del candidato** | Postulante | Ver el estado privado de su candidatura y su propio documento. |
+| 1 | **Inicio por rol** | Todos | Elegir el rol: Postulante, Analista de Reclutamiento o Profesional Evaluador |
+| 2 | **Mi postulación** | Postulante | Postular con el formulario o consultar su estado con el RUT |
+| 3 | **Panel de Reclutamiento** | Analista | Tabla, filtros, nueva solicitud, ficha, edición, aprobación, rechazo y derivación |
+| 4 | **Dashboard** | Analista | Indicadores Pendientes / En proceso / Finalizadas, resumen por familia de cargo y etapa de cada solicitud |
+| 5 | **Panel de Evaluaciones** | Evaluador | Solicitudes derivadas, entrevista, resultado e informe |
+| 6 | **Acceso restringido / 404** | Todos | Aviso cuando la ruta no corresponde al rol o no existe |
 
 ### Funcionalidades
 
 | Funcionalidad | Reemplaza a | Prioridad | En la demo actual |
 | :--- | :--- | :---: | :---: |
-| Formulario de postulación con carga de CV (PDF/Word) | Recepción de CV por correo | Alta | Disponible |
-| Tabla general de candidatos con búsqueda | Planillas Excel | Alta | Disponible |
-| Control de estados del proceso | Tareas en Planner | Alta | Disponible |
-| Expediente digital con ficha técnica y dossier | Carpetas y archivos dispersos | Alta | Disponible |
-| Derivación del dossier al psicólogo | Envío manual de antecedentes | Media | Disponible |
-| Carga del informe psicolaboral final | Envío del informe por correo | Alta | Disponible |
-| Edición de datos del candidato (cargo, ubicación, centro de costos) | Correcciones manuales en Excel | Alta |  Próxima etapa |
-| Rechazo y archivo de postulaciones | Seguimiento manual | Media | Próxima etapa |
-| Dashboard de indicadores (tiempos, volúmenes, centros de costo) | Cálculos manuales | Media | Parcial (conteo por estado) |
+| Formulario de postulación con validaciones y CV | Recepción de CV por correo | Alta | ✅ Disponible |
+| Registro de candidatos y solicitudes por el analista | Planillas Excel | Alta | ✅ Disponible |
+| Tabla con búsqueda y filtros por estado y centro de costos | Planillas Excel | Alta | ✅ Disponible |
+| Edición de datos y observaciones técnicas | Correcciones manuales | Alta | ✅ Disponible |
+| Aprobación, rechazo y derivación al evaluador | Tareas en Planner | Alta | ✅ Disponible |
+| Resultado e informe de la evaluación | Envío del informe por correo | Alta | ✅ Disponible |
+| Consulta de postulación por RUT | Consultas por correo | Media | ✅ Disponible |
+| Dashboard con indicadores | Cálculos manuales | Media | ✅ Disponible |
+| Asignar un profesional responsable al derivar | Coordinación por correo | Media | 🔜 Próxima etapa |
+| Persistencia en base de datos | — | Alta | 🔜 Hito 2 (backend) |
 
 ---
 
 ## Flujo principal
 
-1. El candidato registra sus datos y adjunta su CV.
-2. La postulación queda en `En revisión técnica`.
-3. El supervisor revisa la ficha técnica y el dossier, y evalúa la etapa técnica.
-4. Si aprueba, el candidato queda en `Aprobado técnicamente`.
-5. El supervisor selecciona `Derivar y avisar`.
-6. El psicólogo agenda la entrevista y el estado pasa a `Agendado`.
-7. El psicólogo sube el informe final y el estado pasa a `Proceso Finalizado`.
-8. Los indicadores del proceso se actualizan.
+1. El postulante (o el analista con `Nueva solicitud`) registra los datos y el CV. La solicitud queda `En revisión técnica`.
+2. El analista revisa la ficha, corrige datos si hace falta y escribe observaciones técnicas.
+3. El analista aprueba (`Aprobado técnicamente`) o rechaza (`Rechazado técnicamente`).
+4. Si aprueba, presiona `Derivar al evaluador` y el estado pasa a `Derivado a psicólogo`.
+5. El evaluador agenda la entrevista (`Agendado`) y registra el resultado y sus observaciones.
+6. El evaluador sube el informe y el proceso queda `Proceso Finalizado`.
+7. El dashboard y el seguimiento del postulante se actualizan.
 
 **Estados del candidato:**
 
@@ -117,7 +128,7 @@ Proceso Finalizado
 
 ### Diagrama de flujo
 
-El diagrama muestra el proceso completo, incluidas las funcionalidades de la próxima etapa (corrección de datos y rechazo de postulaciones).
+El diagrama muestra el proceso completo del MVP.
 
 ```mermaid
 flowchart TD
@@ -131,8 +142,8 @@ flowchart TD
         A2 -.- N1
     end
 
-    subgraph P2["2. Panel del Supervisor Técnico (Gestión Laboral)"]
-        B1["Supervisor Técnico visualiza el registro en la tabla general"] --> B2["Abre la ficha técnica y dossier del postulante"]
+    subgraph P2["2. Panel de Reclutamiento (Analista de Reclutamiento)"]
+        B1["Analista de Reclutamiento visualiza el registro en la tabla general"] --> B2["Abre la ficha técnica y dossier del postulante"]
         B2 --> D1{"¿Se requiere editar o corregir datos?"}
         D1 -- Sí --> B3["Modificar información (Cargo, Ubicación, CC)"]
         B3 --> B4
@@ -143,11 +154,11 @@ flowchart TD
         B6 --> FIN1(["Fin"])
         D2 -- Sí --> B7["Estado: Aprobado técnicamente"]
         B7 --> B8["Genera el dossier técnico del candidato"]
-        B8 --> B9["Derivar y avisar al psicólogo"]
+        B8 --> B9["Derivar al evaluador"]
     end
 
     subgraph P3["3. Evaluación Psicolaboral"]
-        C1["Psicólogo/a recibe el dossier con CV y datos"] --> C2["Agenda entrevista psicológica vía Teams<br/>Estado: Agendado"]
+        C1["Profesional Evaluador recibe el dossier con CV y datos"] --> C2["Agenda entrevista psicológica vía Teams<br/>Estado: Agendado"]
         C2 --> C3["Realiza entrevista y toma de notas"]
         C3 --> C4["Elabora informe psicolaboral (con apoyo de Copilot)"]
         C4 --> C5["Sube el informe psicolaboral final a la plataforma"]
@@ -191,23 +202,23 @@ flowchart TD
 
 Puede usar la [demo publicada](https://full-stack-ii-002-d-caso-aqua-files.vercel.app/) o ejecutarla localmente (ver [Información técnica](#información-técnica)).
 
-**Como Supervisor Técnico:**
+**Como Analista de Reclutamiento:**
 
-1. En la pantalla inicial, seleccionar `Supervisor Técnico`.
-2. Buscar o seleccionar un candidato en la `Tabla general de candidatos`.
-3. Revisar su ficha técnica y dossier, y presionar `Aprobar etapa técnica`.
-4. Presionar `Derivar y avisar` para enviar el dossier al psicólogo.
+1. En el inicio, elegir `Analista de Reclutamiento`.
+2. Presionar `Nueva solicitud`, completar el formulario y `Registrar solicitud`.
+3. Elegir a Pedro Soto y presionar `Derivar al evaluador`.
+4. Abrir `Dashboard` en el menú para ver los indicadores.
 
-**Como Psicólogo/a:**
+**Como Profesional Evaluador:**
 
-5. Volver a la pantalla inicial con `Cambiar rol` y seleccionar `Psicólogo/a`.
-6. Abrir un dossier recibido, indicar la fecha de entrevista y usar `Subir informe psicolaboral final`.
+5. `Cambiar rol` → `Profesional Evaluador`.
+6. Elegir a Pedro Soto, indicar la fecha de entrevista, elegir el resultado y `Guardar evaluación`.
 
-**Como Postulante / Candidato:**
+**Como Postulante:**
 
-7. Volver con `Cambiar rol` y seleccionar `Postulante / Candidato`.
-8. Completar el formulario, adjuntar el CV y presionar `Enviar postulación`.
-9. Verificar que solo aparece su propia postulación y su estado, sin acceso a la tabla general.
+7. `Cambiar rol` → `Postulante / Candidato`.
+8. Consultar con el RUT `20.456.789-1`: se ve "En revisión técnica", sin información interna.
+9. Escribir `/supervisor` en la barra de direcciones: aparece "Acceso restringido".
 
 ---
 
@@ -219,7 +230,7 @@ Puntos que necesitamos confirmar con AquaChile para las próximas etapas:
 2. ¿Teams y Copilot se conectan a la plataforma o se usan por fuera?
 3. ¿El sistema debe enviar correos automáticos?
 4. ¿Cómo se mide exactamente el tiempo del proceso?
-5. ¿Hasta qué momento el supervisor puede corregir datos?
+5. ¿Hasta qué momento el analista puede corregir datos?
 6. ¿El candidato puede cambiar su CV si se equivocó?
 
 ---
@@ -230,14 +241,12 @@ AquaFiles es actualmente un **MVP frontend**. Los datos y los roles están simul
 
 Próximos pasos para una versión productiva:
 
-- Inicio de sesión real por usuario.
-- Control de permisos desde el backend.
-- Base de datos de candidatos.
+- Backend monolítico y base de datos (Hito 2: candidatos, solicitudes y evaluaciones).
+- Inicio de sesión real con permisos validados en el backend (hoy el rol es simulado y se pierde al recargar).
+- Asignar un profesional responsable al derivar y filtrar las solicitudes por responsable.
 - Almacenamiento seguro de currículums e informes.
-- Edición de datos del candidato y rechazo de postulaciones.
-- Dashboard con tiempos promedio y distribución por centro de costo.
-- Notificaciones reales al psicólogo.
-- Registro de auditoría de cambios.
+- Notificaciones reales al evaluador.
+- Historial de cambios por solicitud.
 
 ---
 
@@ -246,9 +255,10 @@ Próximos pasos para una versión productiva:
 | Ruta | Pantalla | Rol |
 | :--- | :--- | :--- |
 | `/` | Selección de rol | Todos |
-| `/postulacion` | Formulario de postulación y seguimiento | Postulante |
-| `/supervisor` | Panel del supervisor técnico | Supervisor Técnico |
-| `/psicologo` | Panel psicolaboral | Psicólogo/a |
+| `/postulacion` | Postulación y consulta por RUT | Postulante |
+| `/supervisor` | Panel de Reclutamiento | Analista de Reclutamiento |
+| `/dashboard` | Dashboard con indicadores | Analista de Reclutamiento |
+| `/psicologo` | Panel de Evaluaciones | Profesional Evaluador |
 | `*` | Página no encontrada (404) | Todos |
 
 ## Pruebas unitarias (Vitest)
@@ -267,7 +277,10 @@ npm run test:run   # ejecuta todas las pruebas una vez
 | `src/App.test.jsx` | Navegación con React Router, navbar y flujo supervisor → psicólogo |
 | `src/components/EstadoBadge.test.jsx` | Color del badge según el estado |
 | `src/components/ConsultaPostulacion.test.jsx` | Consulta de postulación por RUT (válido, inválido y no encontrado) |
-    
+
+**Total: 48 pruebas en 7 archivos.**
+
+![Resultado de las pruebas](docs/evidencias/vitest.png)
 
 ## Información técnica
 
@@ -294,7 +307,8 @@ FullStack-II-002D-CasoAquaFiles/
 ├── src/
 │   ├── components/                    # Componentes reutilizables
 │   ├── data/
-│   │   └── candidatos.js              # Datos simulados y estados
+│   │   ├── candidatos.js              # Datos simulados y estados
+│   │   └── roles.js                   # Roles y permisos de cada pantalla
 │   ├── pages/                         # Una página por ruta
 │   ├── utils/
 │   │   ├── candidatos.js              # Búsqueda y filtros
