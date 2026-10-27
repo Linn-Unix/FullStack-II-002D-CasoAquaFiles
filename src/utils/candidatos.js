@@ -40,19 +40,19 @@ export function contarPorEstado(candidatos, estado) {
   return candidatos.filter((candidato) => candidato.estado === estado).length
 }
 
-// 4. Color de Bootstrap para cada estado del proceso.
+// 4. Clase de color (definida en App.css) para cada estado del proceso.
 const COLORES_ESTADO = {
-  [ESTADOS.REVISION]: 'text-bg-warning',
-  [ESTADOS.APROBADO]: 'text-bg-success',
-  [ESTADOS.RECHAZADO]: 'text-bg-danger',
-  [ESTADOS.DERIVADO]: 'text-bg-info',
-  [ESTADOS.AGENDADO]: 'text-bg-primary',
-  [ESTADOS.FINALIZADO]: 'text-bg-secondary',
+  [ESTADOS.REVISION]: 'estado-revision',
+  [ESTADOS.APROBADO]: 'estado-aprobado',
+  [ESTADOS.RECHAZADO]: 'estado-rechazado',
+  [ESTADOS.DERIVADO]: 'estado-derivado',
+  [ESTADOS.AGENDADO]: 'estado-agendado',
+  [ESTADOS.FINALIZADO]: 'estado-finalizado',
 }
 
 // Devuelve la clase de color según el estado. Si no existe, usa un color neutro.
 export function obtenerColorEstado(estado) {
-  return COLORES_ESTADO[estado] ?? 'text-bg-light'
+  return COLORES_ESTADO[estado] ?? 'estado-neutro'
 }
 
 // 5. Estado que ve el postulante. Oculta las decisiones internas de RR. HH. y del psicólogo:

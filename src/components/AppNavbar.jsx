@@ -14,7 +14,7 @@ function AppNavbar({ rol }) {
   const enlacesVisibles = enlaces.filter((enlace) => enlace.rol === rol)
 
   return (
-    <nav className="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+    <nav className="navbar navbar-expand-lg navbar-aqua" data-bs-theme="dark">
       <div className="container">
         <Link className="navbar-brand" to="/">
           AquaFiles
