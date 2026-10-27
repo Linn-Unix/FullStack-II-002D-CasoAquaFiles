@@ -1,15 +1,18 @@
 import { Link, NavLink } from 'react-router-dom'
+import { NOMBRES_ROL, ROLES } from '../data/roles'
 
 // 1. Enlaces del menú. Usamos un arreglo para recorrerlo con map().
 const enlaces = [
-  { ruta: '/', texto: 'Inicio' },
-  { ruta: '/postulacion', texto: 'Postulación' },
-  { ruta: '/supervisor', texto: 'Supervisor' },
-  { ruta: '/psicologo', texto: 'Psicología' },
+  { ruta: '/postulacion', texto: 'Mi postulación', rol: ROLES.POSTULANTE },
+  { ruta: '/supervisor', texto: 'Panel supervisor', rol: ROLES.SUPERVISOR },
+  { ruta: '/dashboard', texto: 'Dashboard', rol: ROLES.SUPERVISOR },
+  { ruta: '/psicologo', texto: 'Panel psicolaboral', rol: ROLES.PSICOLOGO },
 ]
 
 // Este componente contiene la navegación principal.
-function AppNavbar() {
+function AppNavbar({ rol }) {
+  const enlacesVisibles = enlaces.filter((enlace) => enlace.rol === rol)
+
   return (
     <nav className="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
       <div className="container">
@@ -31,13 +34,14 @@ function AppNavbar() {
         </button>
 
         <div className="collapse navbar-collapse" id="menuPrincipal">
-          <div className="navbar-nav ms-auto">
-            {/* 3. NavLink marca con la clase "active" el enlace de la página actual. */}
-            {enlaces.map((enlace) => (
+          <div className="navbar-nav ms-auto align-items-lg-center">
+            <NavLink to="/" end className="nav-link">Inicio</NavLink>
+            {enlacesVisibles.map((enlace) => (
               <NavLink key={enlace.ruta} to={enlace.ruta} end className="nav-link">
                 {enlace.texto}
               </NavLink>
             ))}
+            {rol && <span className="badge rounded-pill text-bg-light ms-lg-2">Rol: {NOMBRES_ROL[rol]}</span>}
           </div>
         </div>
       </div>

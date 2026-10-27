@@ -3,20 +3,24 @@ import { useState } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import './App.css'
 import AppNavbar from './components/AppNavbar'
+import RutaProtegida from './components/RutaProtegida'
 import { candidatosIniciales } from './data/candidatos'
+import { ROLES } from './data/roles'
+import DashboardPage from './pages/DashboardPage'
 import InicioPage from './pages/InicioPage'
 import NoEncontradaPage from './pages/NoEncontradaPage'
 import PostulacionPage from './pages/PostulacionPage'
 import PsicologoPage from './pages/PsicologoPage'
 import SupervisorPage from './pages/SupervisorPage'
 
-function App() {
+function App({ rolInicial = null }) {
   // 1. Estado principal: la lista de candidatos.
   //    Vive en App para que todas las páginas compartan los mismos datos.
   const [candidatos, setCandidatos] = useState(candidatosIniciales)
 
   // 2. id de la postulación del usuario que entra como postulante.
   const [idMiPostulacion, setIdMiPostulacion] = useState(null)
+  const [rol, setRol] = useState(rolInicial)
 
   // 3. Modo oscuro activado o no.
   const [modoOscuro, setModoOscuro] = useState(false)
@@ -46,27 +50,42 @@ function App() {
 
   return (
     <div className={modoOscuro ? 'theme-dark' : ''}>
-      <AppNavbar />
+      <AppNavbar rol={rol} />
 
       {/* 6. Rutas de la aplicación: cada dirección muestra una página distinta. */}
       <Routes>
-        <Route path="/" element={<InicioPage {...propsTema} />} />
+        <Route path="/" element={<InicioPage {...propsTema} alElegirRol={setRol} />} />
         <Route
           path="/postulacion"
-          element={<PostulacionPage {...propsTema} candidato={miPostulacion} alEnviar={agregarCandidato} />}
+          element={
+            <RutaProtegida rolActual={rol} rolesPermitidos={[ROLES.POSTULANTE]}>
+              <PostulacionPage {...propsTema} candidato={miPostulacion} alEnviar={agregarCandidato} />
+            </RutaProtegida>
+          }
         />
         <Route
           path="/supervisor"
-          element={          <SupervisorPage
-            {...propsTema}
-            candidatos={candidatos}
-            actualizarCandidato={actualizarCandidato}
-            alCrearSolicitud={crearSolicitud}
-          />}
+          element={
+            <RutaProtegida rolActual={rol} rolesPermitidos={[ROLES.SUPERVISOR]}>
+              <SupervisorPage {...propsTema} candidatos={candidatos} actualizarCandidato={actualizarCandidato} alCrearSolicitud={crearSolicitud} />
+            </RutaProtegida>
+          }
         />
         <Route
           path="/psicologo"
-          element={<PsicologoPage {...propsTema} candidatos={candidatos} actualizarCandidato={actualizarCandidato} />}
+          element={
+            <RutaProtegida rolActual={rol} rolesPermitidos={[ROLES.PSICOLOGO]}>
+              <PsicologoPage {...propsTema} candidatos={candidatos} actualizarCandidato={actualizarCandidato} />
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <RutaProtegida rolActual={rol} rolesPermitidos={[ROLES.SUPERVISOR]}>
+              <DashboardPage {...propsTema} candidatos={candidatos} />
+            </RutaProtegida>
+          }
         />
         {/* "*" atrapa cualquier ruta que no exista. */}
         <Route path="*" element={<NoEncontradaPage />} />
