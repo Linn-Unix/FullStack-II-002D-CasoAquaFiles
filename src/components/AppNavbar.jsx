@@ -1,15 +1,18 @@
 import { Link, NavLink } from 'react-router-dom'
+import { NOMBRES_ROL, ROLES } from '../data/roles'
 
-// 1. Enlaces del menú. Usamos un arreglo para recorrerlo con map().
+// 1. Enlaces del menú. Cada enlace indica qué rol lo puede ver.
 const enlaces = [
-  { ruta: '/', texto: 'Inicio' },
-  { ruta: '/postulacion', texto: 'Postulación' },
-  { ruta: '/supervisor', texto: 'Supervisor' },
-  { ruta: '/psicologo', texto: 'Psicología' },
+  { ruta: '/postulacion', texto: 'Mi postulación', rol: ROLES.POSTULANTE },
+  { ruta: '/supervisor', texto: 'Panel supervisor', rol: ROLES.SUPERVISOR },
+  { ruta: '/psicologo', texto: 'Panel psicolaboral', rol: ROLES.PSICOLOGO },
 ]
 
-// Este componente contiene la navegación principal.
-function AppNavbar() {
+// Navegación principal. Recibe por props el rol actual.
+function AppNavbar({ rol }) {
+  // 2. filter() deja solo el enlace que corresponde al rol actual.
+  const enlacesVisibles = enlaces.filter((enlace) => enlace.rol === rol)
+
   return (
     <nav className="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
       <div className="container">
@@ -17,7 +20,7 @@ function AppNavbar() {
           AquaFiles
         </Link>
 
-        {/* 2. Este botón aparece cuando la pantalla es pequeña y abre/cierra el menú. */}
+        {/* 3. Este botón aparece cuando la pantalla es pequeña y abre/cierra el menú. */}
         <button
           className="navbar-toggler"
           type="button"
@@ -31,13 +34,18 @@ function AppNavbar() {
         </button>
 
         <div className="collapse navbar-collapse" id="menuPrincipal">
-          <div className="navbar-nav ms-auto">
-            {/* 3. NavLink marca con la clase "active" el enlace de la página actual. */}
-            {enlaces.map((enlace) => (
+          <div className="navbar-nav ms-auto align-items-lg-center">
+            <NavLink to="/" end className="nav-link">Inicio</NavLink>
+
+            {/* 4. NavLink marca con la clase "active" el enlace de la página actual. */}
+            {enlacesVisibles.map((enlace) => (
               <NavLink key={enlace.ruta} to={enlace.ruta} end className="nav-link">
                 {enlace.texto}
               </NavLink>
             ))}
+
+            {/* 5. Renderizado condicional: solo mostramos el rol si hay uno elegido. */}
+            {rol && <span className="badge rounded-pill text-bg-light ms-lg-2">Rol: {NOMBRES_ROL[rol]}</span>}
           </div>
         </div>
       </div>
