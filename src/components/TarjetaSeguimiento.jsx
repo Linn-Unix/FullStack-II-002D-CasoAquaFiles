@@ -1,48 +1,54 @@
 import { ESTADOS } from '../data/candidatos'
-import EstadoBadge from './EstadoBadge'
+import { formatearFecha, obtenerEstadoPostulante } from '../utils/candidatos'
 
-// 1. Pasos que ve el candidato en su seguimiento.
-const PASOS = [ESTADOS.REVISION, ESTADOS.APROBADO, ESTADOS.AGENDADO, ESTADOS.FINALIZADO]
+// 1. Pasos que ve el postulante. Son menos que los estados internos,
+//    para no mostrarle las decisiones de RR. HH. ni del psicólogo.
+const PASOS = ['En revisión técnica', 'Agendado', 'Proceso finalizado']
 
-// 2. Según el estado, calculamos cuántos pasos están completos.
-function contarPasosCompletos(estado) {
-  if (estado === ESTADOS.FINALIZADO) return 4
-  if (estado === ESTADOS.AGENDADO) return 3
-  if (estado === ESTADOS.APROBADO || estado === ESTADOS.DERIVADO) return 2
-  return 1
-}
-
-// Recibe por props el candidato que se va a mostrar.
+// Seguimiento de la postulación. Recibe por props el candidato.
 function TarjetaSeguimiento({ candidato }) {
-  // 3. Renderizado condicional: si fue rechazado mostramos otro mensaje.
+  // 2. Traducimos el estado interno al estado que puede ver el postulante.
+  const estadoVisible = obtenerEstadoPostulante(candidato.estado)
+
+  // 3. Renderizado condicional: si la postulación se cerró, mostramos solo un mensaje.
   if (candidato.estado === ESTADOS.RECHAZADO) {
     return (
       <div className="panel process-card">
         <p className="tag">ESTADO DE MI POSTULACIÓN</p>
-        <span className="badge-status">Proceso cerrado</span>
+        <span className="badge badge-postulante">{estadoVisible}</span>
         <h2>Seguimiento</h2>
         <p>Tu postulación no continúa en este proceso. Gracias por postular a AquaChile.</p>
       </div>
     )
   }
 
-  const completos = contarPasosCompletos(candidato.estado)
+  // 4. indexOf() devuelve en qué paso va el postulante (0, 1 o 2).
+  const pasoActual = PASOS.indexOf(estadoVisible)
+  const terminado = candidato.estado === ESTADOS.FINALIZADO
 
   return (
     <div className="panel process-card">
       <p className="tag">ESTADO DE MI POSTULACIÓN</p>
-      <EstadoBadge estado={candidato.estado} />
+      <span className="badge badge-postulante">{estadoVisible}</span>
       <h2>Seguimiento</h2>
 
-      {/* 4. map() crea un paso por cada elemento de PASOS. */}
+      {/* 5. Si la entrevista está agendada, le mostramos la fecha al postulante. */}
+      {candidato.estado === ESTADOS.AGENDADO && candidato.fechaEntrevista && (
+        <p className="stage-note">
+          Tu entrevista psicolaboral es el {formatearFecha(candidato.fechaEntrevista)} y se realizará por Teams.
+        </p>
+      )}
+
+      {/* 6. map() crea un paso por cada elemento de PASOS. */}
       {PASOS.map((paso, indice) => {
-        const listo = completos >= indice + 1
+        const listo = indice <= pasoActual
+        const detalle = indice < pasoActual || terminado ? 'Completado' : indice === pasoActual ? 'En curso' : 'Pendiente'
         return (
           <div className={listo ? 'process-step done' : 'process-step'} key={paso}>
             <span>{listo ? '✓' : indice + 1}</span>
             <div>
               <strong>{paso}</strong>
-              <small>{listo ? 'Completado o en curso' : 'Pendiente'}</small>
+              <small>{detalle}</small>
             </div>
           </div>
         )

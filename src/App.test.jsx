@@ -146,6 +146,39 @@ describe('Flujo del proceso', () => {
     expect(screen.getByRole('heading', { name: 'Ingresa tus antecedentes' })).toBeInTheDocument()
   })
 
+  it('el postulante no ve las decisiones internas de RR. HH.', async () => {
+    const usuario = userEvent.setup()
+    renderizarApp('/postulacion', ROLES.POSTULANTE)
+
+    // Valentina está "Aprobado técnicamente", pero ella solo debe ver "En revisión técnica".
+    await usuario.type(screen.getByLabelText(/rut de tu postulación/i), '20.456.789-1')
+    await usuario.click(screen.getByRole('button', { name: /consultar/i }))
+
+    expect(screen.getAllByText('En revisión técnica').length).toBeGreaterThan(0)
+    expect(screen.queryByText('Aprobado técnicamente')).not.toBeInTheDocument()
+  })
+
+  it('el postulante no ve las observaciones técnicas', async () => {
+    const usuario = userEvent.setup()
+    renderizarApp('/postulacion', ROLES.POSTULANTE)
+
+    await usuario.type(screen.getByLabelText(/rut de tu postulación/i), '15.678.432-K')
+    await usuario.click(screen.getByRole('button', { name: /consultar/i }))
+
+    expect(screen.getAllByText('Proceso finalizado').length).toBeGreaterThan(0)
+    expect(screen.queryByText(/experiencia sólida/i)).not.toBeInTheDocument()
+  })
+
+  it('el postulante ve la fecha de su entrevista', async () => {
+    const usuario = userEvent.setup()
+    renderizarApp('/postulacion', ROLES.POSTULANTE)
+
+    await usuario.type(screen.getByLabelText(/rut de tu postulación/i), '18.923.456-2')
+    await usuario.click(screen.getByRole('button', { name: /consultar/i }))
+
+    expect(screen.getByText(/28-10-2026/)).toBeInTheDocument()
+  })
+
   it('el supervisor rechaza a un candidato en revisión', async () => {
     const usuario = userEvent.setup()
     renderizarApp('/supervisor', ROLES.SUPERVISOR)
