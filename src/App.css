@@ -1091,3 +1091,183 @@ h2 {
 .theme-dark .edit-box .form-label {
   color: var(--dark-text);
 }
+/* ---------- 21. Vista del postulante ---------- */
+/* Badge neutro: el color no revela decisiones internas de RR. HH. */
+.badge-postulante {
+  background: var(--soft);
+  color: var(--deep);
+  font-size: .75rem;
+}
+
+.theme-dark .badge-postulante {
+  background: #244451;
+  color: var(--dark-text);
+}
+
+/* ---------- 22. Paleta de colores mejorada ---------- */
+
+/* Textos de etiqueta con más contraste */
+.tag {
+  color: #0277BD !important;
+}
+
+.theme-dark .tag {
+  color: #4FC3F7 !important;
+}
+
+/* Botón principal: se oscurece al pasar el mouse en vez de aclararse */
+.btn-aqua:hover,
+.btn-aqua:focus-visible {
+  background: #004A7C;
+  color: #fff;
+}
+
+.btn-aqua:focus-visible {
+  box-shadow: 0 0 0 .25rem #03A9F455;
+}
+
+/* Navbar con el azul de AquaChile */
+.navbar-aqua {
+  background: linear-gradient(90deg, #004A7C, #0277BD);
+}
+
+.navbar-aqua .nav-link {
+  color: #ffffffcc;
+}
+
+.navbar-aqua .nav-link:hover,
+.navbar-aqua .nav-link.active {
+  color: #fff;
+}
+
+.navbar-aqua .nav-link.active {
+  text-decoration: underline;
+  text-underline-offset: 6px;
+}
+
+/* Badges de estado: fondo suave y texto oscuro (más fáciles de leer) */
+.badge-estado {
+  border: 1px solid transparent;
+  font-weight: 600;
+}
+
+.estado-revision {
+  background: #FFF4D6;
+  border-color: #F5D58A;
+  color: #7A4F00;
+}
+
+.estado-aprobado {
+  background: #E3F6EA;
+  border-color: #A6DDB8;
+  color: #1B6B3A;
+}
+
+.estado-rechazado {
+  background: #FDE7E9;
+  border-color: #F3B4B9;
+  color: #A4262C;
+}
+
+.estado-derivado {
+  background: #E0F4FB;
+  border-color: #A3DCEF;
+  color: #0B5F7A;
+}
+
+.estado-agendado {
+  background: #E8EAFD;
+  border-color: #BCC1F5;
+  color: #343C9C;
+}
+
+.estado-finalizado {
+  background: #ECEFF1;
+  border-color: #C9D1D5;
+  color: #37474F;
+}
+
+.estado-neutro {
+  background: #F5F5F5;
+  border-color: #D9D9D9;
+  color: #424242;
+}
+
+.theme-dark .badge-estado {
+  background: transparent;
+}
+
+.theme-dark .estado-revision { color: #FFD666; border-color: #FFD66688; }
+.theme-dark .estado-aprobado { color: #7EE2A0; border-color: #7EE2A088; }
+.theme-dark .estado-rechazado { color: #FF9AA2; border-color: #FF9AA288; }
+.theme-dark .estado-derivado { color: #7FD8F5; border-color: #7FD8F588; }
+.theme-dark .estado-agendado { color: #B3BAFF; border-color: #B3BAFF88; }
+.theme-dark .estado-finalizado { color: #CFD8DC; border-color: #CFD8DC88; }
+
+/* Indicadores con una franja de color arriba */
+.metric {
+  border-top: 4px solid #0277BD;
+}
+
+.row > :nth-child(2) > .metric {
+  border-top-color: #F2A900;
+}
+
+.row > :nth-child(3) > .metric {
+  border-top-color: #0B8FB3;
+}
+
+.row > :nth-child(4) > .metric {
+  border-top-color: #78909C;
+}
+
+/* Encabezado de la tabla */
+.table thead th {
+  background: #F3F7FA;
+  color: #4F5F66;
+}
+
+.theme-dark .table thead th {
+  background: var(--dark-surface-alt);
+  color: var(--dark-muted);
+}
+
+/* Un color de acento por rol */
+.role-options a:nth-child(1) .role-icon {
+  background: #E3F6EA;
+  color: #1B6B3A;
+}
+
+.role-options a:nth-child(2) .role-icon {
+  background: #E3F2FD;
+  color: #005B96;
+}
+
+.role-options a:nth-child(3) .role-icon {
+  background: #F1EAFB;
+  color: #6A3FB5;
+}
+
+.psychologist-banner {
+  background: #F1EAFB;
+  border-color: #CDB8F0;
+}
+
+.psychologist-banner > i {
+  color: #6A3FB5;
+}
+
+.candidate-welcome {
+  background: #E6F6EF;
+  border-color: #A8DCC3;
+}
+
+.theme-dark .psychologist-banner {
+  background: #3A2F52;
+  border-color: #5E4A87;
+}
+
+.theme-dark .candidate-welcome {
+  background: #24453A;
+  border-color: #3B7A62;
+}

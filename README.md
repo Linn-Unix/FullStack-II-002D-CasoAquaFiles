@@ -265,6 +265,8 @@ npm run test:run   # ejecuta todas las pruebas una vez
 | `src/components/CandidatoCard.test.jsx` | Renderizado del componente con props |
 | `src/components/FormularioPostulacion.test.jsx` | Mensajes de error y envío del formulario |
 | `src/App.test.jsx` | Navegación con React Router, navbar y flujo supervisor → psicólogo |
+| `src/components/EstadoBadge.test.jsx` | Color del badge según el estado |
+| `src/components/ConsultaPostulacion.test.jsx` | Consulta de postulación por RUT (válido, inválido y no encontrado) |
     
 
 ## Información técnica

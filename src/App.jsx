@@ -13,6 +13,7 @@ import PostulacionPage from './pages/PostulacionPage'
 import PsicologoPage from './pages/PsicologoPage'
 import SupervisorPage from './pages/SupervisorPage'
 
+// rolInicial permite partir con un rol ya elegido (se usa en las pruebas).
 function App({ rolInicial = null }) {
   // 1. Estado principal: la lista de candidatos.
   //    Vive en App para que todas las páginas compartan los mismos datos.
@@ -52,14 +53,21 @@ function App({ rolInicial = null }) {
     <div className={modoOscuro ? 'theme-dark' : ''}>
       <AppNavbar rol={rol} />
 
-      {/* 6. Rutas de la aplicación: cada dirección muestra una página distinta. */}
+      {/* 6. Rutas de la aplicación. RutaProtegida solo deja entrar al rol correspondiente. */}
       <Routes>
         <Route path="/" element={<InicioPage {...propsTema} alElegirRol={setRol} />} />
         <Route
           path="/postulacion"
           element={
             <RutaProtegida rolActual={rol} rolesPermitidos={[ROLES.POSTULANTE]}>
-              <PostulacionPage {...propsTema} candidato={miPostulacion} alEnviar={agregarCandidato} />
+              <PostulacionPage
+                {...propsTema}
+                candidato={miPostulacion}
+                candidatos={candidatos}
+                alEnviar={agregarCandidato}
+                alConsultar={setIdMiPostulacion}
+                alSalir={() => setIdMiPostulacion(null)}
+              />
             </RutaProtegida>
           }
         />

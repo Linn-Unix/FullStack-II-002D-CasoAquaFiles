@@ -7,5 +7,5 @@ it('muestra el estado con el color que le corresponde', () => {
   render(<EstadoBadge estado={ESTADOS.APROBADO} />)
 
   const etiqueta = screen.getByText('Aprobado técnicamente')
-  expect(etiqueta).toHaveClass('badge', 'text-bg-success')
+  expect(etiqueta).toHaveClass('badge', 'estado-aprobado')
 })

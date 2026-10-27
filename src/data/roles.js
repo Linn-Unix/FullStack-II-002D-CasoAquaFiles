@@ -1,3 +1,4 @@
+// 1. Roles de la aplicación. Cada rol solo puede entrar a su propia pantalla.
 export const ROLES = {
   POSTULANTE: 'postulante',
   SUPERVISOR: 'supervisor',

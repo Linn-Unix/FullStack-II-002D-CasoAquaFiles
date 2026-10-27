@@ -6,7 +6,7 @@ function Encabezado({ titulo, subtitulo, modoOscuro, alCambiarTema }) {
   return (
     <header className="app-header">
       <div>
-        <p className="tag">Proyecto AquaFiles - FullStack II</p>
+        <p className="tag">AquaChile · Gestión Laboral</p>
         <h1>{titulo}</h1>
         <p>{subtitulo}</p>
       </div>

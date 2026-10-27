@@ -15,7 +15,7 @@ function InicioPage({ modoOscuro, alCambiarTema, alElegirRol }) {
     <main className="role-screen">
       <BotonTema className="role-theme-toggle" modoOscuro={modoOscuro} alCambiar={alCambiarTema} />
       <section className="role-card">
-        <p className="tag">Proyecto AquaFiles - FullStack II</p>
+        <p className="tag">AquaChile · Gestión Laboral</p>
         <h1>Gestión Laboral</h1>
         <p className="lead">Selecciona tu rol para ingresar a la pantalla correspondiente.</p>
         <div className="role-options three-roles">
