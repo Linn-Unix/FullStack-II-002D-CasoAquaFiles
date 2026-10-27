@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import { candidatosIniciales, ESTADOS } from '../data/candidatos'
-import { contarPorEstado, filtrarCandidatos, obtenerColorEstado, obtenerIniciales } from './candidatos'
+import {
+  contarPorEstado,
+  filtrarCandidatos,
+  formatearFecha,
+  obtenerColorEstado,
+  obtenerEstadoPostulante,
+  obtenerIniciales,
+} from './candidatos'
 
 describe('filtrarCandidatos', () => {
   it('filtra por texto sin importar mayúsculas', () => {
@@ -40,5 +47,22 @@ describe('obtenerColorEstado', () => {
   })
   it('usa un color neutro si el estado no existe', () => {
     expect(obtenerColorEstado('Otro')).toBe('text-bg-light')
+  })
+})
+
+describe('obtenerEstadoPostulante', () => {
+  it('oculta las decisiones internas de RR. HH. y del psicólogo', () => {
+    expect(obtenerEstadoPostulante(ESTADOS.APROBADO)).toBe('En revisión técnica')
+    expect(obtenerEstadoPostulante(ESTADOS.DERIVADO)).toBe('En revisión técnica')
+  })
+  it('muestra los estados que sí le corresponden al postulante', () => {
+    expect(obtenerEstadoPostulante(ESTADOS.AGENDADO)).toBe('Agendado')
+    expect(obtenerEstadoPostulante(ESTADOS.RECHAZADO)).toBe('Proceso cerrado')
+  })
+})
+
+describe('formatearFecha', () => {
+  it('convierte la fecha al formato día-mes-año', () => {
+    expect(formatearFecha('2026-10-28')).toBe('28-10-2026')
   })
 })
