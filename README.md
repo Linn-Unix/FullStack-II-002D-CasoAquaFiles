@@ -26,7 +26,7 @@ Hoy el proceso de selección se apoya en planillas Excel, Planner y archivos rep
 
 | Requerimiento | Cómo se cumple |
 | :--- | :--- |
-| RF01 Ingreso con roles simulados | Selección de rol en el inicio y rutas protegidas por rol |
+| RF01 Ingreso con roles simulados | El postulante entra sin cuenta. El analista y el evaluador inician sesión con usuario y contraseña de prueba |
 | RF02 Registrar candidatos | Formulario con nombre, RUT, correo, teléfono, cargo, familia, ubicación, centro de costos y CV |
 | RF03 Editar y consultar candidato | Ficha del analista con "Editar datos" |
 | RF04 Crear solicitudes | Botón "Nueva solicitud" en el panel del analista |
@@ -43,7 +43,16 @@ Hoy el proceso de selección se apoya en planillas Excel, Planner y archivos rep
 
 ## Roles y permisos
 
-> 🔒 **Acceso por rol:** cada rol solo puede entrar a su propia pantalla. Si alguien intenta abrir otra dirección, ve "Acceso restringido". El postulante solo ve estados generales ("En revisión técnica", "Agendado", "Proceso finalizado") y nunca las decisiones ni las observaciones internas.
+> 🔒 **Acceso por rol:** el postulante entra sin cuenta y solo ve su formulario y el estado general de su postulación ("En revisión técnica", "Agendado", "Proceso finalizado"). El personal de AquaChile (analista y evaluador) debe **iniciar sesión**. Si alguien abre una pantalla interna sin sesión, ve "Acceso restringido".
+
+**Usuarios de prueba (ficticios):**
+
+| Usuario | Contraseña | Nombre | Rol |
+| :--- | :--- | :--- | :--- |
+| `analista` | `aqua123` | Rosa Martínez | Analista de Reclutamiento |
+| `evaluador` | `aqua123` | Luis Herrera | Profesional Evaluador |
+
+> Como todavía no hay backend, el inicio de sesión es **simulado**: los usuarios están en `src/data/usuarios.js` y la sesión se pierde al recargar la página. En el Hito 2 se validará en el servidor.
 
 ### Postulante / Candidato
 
@@ -78,12 +87,13 @@ Hoy el proceso de selección se apoya en planillas Excel, Planner y archivos rep
 
 | # | Pantalla | Usuario | Qué permite hacer |
 | :---: | :--- | :--- | :--- |
-| 1 | **Inicio por rol** | Todos | Elegir el rol: Postulante, Analista de Reclutamiento o Profesional Evaluador |
-| 2 | **Mi postulación** | Postulante | Postular con el formulario o consultar su estado con el RUT |
-| 3 | **Panel de Reclutamiento** | Analista | Tabla, filtros, nueva solicitud, ficha, edición, aprobación, rechazo y derivación |
-| 4 | **Dashboard** | Analista | Indicadores Pendientes / En proceso / Finalizadas, resumen por familia de cargo y etapa de cada solicitud |
-| 5 | **Panel de Evaluaciones** | Evaluador | Solicitudes derivadas, entrevista, resultado e informe |
-| 6 | **Acceso restringido / 404** | Todos | Aviso cuando la ruta no corresponde al rol o no existe |
+| 1 | **Inicio** | Todos | Entrar como postulante o ir al inicio de sesión del personal |
+| 2 | **Inicio de sesión** | Analista y evaluador | Ingresar con usuario y contraseña |
+| 3 | **Mi postulación** | Postulante | Postular con el formulario o consultar su estado con el RUT |
+| 4 | **Panel de Reclutamiento** | Analista | Tabla, filtros, nueva solicitud, ficha, edición, aprobación, rechazo y derivación |
+| 5 | **Dashboard** | Analista | Indicadores Pendientes / En proceso / Finalizadas, resumen por familia de cargo y etapa de cada solicitud |
+| 6 | **Panel de Evaluaciones** | Evaluador | Solicitudes derivadas, entrevista, resultado e informe |
+| 7 | **Acceso restringido / 404** | Todos | Aviso cuando la ruta no corresponde al rol o no existe |
 
 ### Funcionalidades
 
@@ -204,19 +214,19 @@ Puede usar la [demo publicada](https://full-stack-ii-002-d-caso-aqua-files.verce
 
 **Como Analista de Reclutamiento:**
 
-1. En el inicio, elegir `Analista de Reclutamiento`.
+1. En el inicio, elegir `Personal AquaChile` e iniciar sesión con `analista` / `aqua123`.
 2. Presionar `Nueva solicitud`, completar el formulario y `Registrar solicitud`.
 3. Elegir a Pedro Soto y presionar `Derivar al evaluador`.
 4. Abrir `Dashboard` en el menú para ver los indicadores.
 
 **Como Profesional Evaluador:**
 
-5. `Cambiar rol` → `Profesional Evaluador`.
+5. `Cerrar sesión` → `Personal AquaChile` → `evaluador` / `aqua123`.
 6. Elegir a Pedro Soto, indicar la fecha de entrevista, elegir el resultado y `Guardar evaluación`.
 
 **Como Postulante:**
 
-7. `Cambiar rol` → `Postulante / Candidato`.
+7. `Cerrar sesión` → `Postulante / Candidato`.
 8. Consultar con el RUT `20.456.789-1`: se ve "En revisión técnica", sin información interna.
 9. Escribir `/supervisor` en la barra de direcciones: aparece "Acceso restringido".
 
@@ -242,7 +252,7 @@ AquaFiles es actualmente un **MVP frontend**. Los datos y los roles están simul
 Próximos pasos para una versión productiva:
 
 - Backend monolítico y base de datos (Hito 2: candidatos, solicitudes y evaluaciones).
-- Inicio de sesión real con permisos validados en el backend (hoy el rol es simulado y se pierde al recargar).
+- Inicio de sesión real con permisos validados en el backend (hoy los usuarios están en el código y la sesión se pierde al recargar).
 - Asignar un profesional responsable al derivar y filtrar las solicitudes por responsable.
 - Almacenamiento seguro de currículums e informes.
 - Notificaciones reales al evaluador.
@@ -252,13 +262,14 @@ Próximos pasos para una versión productiva:
 
 ## Rutas de la aplicación
 
-| Ruta | Pantalla | Rol |
+| Ruta | Pantalla | Acceso |
 | :--- | :--- | :--- |
-| `/` | Selección de rol | Todos |
+| `/` | Inicio | Todos |
+| `/login` | Inicio de sesión del personal | Todos |
 | `/postulacion` | Postulación y consulta por RUT | Postulante |
-| `/supervisor` | Panel de Reclutamiento | Analista de Reclutamiento |
-| `/dashboard` | Dashboard con indicadores | Analista de Reclutamiento |
-| `/psicologo` | Panel de Evaluaciones | Profesional Evaluador |
+| `/supervisor` | Panel de Reclutamiento | Analista (con sesión) |
+| `/dashboard` | Dashboard con indicadores | Analista (con sesión) |
+| `/psicologo` | Panel de Evaluaciones | Evaluador (con sesión) |
 | `*` | Página no encontrada (404) | Todos |
 
 ## Pruebas unitarias (Vitest)
@@ -277,8 +288,9 @@ npm run test:run   # ejecuta todas las pruebas una vez
 | `src/App.test.jsx` | Navegación con React Router, navbar y flujo supervisor → psicólogo |
 | `src/components/EstadoBadge.test.jsx` | Color del badge según el estado |
 | `src/components/ConsultaPostulacion.test.jsx` | Consulta de postulación por RUT (válido, inválido y no encontrado) |
+| `src/utils/autenticacion.test.js` | Usuario y contraseña correctos e incorrectos |
 
-**Total: 48 pruebas en 7 archivos.**
+**Total: 51 pruebas en 8 archivos.**
 
 ![Resultado de las pruebas](docs/evidencias/vitest.png)
 
@@ -308,9 +320,11 @@ FullStack-II-002D-CasoAquaFiles/
 │   ├── components/                    # Componentes reutilizables
 │   ├── data/
 │   │   ├── candidatos.js              # Datos simulados y estados
-│   │   └── roles.js                   # Roles y permisos de cada pantalla
+│   │   ├── roles.js                   # Roles y permisos de cada pantalla
+│   │   └── usuarios.js                # Usuarios internos de prueba (ficticios)
 │   ├── pages/                         # Una página por ruta
 │   ├── utils/
+│   │   ├── autenticacion.js           # Validación de usuario y contraseña
 │   │   ├── candidatos.js              # Búsqueda y filtros
 │   │   └── validaciones.js            # Validación de RUT, correo y CV
 │   ├── App.jsx                        # Estado global y rutas
