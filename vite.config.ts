@@ -9,5 +9,7 @@ export default defineConfig({
     environment: 'jsdom', // simula un navegador para probar componentes
     globals: true,
     setupFiles: './src/setupTests.js',
+    // Las pruebas que completan formularios enteros pueden tardar más de 5 s en un PC lento.
+    testTimeout: 15000,
   },
 })
