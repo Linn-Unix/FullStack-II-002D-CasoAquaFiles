@@ -75,8 +75,6 @@
             <artifactId>flyway-mysql</artifactId>
         </dependency>
 
-        <!-- Las ramas siguientes agregan sus dependencias aquí abajo, cada una en su bloque -->
-
         <!-- cifrado de contraseñas (BCrypt) -->
         <dependency>
             <groupId>org.springframework.security</groupId>
