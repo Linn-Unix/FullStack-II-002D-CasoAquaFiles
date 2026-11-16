@@ -32,3 +32,13 @@ app:
   usuarios-prueba:
     crear: ${CREAR_USUARIOS_PRUEBA:true}
     clave: ${CLAVE_USUARIOS_PRUEBA:aqua123}
+
+  jwt:
+    # Mínimo 32 caracteres. En producción SIEMPRE se cambia con la variable JWT_SECRETO.
+    secreto: ${JWT_SECRETO:clave-solo-para-desarrollo-cambiar-en-produccion-aquafiles}
+    # El token dura 60 minutos. El frontend lo renueva cuando le quedan menos de 10.
+    expiracion-minutos: ${JWT_EXPIRACION_MINUTOS:60}
+
+  cors:
+    # Direcciones del frontend que pueden llamar a la API, separadas por coma.
+    origenes: ${CORS_ORIGENES:http://localhost:5173}
