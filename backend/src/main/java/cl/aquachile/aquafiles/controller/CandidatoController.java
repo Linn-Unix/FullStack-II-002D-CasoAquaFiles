@@ -10,15 +10,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cl.aquachile.aquafiles.dto.CandidatoRequest;
 import cl.aquachile.aquafiles.dto.CandidatoResponse;
+import cl.aquachile.aquafiles.dto.PostulacionResponse;
+import cl.aquachile.aquafiles.entity.EstadoCandidato;
 import cl.aquachile.aquafiles.service.CandidatoService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/candidatos")
+@RequestMapping("/api/v1/candidatos")
 public class CandidatoController {
 
     private final CandidatoService candidatoService;
@@ -33,8 +36,12 @@ public class CandidatoController {
     }
 
     @GetMapping
-    public List<CandidatoResponse> listar() {
-        return candidatoService.listar();
+    public List<CandidatoResponse> listar(@RequestParam(required = false) String busqueda,
+                                          @RequestParam(required = false) EstadoCandidato estado,
+                                          @RequestParam(required = false) String familia,
+                                          @RequestParam(required = false) String ubicacion,
+                                          @RequestParam(required = false) String centroCosto) {
+        return candidatoService.listar(busqueda, estado, familia, ubicacion, centroCosto);
     }
 
     @GetMapping("/{id}")
@@ -46,5 +53,10 @@ public class CandidatoController {
     public CandidatoResponse actualizar(@PathVariable Long id,
                                         @Valid @RequestBody CandidatoRequest datos) {
         return candidatoService.actualizar(id, datos);
+    }
+
+    @GetMapping("/consulta")
+    public PostulacionResponse consultar(@RequestParam String rut) {
+        return candidatoService.consultarPorRut(rut);
     }
 }
