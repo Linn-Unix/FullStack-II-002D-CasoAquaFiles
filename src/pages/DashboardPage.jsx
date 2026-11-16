@@ -40,13 +40,15 @@ function DashboardPage({ candidatos, modoOscuro, alCambiarTema }) {
           <IndicadorCard key={indicador.id} valor={indicador.valor} titulo={indicador.titulo} />
         ))}
       </section>
-      <div className="row g-4">
-        <div className="col-lg-4">
-          <div className="panel p-3 h-100">
-            <h2 className="h5">Solicitudes por familia de cargo</h2>
+      
+      {/* Grilla principal ajustada para evitar solapamientos */}
+      <div className="row g-4 align-items-start">
+        <div className="col-12 col-lg-4">
+          <div className="panel p-3">
+            <h2 className="h5 mb-3">Solicitudes por familia de cargo</h2>
             <ul className="list-group list-group-flush">
               {porFamilia.map((fila) => (
-                <li key={fila.familia} className="list-group-item d-flex justify-content-between">
+                <li key={fila.familia} className="list-group-item d-flex justify-content-between align-items-center bg-transparent">
                   {fila.familia}
                   <span className="badge rounded-pill badge-postulante">{fila.total}</span>
                 </li>
@@ -54,12 +56,18 @@ function DashboardPage({ candidatos, modoOscuro, alCambiarTema }) {
             </ul>
           </div>
         </div>
-        <div className="col-lg-8">
+        <div className="col-12 col-lg-8">
           <div className="panel">
-            <div className="table-responsive">
-              <table className="table align-middle">
+            <div className="table-responsive mb-0">
+              <table className="table align-middle mb-0">
                 <thead>
-                  <tr><th>Candidato</th><th>Cargo</th><th>Etapa</th><th className="d-none d-md-table-cell">Responsable</th><th className="d-none d-md-table-cell">Solicitud</th></tr>
+                  <tr>
+                    <th>Candidato</th>
+                    <th>Cargo</th>
+                    <th>Etapa</th>
+                    <th className="d-none d-md-table-cell">Responsable</th>
+                    <th className="d-none d-md-table-cell">Solicitud</th>
+                  </tr>
                 </thead>
                 <tbody>
                   {candidatos.map((candidato) => (

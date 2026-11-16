@@ -1282,3 +1282,61 @@ h2 {
   gap: 4px;
   text-align: left;
 }
+
+/* --- MEJORAS DE TABLA (Puntos 1 y 2) --- */
+
+/* 1. Contraste en modo oscuro para tablas */
+.theme-dark .table td {
+  color: #f8f9fa !important; /* Gris ultra claro para máxima legibilidad */
+}
+.theme-dark .table th {
+  color: #b5c6cb; /* Mantenemos el encabezado sutil pero legible */
+}
+
+/* --- MEJORA DE CONTRASTE MÁS EVIDENTE EN FILAS ALTERNADAS (Punto 2) --- */
+
+/* Modo claro: un tono azulado distinguible en las filas impares */
+.table tbody tr:nth-of-type(odd):not(.selected) td {
+  background-color: rgba(3, 169, 244, 0.12); 
+}
+
+/* Modo oscuro: un tono más contrastado y visible para las filas alternadas */
+.theme-dark .table tbody tr:nth-of-type(odd):not(.selected) td {
+  background-color: #34596b; /* Tono más claro y definido para el modo oscuro */
+}
+
+/* ---------- Corrección de contraste en lista del Dashboard (Modo Oscuro) ---------- */
+.theme-dark .panel .list-group-item {
+  background-color: transparent !important;
+  color: var(--dark-text) !important; /* Texto claro legible */
+  border-color: var(--dark-line) !important;
+}
+
+.theme-dark .panel .list-group-item span.badge {
+  color: var(--dark-text) !important;
+  background-color: var(--dark-surface-alt) !important;
+  border: 1px solid var(--dark-line);
+}
+
+/* --- ALERTAS DE RESOLUCIÓN EN MODO OSCURO (TarjetaSeguimiento) --- */
+.theme-dark .process-card .alert-success {
+  background-color: rgba(25, 135, 84, 0.2) !important;
+  border-color: rgba(46, 204, 113, 0.45) !important;
+  color: #a3f7bf !important;
+}
+
+.theme-dark .process-card .alert-success strong,
+.theme-dark .process-card .alert-success i {
+  color: #5ee69c !important;
+}
+
+.theme-dark .process-card .alert-danger {
+  background-color: rgba(220, 53, 69, 0.22) !important;
+  border-color: rgba(248, 113, 113, 0.45) !important;
+  color: #ffb4bc !important;
+}
+
+.theme-dark .process-card .alert-danger strong,
+.theme-dark .process-card .alert-danger i {
+  color: #ff7b88 !important;
+}

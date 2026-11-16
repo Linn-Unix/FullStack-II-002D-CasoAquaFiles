@@ -66,12 +66,15 @@ function FichaSupervisor({ candidato, actualizarCandidato }) {
       <p>{candidato.cargo} · {candidato.familia}</p>
       <EstadoBadge estado={candidato.estado} />
       <hr />
-      <p><i className="bi bi-person-vcard" /> {candidato.rut}</p>
-      <p><i className="bi bi-envelope" /> {candidato.correo}</p>
 
-      {/* 9. Renderizado condicional: datos en modo lectura o formulario de edición. */}
+      {/* 9. Renderizado condicional: datos en modo lectura (2 columnas) o formulario de edición. */}
       {editando ? (
         <div className="edit-box">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px 16px', marginBottom: '12px' }}>
+            <p className="mb-0"><i className="bi bi-person-vcard" /> {candidato.rut}</p>
+            <p className="mb-0 text-truncate" title={candidato.correo}><i className="bi bi-envelope" /> {candidato.correo}</p>
+          </div>
+
           <label className="form-label small fw-bold w-100">
             Cargo
             <input name="cargo" className={errorCargo ? 'form-control is-invalid' : 'form-control'} value={borrador.cargo} onChange={cambiarBorrador} />
@@ -107,8 +110,12 @@ function FichaSupervisor({ candidato, actualizarCandidato }) {
         </div>
       ) : (
         <>
-          <p><i className="bi bi-geo-alt" /> {candidato.ubicacion}</p>
-          <p><i className="bi bi-building" /> {candidato.centroCosto}</p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px 16px', marginBottom: '16px', alignItems: 'center' }}>
+            <p className="mb-0"><i className="bi bi-person-vcard" /> {candidato.rut}</p>
+            <p className="mb-0"><i className="bi bi-geo-alt" /> {candidato.ubicacion}</p>
+            <p className="mb-0 text-truncate" title={candidato.correo}><i className="bi bi-envelope" /> {candidato.correo}</p>
+            <p className="mb-0"><i className="bi bi-building" /> {candidato.centroCosto}</p>
+          </div>
           <button className="btn btn-outline-secondary btn-sm mb-3" type="button" onClick={empezarEdicion}>
             <i className="bi bi-pencil" /> Editar datos
           </button>
