@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cl.aquachile.aquafiles.dto.CandidatoRequest;
 import cl.aquachile.aquafiles.dto.CandidatoResponse;
+import cl.aquachile.aquafiles.dto.PostulacionRequest;
+import cl.aquachile.aquafiles.dto.PostulacionResponse;
 import cl.aquachile.aquafiles.entity.Candidato;
 import cl.aquachile.aquafiles.entity.EstadoCandidato;
 import cl.aquachile.aquafiles.exception.DatoInvalidoException;
@@ -40,6 +42,11 @@ public class CandidatoService {
     @Transactional
     public CandidatoResponse crear(CandidatoRequest datos) {
         return CandidatoResponse.desde(crearEntidad(datos));
+    }
+
+    @Transactional
+    public PostulacionResponse registrarPostulacion(PostulacionRequest datos) {
+        return PostulacionResponse.desde(crearEntidad(datos.comoCandidato()));
     }
 
     @Transactional
