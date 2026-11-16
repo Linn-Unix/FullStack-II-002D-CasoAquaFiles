@@ -32,7 +32,13 @@ public class ManejadorErrores {
         return responder(HttpStatus.BAD_REQUEST, error.getMessage());
     }
 
-    //Errores de @Valid
+    // Rama 4: usuario o clave incorrectos → 401
+    @ExceptionHandler(CredencialesInvalidasException.class)
+    public ResponseEntity<RespuestaError> credenciales(CredencialesInvalidasException error) {
+        return responder(HttpStatus.UNAUTHORIZED, error.getMessage());
+    }
+
+    // Errores de @Valid: un mensaje por cada campo que falló.
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<RespuestaError> validacion(MethodArgumentNotValidException error) {
         Map<String, String> campos = new LinkedHashMap<>();
@@ -44,7 +50,7 @@ public class ManejadorErrores {
         return ResponseEntity.badRequest().body(cuerpo);
     }
 
-    // 2. JSON mal escrito o un valor que no existe (ej. un estado inventado).
+    // JSON mal escrito o un valor que no existe (ej. un estado inventado).
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<RespuestaError> jsonInvalido(HttpMessageNotReadableException error) {
         return responder(HttpStatus.BAD_REQUEST, "El cuerpo de la petición no es válido.");
