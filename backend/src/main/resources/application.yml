@@ -2,7 +2,7 @@ spring:
   application:
     name: aquafiles-backend
 
-  # 1. Lee el archivo backend/.env si existe (no se sube a GitHub).
+  # 1. Lee el archivo backend/.env si existe.
   config:
     import: optional:file:.env[.properties]
 
@@ -26,3 +26,9 @@ spring:
 
 server:
   port: ${PORT:8080}
+
+# Configuración propia de AquaFiles
+app:
+  usuarios-prueba:
+    crear: ${CREAR_USUARIOS_PRUEBA:true}
+    clave: ${CLAVE_USUARIOS_PRUEBA:aqua123}
