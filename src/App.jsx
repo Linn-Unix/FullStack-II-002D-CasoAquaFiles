@@ -13,6 +13,7 @@ import NoEncontradaPage from './pages/NoEncontradaPage'
 import PostulacionPage from './pages/PostulacionPage'
 import PsicologoPage from './pages/PsicologoPage'
 import SupervisorPage from './pages/SupervisorPage'
+import { borrarSesion, leerSesion } from './services/sesion'
 
 // rolInicial permite partir con una sesión ya iniciada (se usa en las pruebas).
 function App({ rolInicial = null }) {
@@ -25,8 +26,9 @@ function App({ rolInicial = null }) {
 
   // 3. Sesión actual: el rol y el nombre de quien entró.
   //    El postulante entra sin cuenta. El personal interno entra con usuario y contraseña.
-  const [rol, setRol] = useState(rolInicial)
-  const [nombreUsuario, setNombreUsuario] = useState('')
+  const [rol, setRol] = useState(() => rolInicial ?? leerSesion()?.rol ?? null)
+  const [nombreUsuario, setNombreUsuario] = useState(() => leerSesion()?.nombre ?? '')
+  const [errorApi, setErrorApi] = useState('')
 
   // 4. Modo oscuro activado o no.
   const [modoOscuro, setModoOscuro] = useState(false)
@@ -53,6 +55,7 @@ function App({ rolInicial = null }) {
   function iniciarSesion(usuario) {
     setRol(usuario.rol)
     setNombreUsuario(usuario.nombre)
+    setErrorApi('')
   }
 
   function entrarComoPostulante() {
@@ -61,6 +64,7 @@ function App({ rolInicial = null }) {
   }
 
   function cerrarSesion() {
+    borrarSesion()
     setRol(null)
     setNombreUsuario('')
     setIdMiPostulacion(null)
@@ -74,6 +78,14 @@ function App({ rolInicial = null }) {
   return (
     <div className={modoOscuro ? 'theme-dark' : ''}>
       <AppNavbar rol={rol} nombreUsuario={nombreUsuario} alCerrarSesion={cerrarSesion} />
+      {errorApi && (
+        <div className="container mt-3">
+          <div className="alert alert-danger d-flex justify-content-between align-items-center" role="alert">
+            <span><i className="bi bi-exclamation-triangle-fill" /> {errorApi}</span>
+            <button className="btn-close" type="button" aria-label="Cerrar aviso" onClick={() => setErrorApi('')} />
+          </div>
+        </div>
+      )}
 
       {/* 8. Rutas de la aplicación. RutaProtegida solo deja entrar al rol correspondiente. */}
       <Routes>
