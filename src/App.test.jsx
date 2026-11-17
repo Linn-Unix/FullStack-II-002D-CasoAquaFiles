@@ -1,7 +1,7 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import App from './App'
 import { ROLES } from './data/roles'
 
@@ -17,6 +17,15 @@ function renderizarApp(ruta = '/', rol = null) {
 
 // Inicia sesión como personal interno desde el formulario de "/login".
 async function iniciarSesion(usuario, nombreUsuario) {
+  const datos = {
+    analista: { nombre: 'Rosa Martínez', rol: 'ANALISTA' },
+    evaluador: { nombre: 'Luis Herrera', rol: 'EVALUADOR' },
+  }[nombreUsuario]
+  vi.stubGlobal('fetch', vi.fn(async () => ({
+    ok: true,
+    status: 200,
+    text: async () => JSON.stringify({ token: 'token-de-prueba', usuario: nombreUsuario, ...datos }),
+  })))
   await usuario.click(screen.getByRole('link', { name: /personal aquachile/i }))
   await usuario.type(screen.getByLabelText('Usuario'), nombreUsuario)
   await usuario.type(screen.getByLabelText('Contraseña'), 'aqua123')
@@ -35,12 +44,17 @@ describe('Navegación con React Router', () => {
     const usuario = userEvent.setup()
     renderizarApp('/')
     await iniciarSesion(usuario, 'analista')
-    expect(screen.getByRole('heading', { name: 'Panel de Reclutamiento' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Panel de Reclutamiento' })).toBeInTheDocument()
     expect(screen.getByText(/rosa martínez/i)).toBeInTheDocument()
   })
 
   it('no inicia sesión con una contraseña incorrecta', async () => {
     const usuario = userEvent.setup()
+    vi.stubGlobal('fetch', vi.fn(async () => ({
+      ok: false,
+      status: 401,
+      text: async () => JSON.stringify({ mensaje: 'Usuario o contraseña incorrectos.' }),
+    })))
     renderizarApp('/login')
     await usuario.type(screen.getByLabelText('Usuario'), 'analista')
     await usuario.type(screen.getByLabelText('Contraseña'), '1234')
