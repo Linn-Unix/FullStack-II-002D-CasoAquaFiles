@@ -185,6 +185,7 @@ describe('Flujo del proceso', () => {
     await usuario.click(screen.getByRole('button', { name: /derivar al evaluador/i }))
     await usuario.click(screen.getByRole('button', { name: /cerrar sesión/i }))
     await iniciarSesion(usuario, 'evaluador')
+    await screen.findByRole('button', { name: /pedro soto/i })
     await usuario.click(screen.getByRole('button', { name: /pedro soto/i }))
 
     expect(screen.getByText('Buen manejo de equipos')).toBeInTheDocument()
@@ -255,7 +256,7 @@ describe('Flujo del proceso', () => {
     await usuario.click(screen.getByRole('button', { name: /cerrar sesión/i }))
     await iniciarSesion(usuario, 'evaluador')
 
-    expect(screen.getByRole('button', { name: /pedro soto/i })).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: /pedro soto/i })).toBeInTheDocument()
   })
 
   it('el psicólogo registra el resultado y las observaciones de evaluación', async () => {
