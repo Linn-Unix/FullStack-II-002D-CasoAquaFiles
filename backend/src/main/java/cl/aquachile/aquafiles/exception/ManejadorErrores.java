@@ -39,6 +39,12 @@ public class ManejadorErrores {
         return responder(HttpStatus.UNAUTHORIZED, error.getMessage());
     }
 
+    @ExceptionHandler(AlmacenamientoException.class)
+    public ResponseEntity<RespuestaError> almacenamiento(AlmacenamientoException error) {
+        return responder(HttpStatus.INTERNAL_SERVER_ERROR,
+                "No fue posible guardar el archivo. Inténtalo nuevamente.");
+    }
+
     // Errores de @Valid: un mensaje por cada campo que falló.
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<RespuestaError> validacion(MethodArgumentNotValidException error) {
