@@ -12,6 +12,8 @@ import cl.aquachile.aquafiles.dto.PostulacionRequest;
 import cl.aquachile.aquafiles.dto.PostulacionResponse;
 import cl.aquachile.aquafiles.entity.Candidato;
 import cl.aquachile.aquafiles.entity.EstadoCandidato;
+import cl.aquachile.aquafiles.entity.Evaluacion;
+import cl.aquachile.aquafiles.repository.EvaluacionRepository;
 import cl.aquachile.aquafiles.exception.DatoInvalidoException;
 import cl.aquachile.aquafiles.exception.RecursoNoEncontradoException;
 import cl.aquachile.aquafiles.exception.ReglaNegocioException;
@@ -23,9 +25,12 @@ import cl.aquachile.aquafiles.util.RutUtil;
 public class CandidatoService {
 
     private final CandidatoRepository candidatoRepository;
+    private final EvaluacionRepository evaluacionRepository;
 
-    public CandidatoService(CandidatoRepository candidatoRepository) {
+    public CandidatoService(CandidatoRepository candidatoRepository,
+                            EvaluacionRepository evaluacionRepository) {
         this.candidatoRepository = candidatoRepository;
+        this.evaluacionRepository = evaluacionRepository;
     }
 
     public List<CandidatoResponse> listar(String busqueda, EstadoCandidato estado,
@@ -53,7 +58,13 @@ public class CandidatoService {
         Candidato candidato = candidatoRepository.findByRut(RutUtil.formatear(rut))
                 .orElseThrow(() -> new RecursoNoEncontradoException(
                         "No encontramos una postulación con ese RUT."));
-        return PostulacionResponse.desde(candidato);
+        LocalDate fechaEntrevista = null;
+        if (candidato.getEstado() == EstadoCandidato.AGENDADO) {
+            fechaEntrevista = evaluacionRepository.findByCandidatoId(candidato.getId())
+                    .map(Evaluacion::getFechaEntrevista)
+                    .orElse(null);
+        }
+        return PostulacionResponse.desde(candidato, fechaEntrevista);
     }
 
     public CandidatoResponse obtener(Long id) {
@@ -67,7 +78,7 @@ public class CandidatoService {
 
     @Transactional
     public PostulacionResponse registrarPostulacion(PostulacionRequest datos) {
-        return PostulacionResponse.desde(crearEntidad(datos.comoCandidato()));
+        return PostulacionResponse.desde(crearEntidad(datos.comoCandidato()), null);
     }
 
     @Transactional
@@ -97,6 +108,9 @@ public class CandidatoService {
         candidato.setEstado(nuevoEstado);
         if (nuevoEstado == EstadoCandidato.DERIVADO) {
             candidato.setFechaDerivacion(LocalDate.now());
+            if (!evaluacionRepository.existsByCandidatoId(candidato.getId())) {
+                evaluacionRepository.save(new Evaluacion(candidato));
+            }
         } else if (nuevoEstado == EstadoCandidato.FINALIZADO) {
             candidato.setFechaFinalizacion(LocalDate.now());
         }
