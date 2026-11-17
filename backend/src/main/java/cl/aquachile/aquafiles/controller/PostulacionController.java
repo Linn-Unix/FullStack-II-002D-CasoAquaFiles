@@ -13,7 +13,7 @@ import cl.aquachile.aquafiles.service.CandidatoService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/postulaciones")
+@RequestMapping("/api/v1/postulaciones")
 public class PostulacionController {
 
     private final CandidatoService candidatoService;

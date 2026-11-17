@@ -28,11 +28,32 @@ public class CandidatoService {
         this.candidatoRepository = candidatoRepository;
     }
 
-    public List<CandidatoResponse> listar() {
-        return candidatoRepository.findAllByOrderByFechaSolicitudDescIdDesc()
+    public List<CandidatoResponse> listar(String busqueda, EstadoCandidato estado,
+                                          String familia, String ubicacion, String centroCosto) {
+        String texto = limpiarFiltro(busqueda).toLowerCase();
+        String rut = RutUtil.limpiar(texto);
+        if (rut.isEmpty()) {
+            rut = "#";
+        }
+        List<EstadoCandidato> estados = estado == null
+                ? List.of(EstadoCandidato.values())
+                : List.of(estado);
+
+        return candidatoRepository.buscar(texto, rut, estados,
+                        limpiarFiltro(familia), limpiarFiltro(ubicacion), limpiarFiltro(centroCosto))
                 .stream()
                 .map(CandidatoResponse::desde)
                 .toList();
+    }
+
+    public PostulacionResponse consultarPorRut(String rut) {
+        if (!RutUtil.esValido(rut)) {
+            throw new DatoInvalidoException("Ingresa un RUT válido. Ej: 12.345.678-5");
+        }
+        Candidato candidato = candidatoRepository.findByRut(RutUtil.formatear(rut))
+                .orElseThrow(() -> new RecursoNoEncontradoException(
+                        "No encontramos una postulación con ese RUT."));
+        return PostulacionResponse.desde(candidato);
     }
 
     public CandidatoResponse obtener(Long id) {
@@ -105,5 +126,9 @@ public class CandidatoService {
 
     private String normalizarOpcional(String valor) {
         return valor == null || valor.isBlank() ? null : valor.trim();
+    }
+
+    private String limpiarFiltro(String valor) {
+        return valor == null ? "" : valor.trim();
     }
 }

@@ -23,7 +23,7 @@ public record PostulacionResponse(
                 candidato.getFamilia(),
                 candidato.getUbicacion(),
                 candidato.getFechaSolicitud(),
-                candidato.getEstado(),
-                candidato.getEstado().getEtiqueta());
+                candidato.getEstado().estadoParaPostulante(),
+                candidato.getEstado().etiquetaParaPostulante());
     }
 }
