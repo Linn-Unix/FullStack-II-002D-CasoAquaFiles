@@ -83,6 +83,26 @@ public class CandidatoService {
         return CandidatoResponse.desde(candidato);
     }
 
+    @Transactional
+    public CandidatoResponse cambiarEstado(Long id, EstadoCandidato nuevoEstado) {
+        Candidato candidato = buscarEntidad(id);
+        EstadoCandidato estadoActual = candidato.getEstado();
+
+        if (!transicionPermitida(estadoActual, nuevoEstado)) {
+            throw new ReglaNegocioException(
+                    "No se puede cambiar el estado de " + estadoActual.getEtiqueta()
+                            + " a " + nuevoEstado.getEtiqueta() + ".");
+        }
+
+        candidato.setEstado(nuevoEstado);
+        if (nuevoEstado == EstadoCandidato.DERIVADO) {
+            candidato.setFechaDerivacion(LocalDate.now());
+        } else if (nuevoEstado == EstadoCandidato.FINALIZADO) {
+            candidato.setFechaFinalizacion(LocalDate.now());
+        }
+        return CandidatoResponse.desde(candidato);
+    }
+
     public Candidato buscarEntidad(Long id) {
         return candidatoRepository.findById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException(
@@ -126,6 +146,17 @@ public class CandidatoService {
 
     private String normalizarOpcional(String valor) {
         return valor == null || valor.isBlank() ? null : valor.trim();
+    }
+
+    private boolean transicionPermitida(EstadoCandidato actual, EstadoCandidato nuevo) {
+        return switch (actual) {
+            case REVISION -> nuevo == EstadoCandidato.APROBADO
+                    || nuevo == EstadoCandidato.RECHAZADO;
+            case APROBADO -> nuevo == EstadoCandidato.DERIVADO;
+            case DERIVADO -> nuevo == EstadoCandidato.AGENDADO;
+            case AGENDADO -> nuevo == EstadoCandidato.FINALIZADO;
+            case RECHAZADO, FINALIZADO -> false;
+        };
     }
 
     private String limpiarFiltro(String valor) {
