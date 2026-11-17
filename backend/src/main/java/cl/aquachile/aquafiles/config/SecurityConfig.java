@@ -58,7 +58,7 @@ public class SecurityConfig {
                         // 3.4- Solo analista
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/archivos/*").hasRole("ANALISTA")
                         .requestMatchers("/api/v1/candidatos/**").hasRole("ANALISTA")
-                        .requestMatchers("/api/v1/dashboard/**").hasRole("ANALISTA")
+                        .requestMatchers("/api/dashboard/**").hasRole("ANALISTA")
                         // 3.5- Cualquier otra cosa (ej. /api/v1/auth/renovar): al menos con sesión
                         .anyRequest().authenticated())
                 // 4. Nuestro filtro JWT corre antes que el filtro normal de usuario y clave.
