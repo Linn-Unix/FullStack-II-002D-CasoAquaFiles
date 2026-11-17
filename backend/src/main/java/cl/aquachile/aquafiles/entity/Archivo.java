@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -38,6 +40,10 @@ public class Archivo {
 
     @Column(nullable = false)
     private long tamano;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private CategoriaArchivo categoria;
 
     @Column(name = "fecha_carga", nullable = false)
     private LocalDateTime fechaCarga;
@@ -92,6 +98,14 @@ public class Archivo {
 
     public void setTamano(long tamano) {
         this.tamano = tamano;
+    }
+
+    public CategoriaArchivo getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(CategoriaArchivo categoria) {
+        this.categoria = categoria;
     }
 
     public LocalDateTime getFechaCarga() {
