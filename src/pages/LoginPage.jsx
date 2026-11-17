@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import BotonTema from '../components/BotonTema'
 import { RUTA_INICIAL } from '../data/usuarios'
-import { validarCredenciales } from '../utils/autenticacion'
+import { iniciarSesionApi } from '../services/authService'
 
 // Página de inicio de sesión (ruta "/login") para el personal de AquaChile.
 // "alIniciarSesion" guarda en App el usuario que entró.
@@ -10,6 +10,7 @@ function LoginPage({ modoOscuro, alCambiarTema, alIniciarSesion }) {
   // 1. Estados del formulario: lo que se escribe y el mensaje de error.
   const [datos, setDatos] = useState({ usuario: '', clave: '' })
   const [error, setError] = useState('')
+  const [cargando, setCargando] = useState(false)
 
   // 2. useNavigate permite cambiar de página desde el código.
   const navegar = useNavigate()
@@ -21,8 +22,8 @@ function LoginPage({ modoOscuro, alCambiarTema, alIniciarSesion }) {
     setError('')
   }
 
-  // 4. Al enviar: validamos los campos y luego el usuario y la contraseña.
-  function enviar(evento) {
+  // 4. Al enviar: validamos los campos y luego preguntamos al backend.
+  async function enviar(evento) {
     evento.preventDefault()
 
     if (!datos.usuario.trim() || !datos.clave) {
@@ -30,15 +31,16 @@ function LoginPage({ modoOscuro, alCambiarTema, alIniciarSesion }) {
       return
     }
 
-    const usuarioEncontrado = validarCredenciales(datos.usuario, datos.clave)
-    if (!usuarioEncontrado) {
-      setError('Usuario o contraseña incorrectos.')
-      return
+    setCargando(true)
+    try {
+      const sesion = await iniciarSesionApi(datos.usuario, datos.clave)
+      alIniciarSesion(sesion)
+      navegar(RUTA_INICIAL[sesion.rol])
+    } catch (errorApi) {
+      setError(errorApi.message)
+    } finally {
+      setCargando(false)
     }
-
-    // 5. Si los datos son correctos, guardamos el usuario y vamos a su panel.
-    alIniciarSesion(usuarioEncontrado)
-    navegar(RUTA_INICIAL[usuarioEncontrado.rol])
   }
 
   return (
@@ -63,15 +65,11 @@ function LoginPage({ modoOscuro, alCambiarTema, alIniciarSesion }) {
           {/* 6. Renderizado condicional: el error solo aparece si existe. */}
           {error && <div className="alert alert-danger py-2" role="alert">{error}</div>}
 
-          <button className="btn btn-aqua w-100" type="submit">
-            Ingresar <i className="bi bi-box-arrow-in-right" />
+          <button className="btn btn-aqua w-100" type="submit" disabled={cargando}>
+            {cargando ? 'Ingresando...' : <>Ingresar <i className="bi bi-box-arrow-in-right" /></>}
           </button>
         </form>
 
-        {/* 7. Usuarios de prueba para la demo (datos ficticios). */}
-        <p className="role-note">
-          <i className="bi bi-info-circle" /> Demo: <strong>analista</strong> o <strong>evaluador</strong>, contraseña <strong>aqua123</strong>.
-        </p>
         <Link className="d-inline-block mt-3" to="/">Volver al inicio</Link>
       </section>
     </main>

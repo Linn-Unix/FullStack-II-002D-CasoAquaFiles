@@ -1,0 +1,88 @@
+package cl.aquachile.aquafiles.controller;
+
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import cl.aquachile.aquafiles.dto.CandidatoRequest;
+import cl.aquachile.aquafiles.dto.CandidatoResponse;
+import cl.aquachile.aquafiles.dto.PostulacionResponse;
+import cl.aquachile.aquafiles.entity.EstadoCandidato;
+import cl.aquachile.aquafiles.service.CandidatoService;
+import jakarta.validation.Valid;
+
+@RestController
+@RequestMapping("/api/v1/candidatos")
+public class CandidatoController {
+
+    private final CandidatoService candidatoService;
+
+    public CandidatoController(CandidatoService candidatoService) {
+        this.candidatoService = candidatoService;
+    }
+
+    @PostMapping
+    public ResponseEntity<CandidatoResponse> crear(@Valid @RequestBody CandidatoRequest datos) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(candidatoService.crear(datos));
+    }
+
+    @GetMapping
+    public List<CandidatoResponse> listar(@RequestParam(required = false) String busqueda,
+                                          @RequestParam(required = false) EstadoCandidato estado,
+                                          @RequestParam(required = false) String familia,
+                                          @RequestParam(required = false) String ubicacion,
+                                          @RequestParam(required = false) String centroCosto) {
+        return candidatoService.listar(busqueda, estado, familia, ubicacion, centroCosto);
+    }
+
+    @GetMapping("/{id}")
+    public CandidatoResponse obtener(@PathVariable Long id) {
+        return candidatoService.obtener(id);
+    }
+
+    @PutMapping("/{id}")
+    public CandidatoResponse actualizar(@PathVariable Long id,
+                                        @Valid @RequestBody CandidatoRequest datos) {
+        return candidatoService.actualizar(id, datos);
+    }
+
+    @PatchMapping("/{id}/aprobar")
+    public CandidatoResponse aprobar(@PathVariable Long id) {
+        return candidatoService.cambiarEstado(id, EstadoCandidato.APROBADO);
+    }
+
+    @PatchMapping("/{id}/rechazar")
+    public CandidatoResponse rechazar(@PathVariable Long id) {
+        return candidatoService.cambiarEstado(id, EstadoCandidato.RECHAZADO);
+    }
+
+    @PatchMapping("/{id}/derivar")
+    public CandidatoResponse derivar(@PathVariable Long id) {
+        return candidatoService.cambiarEstado(id, EstadoCandidato.DERIVADO);
+    }
+
+    @PatchMapping("/{id}/agendar")
+    public CandidatoResponse agendar(@PathVariable Long id) {
+        return candidatoService.cambiarEstado(id, EstadoCandidato.AGENDADO);
+    }
+
+    @PatchMapping("/{id}/finalizar")
+    public CandidatoResponse finalizar(@PathVariable Long id) {
+        return candidatoService.cambiarEstado(id, EstadoCandidato.FINALIZADO);
+    }
+
+    @GetMapping("/consulta")
+    public PostulacionResponse consultar(@RequestParam String rut) {
+        return candidatoService.consultarPorRut(rut);
+    }
+}

@@ -1,0 +1,12 @@
+# 1. Lo que genera Maven al compilar (se vuelve a crear con mvn package)
+target/
+# 2. Claves reales de la base de datos y el JWT (NUNCA se suben)
+.env
+# 3. CV e informes que se suben al probar la app
+uploads/
+# 4. Configuración personal de IntelliJ y VS Code (cada una tiene la suya)
+.idea/
+*.iml
+.vscode/
+# 5. Archivos de logs
+*.log
