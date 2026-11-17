@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import cl.aquachile.aquafiles.dto.ArchivoResponse;
 import cl.aquachile.aquafiles.entity.Archivo;
 import cl.aquachile.aquafiles.entity.Candidato;
+import cl.aquachile.aquafiles.entity.CategoriaArchivo;
 import cl.aquachile.aquafiles.exception.AlmacenamientoException;
 import cl.aquachile.aquafiles.exception.DatoInvalidoException;
 import cl.aquachile.aquafiles.exception.RecursoNoEncontradoException;
@@ -50,8 +51,13 @@ public class ArchivoService {
 
     @Transactional
     public ArchivoResponse guardarCv(Long candidatoId, MultipartFile archivo) {
-        validarArchivo(archivo);
         Candidato candidato = candidatoService.buscarEntidad(candidatoId);
+        return ArchivoResponse.desde(guardarEntidad(candidato, archivo, CategoriaArchivo.CV));
+    }
+
+    @Transactional
+    public Archivo guardarEntidad(Candidato candidato, MultipartFile archivo, CategoriaArchivo categoria) {
+        validarArchivo(archivo);
         String extension = extensionDe(archivo.getOriginalFilename());
         String nombreAlmacenado = UUID.randomUUID() + "." + extension;
         Path destino = directorio.resolve(nombreAlmacenado).normalize();
@@ -72,10 +78,11 @@ public class ArchivoService {
         entidad.setTipoContenido(tipoContenido(archivo.getContentType()));
         entidad.setExtension(extension);
         entidad.setTamano(archivo.getSize());
+        entidad.setCategoria(categoria);
         entidad.setFechaCarga(LocalDateTime.now());
 
         try {
-            return ArchivoResponse.desde(archivoRepository.save(entidad));
+            return archivoRepository.save(entidad);
         } catch (RuntimeException error) {
             borrarFisico(destino);
             throw error;

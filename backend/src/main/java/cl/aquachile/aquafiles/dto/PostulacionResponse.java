@@ -13,9 +13,14 @@ public record PostulacionResponse(
         String ubicacion,
         LocalDate fechaSolicitud,
         EstadoCandidato estado,
-        String estadoGeneral) {
+        String estadoGeneral,
+        LocalDate fechaEntrevista) {
 
     public static PostulacionResponse desde(Candidato candidato) {
+        return desde(candidato, null);
+    }
+
+    public static PostulacionResponse desde(Candidato candidato, LocalDate fechaEntrevista) {
         return new PostulacionResponse(
                 candidato.getId(),
                 candidato.getNombre(),
@@ -24,6 +29,7 @@ public record PostulacionResponse(
                 candidato.getUbicacion(),
                 candidato.getFechaSolicitud(),
                 candidato.getEstado().estadoParaPostulante(),
-                candidato.getEstado().etiquetaParaPostulante());
+                candidato.getEstado().etiquetaParaPostulante(),
+                fechaEntrevista);
     }
 }
