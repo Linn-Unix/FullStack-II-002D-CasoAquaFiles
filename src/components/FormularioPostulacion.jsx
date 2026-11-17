@@ -68,6 +68,7 @@ function FormularioPostulacion({
       centroCosto: valores.centroCosto,
       estado: ESTADOS.REVISION, // toda postulación nueva parte en revisión técnica
       nombreCv: valores.cv.name,
+      archivoCv: valores.cv,
       fechaEntrevista: '',
       informe: '',
       observaciones: '',

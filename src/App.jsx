@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 // Routes agrupa las rutas y Route define qué página se muestra en cada dirección.
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useLocation } from 'react-router-dom'
 import './App.css'
 import AppNavbar from './components/AppNavbar'
 import RutaProtegida from './components/RutaProtegida'
@@ -14,9 +14,18 @@ import PostulacionPage from './pages/PostulacionPage'
 import PsicologoPage from './pages/PsicologoPage'
 import SupervisorPage from './pages/SupervisorPage'
 import { borrarSesion, leerSesion } from './services/sesion'
+import {
+  adaptarCandidato,
+  actualizarCandidatoApi,
+  cambiarEstado,
+  listarCandidatos,
+  registrarPostulacion,
+  subirArchivo,
+} from './services/candidatosApi'
 
 // rolInicial permite partir con una sesión ya iniciada (se usa en las pruebas).
 function App({ rolInicial = null }) {
+  const location = useLocation()
   // 1. Estado principal: la lista de candidatos.
   //    Vive en App para que todas las páginas compartan los mismos datos.
   const [candidatos, setCandidatos] = useState(candidatosIniciales)
@@ -32,23 +41,67 @@ function App({ rolInicial = null }) {
 
   // 4. Modo oscuro activado o no.
   const [modoOscuro, setModoOscuro] = useState(false)
+  const [apiDisponible, setApiDisponible] = useState(false)
+
+  useEffect(() => {
+    if (!import.meta.env.PROD) return
+    const sesion = leerSesion()
+    const rutasInternas = ['/supervisor', '/psicologo', '/dashboard']
+    if (!sesion?.token || !rutasInternas.includes(location.pathname) || rol === ROLES.POSTULANTE || !rol) return
+
+    listarCandidatos()
+      .then((datos) => {
+        setCandidatos(datos)
+        setApiDisponible(true)
+      })
+      .catch((error) => {
+        setApiDisponible(false)
+        setErrorApi(error.message)
+      })
+  }, [location.pathname, rol])
 
   // 5. Actualiza los datos de un candidato.
   //    map() recorre la lista y reemplaza solo el candidato con ese id.
   function actualizarCandidato(id, cambios) {
+    const candidatoActual = candidatos.find((candidato) => candidato.id === id)
+    const actualizado = candidatoActual ? { ...candidatoActual, ...cambios } : null
     setCandidatos((actuales) =>
-      actuales.map((candidato) => (candidato.id === id ? { ...candidato, ...cambios } : candidato)),
+      actuales.map((candidato) => (candidato.id === id ? actualizado : candidato)),
     )
+
+    if (!leerSesion()?.token || !apiDisponible || !actualizado) return
+
+    const operacion = cambios.estado
+      ? cambiarEstado(id, cambios.estado)
+      : actualizarCandidatoApi(actualizado)
+    operacion
+      .then((respuesta) => setCandidatos((actuales) =>
+        actuales.map((candidato) => (candidato.id === id ? { ...candidato, ...respuesta } : candidato)),
+      ))
+      .catch((error) => setErrorApi(error.message))
   }
 
   // 6. Agrega una nueva postulación al inicio de la lista.
   function agregarCandidato(candidato) {
     setCandidatos((actuales) => [candidato, ...actuales])
     setIdMiPostulacion(candidato.id)
+
+    registrarPostulacion(candidato)
+      .then(async (respuesta) => {
+        let actualizado = { ...candidato, ...respuesta }
+        if (candidato.archivoCv && actualizado.id) {
+          await subirArchivo(actualizado.id, candidato.archivoCv)
+        }
+        setCandidatos((actuales) => actuales.map((actual) =>
+          actual.id === candidato.id ? adaptarCandidato({ ...actualizado, id: actualizado.id }) : actual,
+        ))
+        setIdMiPostulacion(actualizado.id)
+      })
+      .catch((error) => setErrorApi(error.message))
   }
 
   function crearSolicitud(candidato) {
-    setCandidatos((actuales) => [candidato, ...actuales])
+    agregarCandidato(candidato)
   }
 
   // 7. Inicio y cierre de sesión.
