@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -53,6 +54,31 @@ public class CandidatoController {
     public CandidatoResponse actualizar(@PathVariable Long id,
                                         @Valid @RequestBody CandidatoRequest datos) {
         return candidatoService.actualizar(id, datos);
+    }
+
+    @PatchMapping("/{id}/aprobar")
+    public CandidatoResponse aprobar(@PathVariable Long id) {
+        return candidatoService.cambiarEstado(id, EstadoCandidato.APROBADO);
+    }
+
+    @PatchMapping("/{id}/rechazar")
+    public CandidatoResponse rechazar(@PathVariable Long id) {
+        return candidatoService.cambiarEstado(id, EstadoCandidato.RECHAZADO);
+    }
+
+    @PatchMapping("/{id}/derivar")
+    public CandidatoResponse derivar(@PathVariable Long id) {
+        return candidatoService.cambiarEstado(id, EstadoCandidato.DERIVADO);
+    }
+
+    @PatchMapping("/{id}/agendar")
+    public CandidatoResponse agendar(@PathVariable Long id) {
+        return candidatoService.cambiarEstado(id, EstadoCandidato.AGENDADO);
+    }
+
+    @PatchMapping("/{id}/finalizar")
+    public CandidatoResponse finalizar(@PathVariable Long id) {
+        return candidatoService.cambiarEstado(id, EstadoCandidato.FINALIZADO);
     }
 
     @GetMapping("/consulta")
