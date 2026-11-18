@@ -2,7 +2,7 @@ spring:
   application:
     name: aquafiles-backend
 
-  # 1. Lee el archivo backend/.env si existe (no se sube a GitHub).
+  # 1. Lee el archivo backend/.env si existe.
   config:
     import: optional:file:.env[.properties]
 
@@ -23,6 +23,29 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
 
 server:
   port: ${PORT:8080}
+
+# Configuración propia de AquaFiles
+app:
+  usuarios-prueba:
+    crear: ${CREAR_USUARIOS_PRUEBA:true}
+    clave: ${CLAVE_USUARIOS_PRUEBA:aqua123}
+
+  jwt:
+    # Mínimo 32 caracteres. En producción SIEMPRE se cambia con la variable JWT_SECRETO.
+    secreto: ${JWT_SECRETO:clave-solo-para-desarrollo-cambiar-en-produccion-aquafiles}
+    # El token dura 60 minutos. El frontend lo renueva cuando le quedan menos de 10.
+    expiracion-minutos: ${JWT_EXPIRACION_MINUTOS:60}
+
+  cors:
+    # Direcciones del frontend que pueden llamar a la API, separadas por coma.
+    origenes: ${CORS_ORIGENES:http://localhost:5173}
+
+  archivos:
+    directorio: ${ARCHIVOS_DIRECTORIO:uploads}

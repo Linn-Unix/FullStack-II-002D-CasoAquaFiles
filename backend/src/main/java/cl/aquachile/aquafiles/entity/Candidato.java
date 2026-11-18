@@ -1,6 +1,8 @@
 package cl.aquachile.aquafiles.entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.OneToMany;
 
 @Entity
 @Table(name = "candidatos")
@@ -61,6 +64,9 @@ public class Candidato {
 
     @Column(name = "fecha_finalizacion")
     private LocalDate fechaFinalizacion;
+
+    @OneToMany(mappedBy = "candidato")
+    private List<Archivo> archivos = new ArrayList<>();
 
     public Candidato() {
     }
@@ -179,5 +185,11 @@ public class Candidato {
 
     public void setFechaFinalizacion(LocalDate fechaFinalizacion) {
         this.fechaFinalizacion = fechaFinalizacion;
+    }
+
+    public java.util.Optional<Archivo> buscarCv() {
+        return archivos.stream()
+                .filter(archivo -> archivo.getCategoria() == CategoriaArchivo.CV)
+                .findFirst();
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 // @RestControllerAdvice atrapa las excepciones de TODOS los controladores.
 // Cada @ExceptionHandler dice "si pasa este error, responde así".
@@ -32,7 +33,19 @@ public class ManejadorErrores {
         return responder(HttpStatus.BAD_REQUEST, error.getMessage());
     }
 
-    //Errores de @Valid
+    // Rama 4: usuario o clave incorrectos → 401
+    @ExceptionHandler(CredencialesInvalidasException.class)
+    public ResponseEntity<RespuestaError> credenciales(CredencialesInvalidasException error) {
+        return responder(HttpStatus.UNAUTHORIZED, error.getMessage());
+    }
+
+    @ExceptionHandler(AlmacenamientoException.class)
+    public ResponseEntity<RespuestaError> almacenamiento(AlmacenamientoException error) {
+        return responder(HttpStatus.INTERNAL_SERVER_ERROR,
+                "No fue posible guardar el archivo. Inténtalo nuevamente.");
+    }
+
+    // Errores de @Valid: un mensaje por cada campo que falló.
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<RespuestaError> validacion(MethodArgumentNotValidException error) {
         Map<String, String> campos = new LinkedHashMap<>();
@@ -44,10 +57,16 @@ public class ManejadorErrores {
         return ResponseEntity.badRequest().body(cuerpo);
     }
 
-    // 2. JSON mal escrito o un valor que no existe (ej. un estado inventado).
+    // JSON mal escrito o un valor que no existe (ej. un estado inventado).
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<RespuestaError> jsonInvalido(HttpMessageNotReadableException error) {
         return responder(HttpStatus.BAD_REQUEST, "El cuerpo de la petición no es válido.");
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<RespuestaError> tipoInvalido(MethodArgumentTypeMismatchException error) {
+        return responder(HttpStatus.BAD_REQUEST,
+                "El valor '" + error.getValue() + "' no es válido para " + error.getName() + ".");
     }
 
     private ResponseEntity<RespuestaError> responder(HttpStatus estado, String mensaje) {
