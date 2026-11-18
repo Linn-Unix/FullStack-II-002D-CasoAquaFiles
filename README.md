@@ -247,16 +247,23 @@ Puntos que necesitamos confirmar con AquaChile para las próximas etapas:
 
 ## Estado del proyecto
 
-AquaFiles es actualmente un **MVP frontend**. Los datos y los roles están simulados para mostrar el flujo completo. Todavía no tiene inicio de sesión real ni un backend conectado.
+AquaFiles incluye actualmente un **frontend React** integrado con un **backend Spring Boot**.
 
-Próximos pasos para una versión productiva:
+Funciones implementadas:
 
-- Backend monolítico y base de datos (Hito 2: candidatos, solicitudes y evaluaciones).
-- Inicio de sesión real con permisos validados en el backend (hoy los usuarios están en el código y la sesión se pierde al recargar).
-- Asignar un profesional responsable al derivar y filtrar las solicitudes por responsable.
-- Almacenamiento seguro de currículums e informes.
+- Autenticación real con JWT y permisos por rol.
+- Persistencia de candidatos, postulaciones, archivos y evaluaciones en MySQL.
+- Migraciones versionadas con Flyway.
+- Filtros, estados, derivaciones, agendamiento y finalización del proceso.
+- Almacenamiento local configurable para currículums e informes.
+- Pruebas unitarias del backend y frontend.
+
+Pendientes opcionales para una versión productiva:
+
+- Asignar profesional responsable al derivar y filtrar solicitudes por responsable.
 - Notificaciones reales al evaluador.
 - Historial de cambios por solicitud.
+- Acceso y almacenamiento de archivos en almacenamiento persistente gestionado.
 
 ---
 
@@ -288,7 +295,7 @@ npm run test:run   # ejecuta todas las pruebas una vez
 | `src/App.test.jsx` | Navegación con React Router, navbar y flujo supervisor → psicólogo |
 | `src/components/EstadoBadge.test.jsx` | Color del badge según el estado |
 | `src/components/ConsultaPostulacion.test.jsx` | Consulta de postulación por RUT (válido, inválido y no encontrado) |
-| `src/utils/autenticacion.test.js` | Usuario y contraseña correctos e incorrectos |
+| `src/services/authService.test.js` | Autenticación contra el servicio API |
 
 **Total: 51 pruebas en 8 archivos.**
 
