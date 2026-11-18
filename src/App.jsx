@@ -22,6 +22,11 @@ import {
   registrarPostulacion,
   subirArchivo,
 } from './services/candidatosApi'
+import {
+  guardarEvaluacionApi,
+  listarEvaluaciones,
+  subirInformeApi,
+} from './services/evaluacionesService'
 
 // rolInicial permite partir con una sesión ya iniciada (se usa en las pruebas).
 function App({ rolInicial = null }) {
@@ -29,6 +34,9 @@ function App({ rolInicial = null }) {
   // 1. Estado principal: la lista de candidatos.
   //    Vive en App para que todas las páginas compartan los mismos datos.
   const [candidatos, setCandidatos] = useState(candidatosIniciales)
+
+  const [evaluaciones, setEvaluaciones] = useState([])
+  const [evaluacionesCargadas, setEvaluacionesCargadas] = useState(false)
 
   // 2. id de la postulación del usuario que entra como postulante.
   const [idMiPostulacion, setIdMiPostulacion] = useState(null)
@@ -60,6 +68,18 @@ function App({ rolInicial = null }) {
       })
   }, [location.pathname, rol])
 
+  useEffect(() => {
+    if (rol !== ROLES.PSICOLOGO || !leerSesion()?.token) return
+
+    setEvaluacionesCargadas(false)
+    listarEvaluaciones()
+      .then((datos) => {
+        setEvaluaciones(datos)
+        setEvaluacionesCargadas(true)
+      })
+      .catch((error) => setErrorApi(error.message))
+  }, [rol])
+
   // 5. Actualiza los datos de un candidato.
   //    map() recorre la lista y reemplaza solo el candidato con ese id.
   function actualizarCandidato(id, cambios) {
@@ -79,6 +99,25 @@ function App({ rolInicial = null }) {
         actuales.map((candidato) => (candidato.id === id ? { ...candidato, ...respuesta } : candidato)),
       ))
       .catch((error) => setErrorApi(error.message))
+  }
+
+  async function actualizarEvaluacion(id, cambios, archivo) {
+    const actual = evaluaciones.find((evaluacion) => evaluacion.id === id)
+
+    try {
+      const actualizada = archivo
+        ? await subirInformeApi(id, archivo)
+        : await guardarEvaluacionApi({ ...actual, ...cambios })
+
+      setEvaluaciones((lista) =>
+        lista.map((evaluacion) =>
+          evaluacion.id === id ? actualizada : evaluacion,
+        ),
+      )
+      setErrorApi('')
+    } catch (error) {
+      setErrorApi(error.message)
+    }
   }
 
   // 6. Agrega una nueva postulación al inicio de la lista.
@@ -171,7 +210,11 @@ function App({ rolInicial = null }) {
           path="/psicologo"
           element={
             <RutaProtegida rolActual={rol} rolesPermitidos={[ROLES.PSICOLOGO]}>
-              <PsicologoPage {...propsTema} candidatos={candidatos} actualizarCandidato={actualizarCandidato} />
+              <PsicologoPage
+                {...propsTema}
+                candidatos={evaluacionesCargadas ? evaluaciones : candidatos}
+                actualizarCandidato={actualizarEvaluacion}
+              />
             </RutaProtegida>
           }
         />
