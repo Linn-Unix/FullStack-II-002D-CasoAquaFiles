@@ -26,7 +26,8 @@ function FichaPsicologo({ candidato, actualizarCandidato }) {
       setError('Guarda el resultado de la evaluación antes de subir el informe.')
       return
     }
-    actualizarCandidato(candidato.id, { informe: archivo.name, estado: ESTADOS.FINALIZADO })
+    // NUEVO: el tercer parámetro es el archivo, para subirlo al backend.
+    actualizarCandidato(candidato.id, { informe: archivo.name, estado: ESTADOS.FINALIZADO }, archivo)
   }
 
   function guardarEvaluacion() {
