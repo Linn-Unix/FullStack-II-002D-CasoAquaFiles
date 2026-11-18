@@ -13,6 +13,7 @@ import cl.aquachile.aquafiles.entity.Candidato;
 import cl.aquachile.aquafiles.entity.EstadoCandidato;
 import cl.aquachile.aquafiles.exception.ReglaNegocioException;
 import cl.aquachile.aquafiles.repository.CandidatoRepository;
+import cl.aquachile.aquafiles.repository.EvaluacionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,11 +26,14 @@ class CandidatoServicePostulacionTest {
     @Mock
     private CandidatoRepository candidatoRepository;
 
+    @Mock
+    private EvaluacionRepository evaluacionRepository;
+
     private CandidatoService candidatoService;
 
     @BeforeEach
     void setUp() {
-        candidatoService = new CandidatoService(candidatoRepository);
+        candidatoService = new CandidatoService(candidatoRepository, evaluacionRepository);
     }
 
     @Test
