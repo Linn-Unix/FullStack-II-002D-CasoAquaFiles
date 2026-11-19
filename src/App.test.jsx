@@ -1,9 +1,11 @@
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
 import App from './App'
+import { candidatosApi, loginApi, simularApi } from './test/simularApi'
 import { ROLES } from './data/roles'
+import { guardarSesion } from './services/sesion'
 
 // MemoryRouter simula el navegador en las pruebas y permite partir en cualquier ruta.
 // "rol" permite entrar con un rol ya elegido.
@@ -17,19 +19,23 @@ function renderizarApp(ruta = '/', rol = null) {
 
 // Inicia sesión como personal interno desde el formulario de "/login".
 async function iniciarSesion(usuario, nombreUsuario) {
-  const datos = {
-    analista: { nombre: 'Rosa Martínez', rol: 'ANALISTA' },
-    evaluador: { nombre: 'Luis Herrera', rol: 'EVALUADOR' },
-  }[nombreUsuario]
-  vi.stubGlobal('fetch', vi.fn(async () => ({
-    ok: true,
-    status: 200,
-    text: async () => JSON.stringify({ token: 'token-de-prueba', usuario: nombreUsuario, ...datos }),
-  })))
+  simularApi({
+    'POST /auth/login': loginApi(nombreUsuario),
+  })
   await usuario.click(screen.getByRole('link', { name: /personal aquachile/i }))
   await usuario.type(screen.getByLabelText('Usuario'), nombreUsuario)
   await usuario.type(screen.getByLabelText('Contraseña'), 'aqua123')
   await usuario.click(screen.getByRole('button', { name: /ingresar/i }))
+}
+
+function prepararSesionApi(rol = ROLES.SUPERVISOR) {
+  vi.stubEnv('PROD', true)
+  guardarSesion({
+    token: 'token-de-prueba',
+    usuario: 'usuario-prueba',
+    nombre: 'Usuario de prueba',
+    rol,
+  })
 }
 
 describe('Navegación con React Router', () => {
@@ -50,16 +56,32 @@ describe('Navegación con React Router', () => {
 
   it('no inicia sesión con una contraseña incorrecta', async () => {
     const usuario = userEvent.setup()
-    vi.stubGlobal('fetch', vi.fn(async () => ({
-      ok: false,
-      status: 401,
-      text: async () => JSON.stringify({ mensaje: 'Usuario o contraseña incorrectos.' }),
-    })))
+    simularApi({
+      'POST /auth/login': {
+        status: 401,
+        cuerpo: {
+          mensaje: 'Usuario o contraseña incorrectos.',
+        },
+      },
+    })
     renderizarApp('/login')
     await usuario.type(screen.getByLabelText('Usuario'), 'analista')
     await usuario.type(screen.getByLabelText('Contraseña'), '1234')
     await usuario.click(screen.getByRole('button', { name: /ingresar/i }))
     expect(screen.getByRole('alert')).toHaveTextContent('Usuario o contraseña incorrectos.')
+  })
+
+  it('muestra un error si el backend está apagado', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => {
+      throw new TypeError('Failed to fetch')
+    }))
+    const usuario = userEvent.setup()
+    renderizarApp('/login')
+    await usuario.type(screen.getByLabelText('Usuario'), 'analista')
+    await usuario.type(screen.getByLabelText('Contraseña'), 'aqua123')
+    await usuario.click(screen.getByRole('button', { name: /ingresar/i }))
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(/no se pudo conectar/i)
   })
 
   it('navega desde el menú del navbar', async () => {
@@ -111,6 +133,14 @@ describe('Navegación con React Router', () => {
 
 describe('Flujo del proceso', () => {
   it('el supervisor crea una nueva solicitud', async () => {
+    const fetchFalso = simularApi({
+      'POST /postulaciones': {
+        cuerpo: { id: 99 },
+      },
+      'POST /postulaciones/99/cv': {
+        cuerpo: {},
+      },
+    })
     const usuario = userEvent.setup()
     renderizarApp('/supervisor', ROLES.SUPERVISOR)
 
@@ -125,6 +155,12 @@ describe('Flujo del proceso', () => {
 
     expect(screen.getByRole('status')).toHaveTextContent('Solicitud creada para Andrea Muñoz.')
     expect(screen.getByRole('row', { name: /andrea muñoz/i })).toBeInTheDocument()
+    await waitFor(() => {
+      expect(fetchFalso).toHaveBeenCalledWith(
+        expect.stringContaining('/postulaciones'),
+        expect.objectContaining({ method: 'POST' }),
+      )
+    })
   })
 
   it('el supervisor filtra por estado', async () => {
@@ -273,3 +309,39 @@ describe('Flujo del proceso', () => {
     expect(screen.getByDisplayValue('Requiere seguimiento durante la adaptación.')).toBeInTheDocument()
   })
 })
+
+describe('Analista con datos de la API', () => {
+  it('carga los candidatos del backend', async () => {
+    prepararSesionApi()
+    simularApi({
+      'GET /candidatos': { cuerpo: candidatosApi },
+    })
+    renderizarApp('/supervisor', ROLES.SUPERVISOR)
+
+    expect(await screen.findAllByText('Juanito Pérez')).not.toHaveLength(0)
+  })
+
+  it('aprueba a un candidato y actualiza su estado', async () => {
+    prepararSesionApi()
+    const enRevision = candidatosApi.find((candidato) => candidato.estado === 'REVISION')
+    const fetchFalso = simularApi({
+      'GET /candidatos': { cuerpo: [enRevision] },
+      [`PATCH /candidatos/${enRevision.id}/aprobar`]: {
+        cuerpo: { ...enRevision, estado: 'APROBADO' },
+      },
+    })
+    const usuario = userEvent.setup()
+    renderizarApp('/supervisor', ROLES.SUPERVISOR)
+
+    await usuario.click(await screen.findByRole('button', { name: /aprobar etapa técnica/i }))
+
+    expect(await screen.findByRole('button', { name: /derivar al evaluador/i })).toBeInTheDocument()
+    await waitFor(() => {
+      expect(fetchFalso).toHaveBeenCalledWith(
+        expect.stringContaining(`/candidatos/${enRevision.id}/aprobar`),
+        expect.objectContaining({ method: 'PATCH' }),
+      )
+    })
+  })
+})
+
