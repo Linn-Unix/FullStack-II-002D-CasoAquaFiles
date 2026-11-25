@@ -138,6 +138,18 @@ public class CandidatoService {
         return CandidatoResponse.desde(candidato);
     }
 
+    // Derivar exige indicar el profesional responsable.
+    @Transactional
+    public CandidatoResponse derivar(Long id, String responsable) {
+        if (responsable == null || responsable.isBlank()) {
+            throw new DatoInvalidoException("Selecciona el profesional responsable.");
+        }
+        cambiarEstado(id, EstadoCandidato.DERIVADO);
+        Candidato candidato = buscarEntidad(id);
+        candidato.setResponsable(responsable.trim());
+        return CandidatoResponse.desde(candidato);
+    }
+
     public Candidato buscarEntidad(Long id) {
         return candidatoRepository.findById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException(
