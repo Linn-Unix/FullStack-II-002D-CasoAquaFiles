@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { ESTADOS, RESULTADOS } from '../data/candidatos'
+import AgendarGoogleCalendar from './AgendarGoogleCalendar'
 import ArchivosCandidato from './ArchivosCandidato'
 import EstadoBadge from './EstadoBadge'
 
@@ -57,9 +58,12 @@ function FichaPsicologo({ candidato, actualizarCandidato }) {
       </div>
 
       <label className="date-field">
-        Fecha de entrevista (Teams)
+        Fecha de entrevista
         <input type="date" value={candidato.fechaEntrevista} onChange={agendar} disabled={finalizado} />
       </label>
+
+      {/* Con la fecha agendada, el evaluador puede crear la reunión en Google Calendar. */}
+      {candidato.fechaEntrevista && !finalizado && <AgendarGoogleCalendar key={candidato.fechaEntrevista} candidato={candidato} />}
 
       {/* 3. Renderizado condicional según el avance del proceso. */}
       {!candidato.fechaEntrevista && (

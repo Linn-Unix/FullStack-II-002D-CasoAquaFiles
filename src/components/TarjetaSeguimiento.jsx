@@ -61,7 +61,7 @@ function TarjetaSeguimiento({ candidato }) {
       {/* Si la entrevista está agendada y sigue en curso, mostramos la fecha */}
       {candidato.estado === ESTADOS.AGENDADO && candidato.fechaEntrevista && (
         <p className="stage-note">
-          Tu entrevista psicolaboral es el {formatearFecha(candidato.fechaEntrevista)} y se realizará por Teams.
+          Tu entrevista psicolaboral es el {formatearFecha(candidato.fechaEntrevista)} y se realizará por Google Meet. Revisa la invitación en tu correo.
         </p>
       )}
 

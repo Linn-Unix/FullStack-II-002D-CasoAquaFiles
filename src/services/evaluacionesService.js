@@ -9,6 +9,7 @@ export function adaptarEvaluacion(dato) {
     candidatoId: dato.candidatoId,
     nombre: dato.nombre,
     rut: dato.rut,
+    correo: dato.correo ?? '',
     cargo: dato.cargo,
     familia: dato.familia,
     ubicacion: dato.ubicacion,
