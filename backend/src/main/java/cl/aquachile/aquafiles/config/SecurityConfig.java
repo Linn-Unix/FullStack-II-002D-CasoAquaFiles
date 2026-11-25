@@ -56,6 +56,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/evaluaciones/**").hasRole("EVALUADOR")
                         // 3.3- Los dos roles internos
                         .requestMatchers(HttpMethod.GET, "/api/v1/archivos/*/descargar").hasAnyRole("ANALISTA", "EVALUADOR")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/candidatos/*/archivos").hasAnyRole("ANALISTA", "EVALUADOR")
                         // 3.4- Solo analista
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/archivos/*").hasRole("ANALISTA")
                         .requestMatchers("/api/v1/candidatos/**").hasRole("ANALISTA")
