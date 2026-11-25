@@ -35,6 +35,7 @@ public class DatosIniciales implements CommandLineRunner {
     public void run(String... args) {
         crearSiNoExiste("analista", "Rosa Martínez", Rol.ANALISTA);
         crearSiNoExiste("evaluador", "Luis Herrera", Rol.EVALUADOR);
+        crearSiNoExiste("evaluadora", "Andrea Vidal", Rol.EVALUADOR);
         crearOfertasDeEjemplo();
     }
 
