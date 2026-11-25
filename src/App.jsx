@@ -31,6 +31,8 @@ import {
   listarEvaluaciones,
   subirInformeApi,
 } from './services/evaluacionesService'
+import { listarEvaluadores } from './services/usuariosService'
+import { EVALUADORES } from './data/candidatos'
 
 // rolInicial permite partir con una sesión ya iniciada (se usa en las pruebas).
 function App({ rolInicial = null }) {
@@ -40,6 +42,8 @@ function App({ rolInicial = null }) {
   const [candidatos, setCandidatos] = useState(candidatosIniciales)
 
   const [evaluaciones, setEvaluaciones] = useState([])
+  // Profesionales que el analista puede asignar como responsables al derivar.
+  const [evaluadores, setEvaluadores] = useState(EVALUADORES)
   const [evaluacionesCargadas, setEvaluacionesCargadas] = useState(false)
 
   // 2. id de la postulación del usuario que entra como postulante.
@@ -87,6 +91,15 @@ function App({ rolInicial = null }) {
       .catch((error) => setErrorApi(error.message))
   }, [rol])
 
+  useEffect(() => {
+    if (rol !== ROLES.SUPERVISOR || !leerSesion()?.token) return
+    listarEvaluadores()
+      .then((nombres) => nombres.length > 0 && setEvaluadores(nombres))
+      .catch(() => {
+        // Si falla, se mantiene la lista de demostración.
+      })
+  }, [rol])
+
   // 5. Actualiza los datos de un candidato.
   //    map() recorre la lista y reemplaza solo el candidato con ese id.
   function actualizarCandidato(id, cambios) {
@@ -99,7 +112,7 @@ function App({ rolInicial = null }) {
     if (!leerSesion()?.token || !apiDisponible || !actualizado) return
 
     const operacion = cambios.estado
-      ? cambiarEstado(id, cambios.estado)
+      ? cambiarEstado(id, cambios.estado, cambios)
       : actualizarCandidatoApi(actualizado)
     operacion
       .then((respuesta) => setCandidatos((actuales) =>
@@ -225,7 +238,7 @@ function App({ rolInicial = null }) {
           path="/supervisor"
           element={
             <RutaProtegida rolActual={rol} rolesPermitidos={[ROLES.SUPERVISOR]}>
-              <SupervisorPage {...propsTema} candidatos={candidatos} actualizarCandidato={actualizarCandidato} alCrearSolicitud={crearSolicitud} />
+              <SupervisorPage {...propsTema} candidatos={candidatos} evaluadores={evaluadores} actualizarCandidato={actualizarCandidato} alCrearSolicitud={crearSolicitud} />
             </RutaProtegida>
           }
         />
