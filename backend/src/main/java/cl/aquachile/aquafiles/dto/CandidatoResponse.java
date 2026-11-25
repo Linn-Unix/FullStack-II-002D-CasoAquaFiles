@@ -21,7 +21,9 @@ public record CandidatoResponse(
         String estadoEtiqueta,
         LocalDate fechaSolicitud,
         LocalDate fechaDerivacion,
-        LocalDate fechaFinalizacion) {
+        LocalDate fechaFinalizacion,
+        Long ofertaId,
+        String ofertaCargo) {
 
     public static CandidatoResponse desde(Candidato candidato) {
         return new CandidatoResponse(
@@ -40,6 +42,8 @@ public record CandidatoResponse(
                 candidato.getEstado().getEtiqueta(),
                 candidato.getFechaSolicitud(),
                 candidato.getFechaDerivacion(),
-                candidato.getFechaFinalizacion());
+                candidato.getFechaFinalizacion(),
+                candidato.getOferta() == null ? null : candidato.getOferta().getId(),
+                candidato.getOferta() == null ? null : candidato.getOferta().getCargo());
     }
 }

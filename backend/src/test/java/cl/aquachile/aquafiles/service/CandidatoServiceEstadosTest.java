@@ -20,6 +20,7 @@ import cl.aquachile.aquafiles.entity.EstadoCandidato;
 import cl.aquachile.aquafiles.exception.ReglaNegocioException;
 import cl.aquachile.aquafiles.repository.CandidatoRepository;
 import cl.aquachile.aquafiles.repository.EvaluacionRepository;
+import cl.aquachile.aquafiles.repository.OfertaRepository;
 
 @ExtendWith(MockitoExtension.class)
 class CandidatoServiceEstadosTest {
@@ -30,11 +31,14 @@ class CandidatoServiceEstadosTest {
     @Mock
     private EvaluacionRepository evaluacionRepository;
 
+    @Mock
+    private OfertaRepository ofertaRepository;
+
     private CandidatoService candidatoService;
 
     @BeforeEach
     void setUp() {
-        candidatoService = new CandidatoService(candidatoRepository, evaluacionRepository);
+        candidatoService = new CandidatoService(candidatoRepository, evaluacionRepository, ofertaRepository);
     }
 
     @Test

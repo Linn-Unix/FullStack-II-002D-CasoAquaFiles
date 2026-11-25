@@ -20,7 +20,9 @@ public record PostulacionRequest(
         @Size(min = 3, max = 120) String cargo,
         @NotBlank(message = "La familia de cargo es obligatoria.") String familia,
         @NotBlank(message = "La ubicación es obligatoria.") String ubicacion,
-        @NotBlank(message = "El centro de costos es obligatorio.") String centroCosto) {
+        @NotBlank(message = "El centro de costos es obligatorio.") String centroCosto,
+        // Opcional: id de la oferta publicada a la que postula.
+        Long ofertaId) {
 
     public CandidatoRequest comoCandidato() {
         return new CandidatoRequest(
