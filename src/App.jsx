@@ -51,10 +51,11 @@ function App({ rolInicial = null }) {
   const [modoOscuro, setModoOscuro] = useState(false)
   const [apiDisponible, setApiDisponible] = useState(false)
 
+  // Solo el analista necesita la lista completa de candidatos.
+  // El evaluador trae sus datos desde /evaluaciones (no tiene permiso para /candidatos).
   useEffect(() => {
-    if (!import.meta.env.PROD) return
     const sesion = leerSesion()
-    const rutasInternas = ['/supervisor', '/psicologo', '/dashboard']
+    const rutasInternas = ['/supervisor', '/dashboard']
     if (!sesion?.token || !rutasInternas.includes(location.pathname) || rol === ROLES.POSTULANTE || !rol) return
 
     listarCandidatos()
