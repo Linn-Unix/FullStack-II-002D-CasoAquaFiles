@@ -15,8 +15,8 @@ public class DashboardController {
         this.dashboardService = dashboardService;
     }
 
-    // GET /api/dashboard/resumen (solo ANALISTA)
-    @GetMapping("/api/dashboard/resumen")
+    // GET /api/v1/dashboard/resumen (solo ANALISTA)
+    @GetMapping("/api/v1/dashboard/resumen")
     public DashboardResponse resumen() {
         return dashboardService.resumen();
     }
