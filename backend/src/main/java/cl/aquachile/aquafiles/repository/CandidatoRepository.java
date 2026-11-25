@@ -15,6 +15,8 @@ public interface CandidatoRepository extends JpaRepository<Candidato, Long> {
 
     boolean existsByRut(String rut);
 
+    boolean existsByOfertaId(Long ofertaId);
+
     boolean existsByRutAndIdNot(String rut, Long id);
 
     Optional<Candidato> findByRut(String rut);
