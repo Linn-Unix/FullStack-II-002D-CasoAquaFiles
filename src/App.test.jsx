@@ -346,6 +346,19 @@ describe('Analista con datos de la API', () => {
     })
   })
 
+  it('el evaluador con sesión solo ve las evaluaciones del backend', async () => {
+    prepararSesionApi(ROLES.PSICOLOGO)
+    simularApi({
+      'GET /evaluaciones': {
+        cuerpo: [{ id: 1, candidatoId: 3, nombre: 'Tomás Fuentes', rut: '12.345.678-5', correo: 'tomas@correo.cl', cargo: 'Técnico Acuícola', estado: 'DERIVADO' }],
+      },
+    })
+    renderizarApp('/psicologo', ROLES.PSICOLOGO)
+
+    expect(await screen.findByRole('button', { name: /tomás fuentes/i })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /juanito pérez/i })).not.toBeInTheDocument()
+  })
+
   it('deriva con el responsable elegido de la lista de evaluadores', async () => {
     prepararSesionApi()
     const aprobado = { ...candidatosApi.find((candidato) => candidato.estado === 'REVISION'), estado: 'APROBADO' }
