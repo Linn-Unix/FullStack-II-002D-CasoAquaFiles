@@ -7,10 +7,12 @@ import RutaProtegida from './components/RutaProtegida'
 import { candidatosIniciales } from './data/candidatos'
 import { ROLES } from './data/roles'
 import DashboardPage from './pages/DashboardPage'
+import DetalleOfertaPage from './pages/DetalleOfertaPage'
 import InicioPage from './pages/InicioPage'
 import LoginPage from './pages/LoginPage'
 import NoEncontradaPage from './pages/NoEncontradaPage'
 import OfertasAdminPage from './pages/OfertasAdminPage'
+import PortalOfertasPage from './pages/PortalOfertasPage'
 import PostulacionPage from './pages/PostulacionPage'
 import PsicologoPage from './pages/PsicologoPage'
 import SupervisorPage from './pages/SupervisorPage'
@@ -200,6 +202,9 @@ function App({ rolInicial = null }) {
       <Routes>
         <Route path="/" element={<InicioPage {...propsTema} alEntrarComoPostulante={entrarComoPostulante} />} />
         <Route path="/login" element={<LoginPage {...propsTema} alIniciarSesion={iniciarSesion} />} />
+        {/* Portal público: no necesita iniciar sesión. */}
+        <Route path="/empleos" element={<PortalOfertasPage {...propsTema} />} />
+        <Route path="/empleos/:id" element={<DetalleOfertaPage {...propsTema} />} />
         <Route
           path="/postulacion"
           element={

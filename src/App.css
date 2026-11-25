@@ -1358,3 +1358,14 @@ h2 {
     grid-template-columns: 1fr;
   }
 }
+
+/* ---------- 24. Portal público de ofertas ---------- */
+.oferta-card {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.oferta-card h3 {
+  margin-bottom: 8px;
+}
