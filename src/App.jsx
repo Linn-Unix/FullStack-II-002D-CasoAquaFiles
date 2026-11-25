@@ -18,6 +18,7 @@ import {
   adaptarCandidato,
   actualizarCandidatoApi,
   cambiarEstado,
+  consultarPostulacion,
   listarCandidatos,
   registrarPostulacion,
   subirArchivo,
@@ -39,7 +40,9 @@ function App({ rolInicial = null }) {
   const [evaluacionesCargadas, setEvaluacionesCargadas] = useState(false)
 
   // 2. id de la postulación del usuario que entra como postulante.
+  //    Si la postulación se encontró en el backend, se guarda completa en postulacionServidor.
   const [idMiPostulacion, setIdMiPostulacion] = useState(null)
+  const [postulacionServidor, setPostulacionServidor] = useState(null)
 
   // 3. Sesión actual: el rol y el nombre de quien entró.
   //    El postulante entra sin cuenta. El personal interno entra con usuario y contraseña.
@@ -140,6 +143,18 @@ function App({ rolInicial = null }) {
       .catch((error) => setErrorApi(error.message))
   }
 
+  // Busca la postulación por RUT en el backend (no necesita sesión).
+  async function consultarEnServidor(rut) {
+    const encontrada = await consultarPostulacion(rut)
+    setPostulacionServidor(encontrada)
+    return encontrada
+  }
+
+  function salirDeMiPostulacion() {
+    setIdMiPostulacion(null)
+    setPostulacionServidor(null)
+  }
+
   function crearSolicitud(candidato) {
     agregarCandidato(candidato)
   }
@@ -160,10 +175,10 @@ function App({ rolInicial = null }) {
     borrarSesion()
     setRol(null)
     setNombreUsuario('')
-    setIdMiPostulacion(null)
+    salirDeMiPostulacion()
   }
 
-  const miPostulacion = candidatos.find((candidato) => candidato.id === idMiPostulacion)
+  const miPostulacion = postulacionServidor ?? candidatos.find((candidato) => candidato.id === idMiPostulacion)
 
   // Props del modo oscuro que comparten todas las páginas.
   const propsTema = { modoOscuro, alCambiarTema: () => setModoOscuro((actual) => !actual) }
@@ -194,7 +209,8 @@ function App({ rolInicial = null }) {
                 candidatos={candidatos}
                 alEnviar={agregarCandidato}
                 alConsultar={setIdMiPostulacion}
-                alSalir={() => setIdMiPostulacion(null)}
+                alConsultarServidor={consultarEnServidor}
+                alSalir={salirDeMiPostulacion}
               />
             </RutaProtegida>
           }

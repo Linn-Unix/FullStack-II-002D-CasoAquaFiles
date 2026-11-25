@@ -7,7 +7,7 @@ import { obtenerIniciales } from '../utils/candidatos'
 
 // Página del postulante (ruta "/postulacion").
 // "candidato" es su postulación: si todavía no existe, mostramos la consulta por RUT y el formulario.
-function PostulacionPage({ candidato, candidatos, alEnviar, alConsultar, alSalir, modoOscuro, alCambiarTema }) {
+function PostulacionPage({ candidato, candidatos, alEnviar, alConsultar, alConsultarServidor, alSalir, modoOscuro, alCambiarTema }) {
   return (
     <main className="container py-4">
       <Encabezado
@@ -20,7 +20,7 @@ function PostulacionPage({ candidato, candidatos, alEnviar, alConsultar, alSalir
       {/* Renderizado condicional: consulta + formulario, o seguimiento. */}
       {!candidato ? (
         <>
-          <ConsultaPostulacion candidatos={candidatos} alEncontrar={alConsultar} />
+          <ConsultaPostulacion candidatos={candidatos} alEncontrar={alConsultar} buscarEnServidor={alConsultarServidor} />
           <FormularioPostulacion alEnviar={alEnviar} />
         </>
       ) : (
