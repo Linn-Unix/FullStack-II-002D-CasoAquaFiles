@@ -10,6 +10,7 @@ import DashboardPage from './pages/DashboardPage'
 import InicioPage from './pages/InicioPage'
 import LoginPage from './pages/LoginPage'
 import NoEncontradaPage from './pages/NoEncontradaPage'
+import OfertasAdminPage from './pages/OfertasAdminPage'
 import PostulacionPage from './pages/PostulacionPage'
 import PsicologoPage from './pages/PsicologoPage'
 import SupervisorPage from './pages/SupervisorPage'
@@ -240,6 +241,14 @@ function App({ rolInicial = null }) {
           element={
             <RutaProtegida rolActual={rol} rolesPermitidos={[ROLES.SUPERVISOR]}>
               <DashboardPage {...propsTema} candidatos={candidatos} />
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path="/ofertas"
+          element={
+            <RutaProtegida rolActual={rol} rolesPermitidos={[ROLES.SUPERVISOR]}>
+              <OfertasAdminPage {...propsTema} />
             </RutaProtegida>
           }
         />

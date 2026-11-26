@@ -5,6 +5,7 @@ import { NOMBRES_ROL, ROLES } from '../data/roles'
 const enlaces = [
   { ruta: '/postulacion', texto: 'Mi postulación', rol: ROLES.POSTULANTE },
   { ruta: '/supervisor', texto: 'Reclutamiento', rol: ROLES.SUPERVISOR },
+  { ruta: '/ofertas', texto: 'Ofertas', rol: ROLES.SUPERVISOR },
   { ruta: '/dashboard', texto: 'Dashboard', rol: ROLES.SUPERVISOR },
   { ruta: '/psicologo', texto: 'Evaluaciones', rol: ROLES.PSICOLOGO },
 ]
