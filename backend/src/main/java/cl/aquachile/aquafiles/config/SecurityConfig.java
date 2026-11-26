@@ -63,6 +63,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/dashboard/**").hasRole("ANALISTA")
                         .requestMatchers("/api/v1/ofertas/**").hasRole("ANALISTA")
                         .requestMatchers("/api/v1/usuarios/**").hasRole("ANALISTA")
+                        .requestMatchers("/api/v1/ia/**").hasRole("ANALISTA")
                         // 3.5- Cualquier otra cosa (ej. /api/v1/auth/renovar): al menos con sesión
                         .anyRequest().authenticated())
                 // 4. Nuestro filtro JWT corre antes que el filtro normal de usuario y clave.

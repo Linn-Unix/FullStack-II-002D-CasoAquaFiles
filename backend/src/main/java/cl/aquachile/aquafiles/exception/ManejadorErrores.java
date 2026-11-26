@@ -39,6 +39,11 @@ public class ManejadorErrores {
         return responder(HttpStatus.UNAUTHORIZED, error.getMessage());
     }
 
+    @ExceptionHandler(IaNoDisponibleException.class)
+    public ResponseEntity<RespuestaError> iaNoDisponible(IaNoDisponibleException error) {
+        return responder(HttpStatus.SERVICE_UNAVAILABLE, error.getMessage());
+    }
+
     @ExceptionHandler(AlmacenamientoException.class)
     public ResponseEntity<RespuestaError> almacenamiento(AlmacenamientoException error) {
         return responder(HttpStatus.INTERNAL_SERVER_ERROR,
