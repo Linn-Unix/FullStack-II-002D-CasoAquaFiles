@@ -27,3 +27,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Reportes de cobertura (se generan con npm run coverage)
+coverage
