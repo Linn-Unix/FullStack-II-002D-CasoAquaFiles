@@ -5,7 +5,7 @@
 | Frontend (React) | **Vercel** | Gratis |
 | Backend (Spring Boot) | **Render** (Docker) | Gratis |
 | Base de datos (MySQL) | **Aiven for MySQL** | Gratis |
-| IA | **Grok** (API de xAI) | Según créditos de xAI |
+| IA | **Groq** | Gratis (con límite de consultas por minuto) |
 | Agenda | Google Calendar | Gratis |
 
 > Revisen los límites actuales de cada plan gratuito antes de la presentación: cambian con frecuencia.
@@ -37,7 +37,7 @@ El repositorio trae `backend/Dockerfile` y `render.yaml`.
 | `DB_USUARIO` | `avnadmin` (o el usuario de Aiven) |
 | `DB_CLAVE` | La contraseña de Aiven |
 | `CORS_ORIGENES` | La URL de Vercel, por ejemplo `https://full-stack-ii-002-d-caso-aqua-files.vercel.app` (sin `/` al final) |
-| `GROK_API_KEY` | La clave de https://console.x.ai (opcional: sin ella, la IA queda desactivada) |
+| `GROQ_API_KEY` | La clave de https://console.groq.com (opcional: sin ella, la IA queda desactivada) |
 
 `JWT_SECRETO` la genera Render automáticamente. `CREAR_USUARIOS_PRUEBA=true` crea los usuarios y las ofertas ficticias.
 
@@ -82,7 +82,7 @@ En Google Cloud Console → **Credenciales** → el ID de cliente OAuth → **Or
 | Render se "duerme" tras ~15 min sin uso | La primera petición tarda cerca de 1 minuto | Abrir la página unos minutos antes de presentar |
 | Render gratis **no tiene disco persistente** | Los CV se borran al redesplegar o cuando el servicio se duerme | Postular y descargar el CV en vivo; no redesplegar justo antes. En producción: disco persistente de Render (pagado) o un servicio de archivos como S3 |
 | `autoDeploy: false` | Un push a GitHub no redespliega solo | Redesplegar a mano desde Render cuando se quiera actualizar |
-| Créditos de xAI | Sin saldo, la IA responde "no configurada" o error | El resto del sistema funciona igual |
+| Límite gratuito de Groq | Con muchas consultas seguidas, la IA pide esperar un minuto | Analizar un solo CV en la demo; el resto del sistema funciona igual |
 
 Si no hay backend público disponible, la demostración se hace en local (ver [Documento técnico](DOCUMENTO_TECNICO.md#11-ejecución-local-y-despliegue)) y se justifica la limitación, como permite la pauta.
 
@@ -96,8 +96,8 @@ Si no hay backend público disponible, la demostración se hace en local (ver [D
 | `JWT_SECRETO` | (generada por Render) | Mínimo 32 caracteres y estable |
 | `CORS_ORIGENES` | `https://tu-app.vercel.app` | Sin barra final |
 | `ARCHIVOS_DIRECTORIO` | `/app/uploads` | Ya definida en el `Dockerfile` |
-| `GROK_API_KEY` | (secreta) | Opcional |
-| `GROK_MODELO` | `grok-3-mini` | |
+| `GROQ_API_KEY` | (secreta, empieza con `gsk_`) | Opcional |
+| `GROQ_MODELO` | `qwen/qwen3.8-27b` | |
 | `CREAR_USUARIOS_PRUEBA` | `true` | Poner `false` en un ambiente real |
 | `PORT` | (lo pone Render) | El backend lo lee solo |
 

@@ -59,8 +59,8 @@ Hoy el proceso de selección se apoya en planillas Excel, Planner y archivos rep
 | 6. Portal público | Página **Empleos** sin login: búsqueda, filtro por categoría y modalidad, detalle y botón **Postular** |
 | 7. Postulación y CV | Formulario validado; el CV se guarda en una carpeta privada `nombre-del-postulante-ID`, ligada a la postulación y a la oferta |
 | 8. Evaluación y seguimiento | Solicitud con cargo y responsable, fechas, observaciones, estados (Pendiente, En proceso, Finalizada) y dashboard |
-| 9. Inteligencia artificial | **Grok** sugiere al analista una puntuación orientativa, fortalezas, brechas y preguntas de entrevista, con criterios visibles, CV anonimizado y revisión humana obligatoria |
-| 10. Pruebas y cobertura ≥ 85 % | Frontend **92,5 %** (96 pruebas) · Backend **95,4 %** (61 pruebas) |
+| 9. Inteligencia artificial | La IA en **Groq** (como el ejemplo del profesor) sugiere al analista una puntuación orientativa, requisitos que cumple o no, brechas y preguntas de entrevista, con criterios visibles, CV anonimizado y revisión humana obligatoria |
+| 10. Pruebas y cobertura ≥ 85 % | Frontend **92,2 %** (96 pruebas) · Backend **95,2 %** (62 pruebas) |
 | 11. Despliegue | Frontend en Vercel, backend en Render con Docker y MySQL en Aiven ([guía de despliegue](docs/GUIA_DESPLIEGUE.md)) |
 | Extra | Agenda de entrevistas en **Google Calendar con Meet**, basada en el ejemplo del profesor |
 
@@ -93,7 +93,7 @@ Hoy el proceso de selección se apoya en planillas Excel, Planner y archivos rep
 ### Analista de Reclutamiento
 
 - Crear, editar, publicar y despublicar ofertas laborales.
-- Pedir a la IA (Grok) una sugerencia sobre el CV: puntaje orientativo, brechas y preguntas de entrevista.
+- Pedir a la IA (Groq) una sugerencia sobre el CV: puntaje orientativo, brechas y preguntas de entrevista.
 - Registrar candidatos y crear solicitudes ("Nueva solicitud").
 - Descargar el CV de cada postulante.
 - Buscar y filtrar por texto, estado y centro de costos.
@@ -148,7 +148,7 @@ Hoy el proceso de selección se apoya en planillas Excel, Planner y archivos rep
 | Publicación de ofertas y portal público | Avisos en sitios externos | Alta | ✅ Disponible |
 | CV en carpeta privada por postulante | Carpetas compartidas | Alta | ✅ Disponible |
 | Agenda en Google Calendar con Meet | Agendamiento por Teams | Media | ✅ Disponible |
-| Apoyo de IA al analista (Grok) | Revisión manual de CV | Media | ✅ Disponible |
+| Apoyo de IA al analista (Groq) | Revisión manual de CV | Media | ✅ Disponible |
 
 ---
 
@@ -302,7 +302,7 @@ Implementado:
 - Postulación con CV guardado en una carpeta privada por postulante.
 - Filtros, estados, derivación con responsable, agendamiento y finalización del proceso.
 - Agenda de entrevistas en Google Calendar con enlace de Meet.
-- Apoyo de IA con **Grok** para el analista, con CV anonimizado y revisión humana obligatoria.
+- Apoyo de IA con **Groq** para el analista, con CV anonimizado y revisión humana obligatoria.
 - Pruebas unitarias y funcionales con cobertura sobre el 85 % en el frontend y en el backend.
 
 Pendiente:
@@ -331,8 +331,8 @@ Pendiente:
 
 | Proyecto | Pruebas | Cobertura de líneas | Comando |
 | :--- | :---: | :---: | :--- |
-| Frontend (Vitest + Testing Library) | 96 | **92,5 %** | `npm run coverage` |
-| Backend (JUnit + MockMvc + JaCoCo) | 61 | **95,4 %** | `cd backend && mvn verify` |
+| Frontend (Vitest + Testing Library) | 96 | **92,2 %** | `npm run coverage` |
+| Backend (JUnit + MockMvc + JaCoCo) | 62 | **95,2 %** | `cd backend && mvn verify` |
 
 Cada proyecto falla si su cobertura baja del 85 %. Las pruebas del backend usan **H2 en memoria**, así que no necesitan MySQL. El detalle de cada prueba, los escenarios de la pauta y las evidencias están en el [Informe de pruebas](docs/INFORME_PRUEBAS.md).
 
@@ -348,7 +348,7 @@ Cada proyecto falla si su cobertura baja del 85 %. Las pruebas del backend usan 
 | Backend | Java 21, Spring Boot 3.5, Spring Security con JWT, Spring Data JPA, Swagger (springdoc) |
 | Base de datos | MySQL 8 con migraciones Flyway (H2 solo en pruebas) |
 | Pruebas | Vitest, React Testing Library, user-event, JUnit 5, Mockito, MockMvc, JaCoCo |
-| Integraciones | Grok (API de xAI) para el apoyo de IA · Google Calendar API + Google Meet · Apache PDFBox |
+| Integraciones | Groq (modelo `qwen/qwen3.8-27b`) para el apoyo de IA · Google Calendar API + Google Meet · Apache PDFBox |
 | Calidad y despliegue | Oxlint, Vercel |
 
 ### Estructura del repositorio
