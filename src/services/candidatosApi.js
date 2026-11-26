@@ -64,6 +64,7 @@ export async function registrarPostulacion(candidato) {
       familia: candidato.familia,
       ubicacion: candidato.ubicacion,
       centroCosto: candidato.centroCosto,
+      ofertaId: candidato.ofertaId ?? null,
     },
   })
   return { ...candidato, ...adaptarCandidato(datos) }
