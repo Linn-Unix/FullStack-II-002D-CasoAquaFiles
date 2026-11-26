@@ -13,6 +13,7 @@ public record EvaluacionResponse(
         Long candidatoId,
         String nombre,
         String rut,
+        String correo,
         String cargo,
         String familia,
         String ubicacion,
@@ -35,7 +36,7 @@ public record EvaluacionResponse(
         Candidato c = e.getCandidato();
         Archivo informe = e.getInforme();
         return new EvaluacionResponse(
-                e.getId(), c.getId(), c.getNombre(), c.getRut(), c.getCargo(), c.getFamilia(),
+                e.getId(), c.getId(), c.getNombre(), c.getRut(), c.getCorreo(), c.getCargo(), c.getFamilia(),
                 c.getUbicacion(), c.getCentroCosto(), c.getResponsable(),
                 c.getFechaSolicitud(), c.getFechaDerivacion(),
                 c.getEstado(), c.getEstado().getEtiqueta(), c.getObservaciones(),

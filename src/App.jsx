@@ -45,6 +45,7 @@ function App({ rolInicial = null }) {
   // Profesionales que el analista puede asignar como responsables al derivar.
   const [evaluadores, setEvaluadores] = useState(EVALUADORES)
   const [evaluacionesCargadas, setEvaluacionesCargadas] = useState(false)
+  const [evaluacionesFallaron, setEvaluacionesFallaron] = useState(false)
 
   // 2. id de la postulación del usuario que entra como postulante.
   //    Si la postulación se encontró en el backend, se guarda completa en postulacionServidor.
@@ -83,12 +84,16 @@ function App({ rolInicial = null }) {
     if (rol !== ROLES.PSICOLOGO || !leerSesion()?.token) return
 
     setEvaluacionesCargadas(false)
+    setEvaluacionesFallaron(false)
     listarEvaluaciones()
       .then((datos) => {
         setEvaluaciones(datos)
         setEvaluacionesCargadas(true)
       })
-      .catch((error) => setErrorApi(error.message))
+      .catch((error) => {
+        setErrorApi(error.message)
+        setEvaluacionesFallaron(true)
+      })
   }, [rol])
 
   useEffect(() => {
@@ -194,6 +199,11 @@ function App({ rolInicial = null }) {
     salirDeMiPostulacion()
   }
 
+  // Con sesión, el evaluador ve las evaluaciones del backend. Mientras cargan, la lista queda vacía;
+  // los datos de ejemplo solo se usan en modo demostración (sin sesión) o si el backend no responde.
+  const esperandoEvaluaciones = Boolean(leerSesion()?.token) && !evaluacionesCargadas && !evaluacionesFallaron
+  const datosEvaluador = evaluacionesCargadas ? evaluaciones : (esperandoEvaluaciones ? [] : candidatos)
+
   const miPostulacion = postulacionServidor ?? candidatos.find((candidato) => candidato.id === idMiPostulacion)
 
   // Props del modo oscuro que comparten todas las páginas.
@@ -248,7 +258,7 @@ function App({ rolInicial = null }) {
             <RutaProtegida rolActual={rol} rolesPermitidos={[ROLES.PSICOLOGO]}>
               <PsicologoPage
                 {...propsTema}
-                candidatos={evaluacionesCargadas ? evaluaciones : candidatos}
+                candidatos={datosEvaluador}
                 actualizarCandidato={actualizarEvaluacion}
               />
             </RutaProtegida>
