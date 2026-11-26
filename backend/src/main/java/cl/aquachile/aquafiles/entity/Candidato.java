@@ -11,6 +11,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Table;
 import jakarta.persistence.OneToMany;
 
@@ -64,6 +67,11 @@ public class Candidato {
 
     @Column(name = "fecha_finalizacion")
     private LocalDate fechaFinalizacion;
+
+    // Oferta a la que postuló (nula en las postulaciones anteriores a las ofertas).
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "oferta_id")
+    private Oferta oferta;
 
     @OneToMany(mappedBy = "candidato")
     private List<Archivo> archivos = new ArrayList<>();
@@ -185,6 +193,14 @@ public class Candidato {
 
     public void setFechaFinalizacion(LocalDate fechaFinalizacion) {
         this.fechaFinalizacion = fechaFinalizacion;
+    }
+
+    public Oferta getOferta() {
+        return oferta;
+    }
+
+    public void setOferta(Oferta oferta) {
+        this.oferta = oferta;
     }
 
     public java.util.Optional<Archivo> buscarCv() {
