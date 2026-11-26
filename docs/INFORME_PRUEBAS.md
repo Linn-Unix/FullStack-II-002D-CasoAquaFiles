@@ -4,8 +4,8 @@
 
 | Proyecto | Herramientas | Pruebas | Cobertura de líneas | Mínimo exigido |
 | :--- | :--- | :---: | :---: | :---: |
-| **Frontend** | Vitest + React Testing Library + user-event + `@vitest/coverage-v8` | **93** en 18 archivos | **92,29 %** | 85 % ✅ |
-| **Backend** | JUnit 5 + Mockito + MockMvc + JaCoCo | **47** en 11 clases | **95,2 %** | 85 % ✅ |
+| **Frontend** | Vitest + React Testing Library + user-event + `@vitest/coverage-v8` | **96** en 19 archivos | **92,47 %** | 85 % ✅ |
+| **Backend** | JUnit 5 + Mockito + MockMvc + JaCoCo | **61** en 14 clases | **95,4 %** | 85 % ✅ |
 
 Las dos coberturas se miden por separado y cada proyecto **falla automáticamente** si sus líneas cubiertas bajan del 85 %:
 - Frontend: `thresholds` en `vite.config.ts`.
@@ -21,7 +21,7 @@ Las pruebas usan solo **datos ficticios** y **CV de prueba**.
 
 ```bash
 npm install
-npm run test:run      # ejecuta las 93 pruebas
+npm run test:run      # ejecuta las 96 pruebas
 npm run coverage      # pruebas + reporte de cobertura (coverage/index.html)
 ```
 
@@ -29,7 +29,7 @@ npm run coverage      # pruebas + reporte de cobertura (coverage/index.html)
 
 ```bash
 cd backend
-mvn test              # ejecuta las 47 pruebas y genera target/site/jacoco/index.html
+mvn test              # ejecuta las 61 pruebas y genera target/site/jacoco/index.html
 mvn verify            # además comprueba el mínimo de 85 %
 ```
 
@@ -48,6 +48,7 @@ mvn verify            # además comprueba el mínimo de 85 %
 | `src/pages/PortalOfertasPage.test.jsx` | 3 | Portal sin sesión, filtro por categoría, modalidad y texto, sin resultados y error |
 | `src/pages/DetalleOfertaPage.test.jsx` | 4 | Detalle completo, postular con CV, error del backend, oferta no publicada |
 | `src/components/ArchivosCandidato.test.jsx` | 3 | Carpeta del CV, descarga con token, errores 403 y de conexión |
+| `src/components/ApoyoIa.test.jsx` | 3 | Panel de IA: sin sesión, sugerencia con criterios y advertencia, IA no configurada |
 | `src/components/AgendarGoogleCalendar.test.jsx` | 3 | Sin configurar, creación del evento con enlaces de Meet, error de Google |
 | `src/components/FormularioPostulacion.test.jsx` | 2 | Errores de validación y envío correcto |
 | `src/components/ConsultaPostulacion.test.jsx` | 4 | RUT inválido, no encontrado, sin formato y búsqueda en el servidor |
@@ -70,10 +71,10 @@ mvn verify            # además comprueba el mínimo de 85 %
 
 | Métrica | Resultado |
 | :--- | :---: |
-| Líneas | **92,29 %** (611/662) |
-| Sentencias | 91,36 % |
-| Funciones | 90,51 % |
-| Ramas | 88,34 % |
+| Líneas | **92,47 %** |
+| Sentencias | 91,44 % |
+| Funciones | 90,73 % |
+| Ramas | 88,64 % |
 
 Detalle por archivo: [`evidencias/cobertura-frontend.txt`](evidencias/cobertura-frontend.txt).
 
@@ -85,9 +86,12 @@ Detalle por archivo: [`evidencias/cobertura-frontend.txt`](evidencias/cobertura-
 
 | Clase | Pruebas | Tipo | Qué prueba |
 | :--- | :---: | :--- | :--- |
-| `integracion.ApiIntegracionTest` | 8 | Integración (MockMvc + H2) | Flujo completo por HTTP: login, 401 y 403, ofertas y portal, postulación con CV, estados, evaluación, informe y dashboard |
+| `integracion.ApiIntegracionTest` | 9 | Integración (MockMvc + H2) | Flujo completo por HTTP: login, 401 y 403, ofertas y portal, postulación con CV, estados, evaluación, informe, dashboard y permisos de la IA |
+| `service.IaServiceTest` | 4 | Unitaria | Datos anonimizados enviados a Grok, lectura del JSON, puntaje 0–100, sin clave |
+| `service.ClienteGrokTest` | 4 | Unitaria (servidor simulado) | Modelo, mensajes y clave enviados a xAI; errores y respuesta vacía |
+| `util.AnonimizadorTest` | 3 | Unitaria | Quita nombre (con o sin tildes), RUT, correo y teléfono |
 | `service.OfertaServiceTest` | 9 | Unitaria | Crear, validar sueldo, publicar, despublicar, editar, eliminar y portal |
-| `service.ArchivoServiceTest` | 6 | Unitaria | Carpeta del postulante, formatos, tamaño, un solo CV, descarga y borrado |
+| `service.ArchivoServiceTest` | 8 | Unitaria | Carpeta del postulante, formatos, tamaño, un solo CV, descarga, borrado y lectura del PDF |
 | `service.CandidatoServiceEstadosTest` | 5 | Unitaria | Transiciones de estado y derivar con responsable |
 | `service.CandidatoServicePostulacionTest` | 4 | Unitaria | Postulación, RUT duplicado y oferta publicada o no |
 | `service.AuthServiceTest` | 3 | Unitaria | Login válido, inválido y renovación |
@@ -107,11 +111,11 @@ Detalle por archivo: [`evidencias/cobertura-frontend.txt`](evidencias/cobertura-
 | `security` | 100,0 % |
 | `entity` | 98,3 % |
 | `dto` | 97,6 % |
-| `service` | 93,3 % |
-| `util` | 93,1 % |
-| `controller` | 92,1 % |
-| `exception` | 89,7 % |
-| **Total** | **95,2 %** (793/833) |
+| `util` | 96,6 % |
+| `service` | 94,0 % |
+| `controller` | 91,2 % |
+| `exception` | 91,2 % |
+| **Total** | **95,4 %** (920/964) |
 
 Detalle: [`evidencias/cobertura-backend.txt`](evidencias/cobertura-backend.txt) · Salida completa: [`evidencias/pruebas-backend.txt`](evidencias/pruebas-backend.txt).
 
@@ -127,6 +131,7 @@ Detalle: [`evidencias/cobertura-backend.txt`](evidencias/cobertura-backend.txt) 
 | Validaciones | `validaciones.test.js` · `ofertas.test.js` · formularios | `ApiIntegracionTest.laOfertaValidaSusCampos` (400 con campos, JSON inválido) |
 | Cambio de estados | `App.test.jsx` (aprobar, rechazar, derivar con responsable) | `CandidatoServiceEstadosTest` · `ApiIntegracionTest` (salto de etapa 409) |
 | Flujo integrado | `App.test.jsx`: analista → evaluador → postulante | `ApiIntegracionTest.flujoCompletoDesdeLaPostulacionHastaElInforme` |
+| IA con revisión humana | `ApoyoIa.test.jsx` | `IaServiceTest` · `ClienteGrokTest` · `AnonimizadorTest` |
 
 ---
 
@@ -143,6 +148,7 @@ Además de las pruebas automáticas, se recorrió el sistema completo en el nave
 | Postulante consulta por RUT | ✅ Ve la fecha y el estado general, sin datos internos |
 | Sin sesión: listar archivos y subir un segundo CV | ✅ `401` y `409` |
 | Errores de JavaScript en el navegador | ✅ Ninguno |
+| Apoyo de IA con un servidor que imita a Grok | ✅ Grok recibe cargo, requisitos y CV sin nombre, RUT, correo ni teléfono; la ficha muestra puntaje, criterios y advertencia |
 
 Las capturas de esa prueba están en el [Manual de usuario](MANUAL_USUARIO.md).
 
