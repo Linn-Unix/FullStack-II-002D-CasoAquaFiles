@@ -20,7 +20,7 @@ import jakarta.validation.Valid;
 
 // Solo EVALUADOR (regla de SecurityConfig, rama 4).
 @RestController
-@RequestMapping("/api/evaluaciones")
+@RequestMapping("/api/v1/evaluaciones")
 public class EvaluacionController {
 
     private final EvaluacionService evaluacionService;
