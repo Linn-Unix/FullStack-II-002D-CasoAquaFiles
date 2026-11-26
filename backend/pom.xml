@@ -108,6 +108,13 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- Lee el texto de los CV en PDF para el apoyo de IA -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>3.0.5</version>
+        </dependency>
+
         <!-- Base de datos en memoria SOLO para las pruebas: así "mvn test" funciona sin instalar MySQL. -->
         <dependency>
             <groupId>com.h2database</groupId>

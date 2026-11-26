@@ -139,6 +139,54 @@ class ArchivoServiceTest {
         assertTrue(Files.notExists(directorio.resolve(guardado.getValue().getNombreAlmacenado())));
     }
 
+    @Test
+    void leeElTextoDelCvEnPdf() throws Exception {
+        Candidato candidato = candidato();
+        when(candidatoService.buscarEntidad(7L)).thenReturn(candidato);
+        org.mockito.ArgumentCaptor<Archivo> guardado = org.mockito.ArgumentCaptor.forClass(Archivo.class);
+        when(archivoRepository.save(guardado.capture())).thenAnswer(invocacion -> invocacion.getArgument(0));
+        archivoService.guardarCv(7L, new MockMultipartFile("archivo", "cv.pdf", "application/pdf",
+                pdfCon("Experiencia en centros de cultivo")));
+
+        org.springframework.test.util.ReflectionTestUtils.setField(candidato, "id", 7L);
+        when(archivoRepository.findByCandidatoIdOrderByFechaCargaDesc(7L)).thenReturn(java.util.List.of(guardado.getValue()));
+
+        assertTrue(archivoService.textoDelCv(candidato).contains("Experiencia en centros de cultivo"));
+    }
+
+    @Test
+    void sinCvEnPdfNoHayTexto() {
+        Candidato candidato = candidato();
+        assertEquals("", archivoService.textoDelCv(candidato));
+
+        org.springframework.test.util.ReflectionTestUtils.setField(candidato, "id", 8L);
+        Archivo word = new Archivo();
+        word.setCategoria(CategoriaArchivo.CV);
+        word.setExtension("docx");
+        when(archivoRepository.findByCandidatoIdOrderByFechaCargaDesc(8L)).thenReturn(java.util.List.of(word));
+        assertEquals("", archivoService.textoDelCv(candidato));
+    }
+
+    // Crea un PDF de una página con el texto indicado (para no depender de archivos externos).
+    private byte[] pdfCon(String texto) throws Exception {
+        try (org.apache.pdfbox.pdmodel.PDDocument documento = new org.apache.pdfbox.pdmodel.PDDocument()) {
+            org.apache.pdfbox.pdmodel.PDPage pagina = new org.apache.pdfbox.pdmodel.PDPage();
+            documento.addPage(pagina);
+            try (org.apache.pdfbox.pdmodel.PDPageContentStream contenido =
+                         new org.apache.pdfbox.pdmodel.PDPageContentStream(documento, pagina)) {
+                contenido.beginText();
+                contenido.setFont(new org.apache.pdfbox.pdmodel.font.PDType1Font(
+                        org.apache.pdfbox.pdmodel.font.Standard14Fonts.FontName.HELVETICA), 12);
+                contenido.newLineAtOffset(50, 700);
+                contenido.showText(texto);
+                contenido.endText();
+            }
+            java.io.ByteArrayOutputStream salida = new java.io.ByteArrayOutputStream();
+            documento.save(salida);
+            return salida.toByteArray();
+        }
+    }
+
     private Candidato candidato() {
         Candidato candidato = new Candidato();
         candidato.setNombre("Tomás Fuentes");
