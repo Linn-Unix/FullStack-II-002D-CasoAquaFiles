@@ -1340,3 +1340,21 @@ h2 {
 .theme-dark .process-card .alert-danger i {
   color: #ff7b88 !important;
 }
+/* ---------- 23. Campos en dos columnas del formulario ---------- */
+.form-row {
+  display: grid;
+  gap: 0 16px;
+  grid-auto-flow: row dense;
+  grid-template-columns: 1fr 1fr;
+}
+
+/* El mensaje de error ocupa toda la fila, debajo de los dos campos. */
+.form-row .field-error {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 700px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}

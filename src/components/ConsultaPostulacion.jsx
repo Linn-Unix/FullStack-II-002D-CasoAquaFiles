@@ -2,14 +2,15 @@ import { useState } from 'react'
 import { esRutValido, limpiarRut } from '../utils/validaciones'
 
 // Permite al postulante volver a ver su postulación ingresando su RUT.
-// Recibe la lista de candidatos y la función que se llama al encontrarlo.
-function ConsultaPostulacion({ candidatos, alEncontrar }) {
+// Recibe la lista de candidatos, la función que se llama al encontrarlo
+// y (opcional) "buscarEnServidor", que consulta el RUT en el backend.
+function ConsultaPostulacion({ candidatos, alEncontrar, buscarEnServidor }) {
   // 1. Estados: el RUT escrito y el mensaje de error.
   const [rut, setRut] = useState('')
   const [mensaje, setMensaje] = useState('')
 
   // 2. Al enviar, validamos el RUT y lo buscamos en la lista.
-  function consultar(evento) {
+  async function consultar(evento) {
     evento.preventDefault()
 
     if (!esRutValido(rut)) {
@@ -21,13 +22,24 @@ function ConsultaPostulacion({ candidatos, alEncontrar }) {
     //      Comparamos los RUT sin puntos ni guion para aceptar ambos formatos.
     const encontrado = candidatos.find((candidato) => limpiarRut(candidato.rut) === limpiarRut(rut))
 
-    if (!encontrado) {
-      setMensaje('No encontramos una postulación con ese RUT.')
+    if (encontrado) {
+      setMensaje('')
+      alEncontrar(encontrado.id)
       return
     }
 
-    setMensaje('')
-    alEncontrar(encontrado.id)
+    // 2.2- Si no está en la lista, la buscamos en el backend.
+    if (buscarEnServidor) {
+      try {
+        await buscarEnServidor(rut)
+        setMensaje('')
+        return
+      } catch {
+        // Si el backend no la encuentra, mostramos el mismo aviso de abajo.
+      }
+    }
+
+    setMensaje('No encontramos una postulación con ese RUT.')
   }
 
   return (
