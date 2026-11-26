@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { CENTROS_COSTO, ESTADOS, UBICACIONES } from '../data/candidatos'
 import { obtenerIniciales } from '../utils/candidatos'
-import ArchivoFila from './ArchivoFila'
+import ArchivosCandidato from './ArchivosCandidato'
 import EstadoBadge from './EstadoBadge'
 
 // Ficha del candidato seleccionado en el panel del supervisor.
@@ -122,7 +122,7 @@ function FichaSupervisor({ candidato, actualizarCandidato }) {
         </>
       )}
 
-      <ArchivoFila nombre={candidato.nombreCv} icono="bi-file-earmark-pdf" />
+      <ArchivosCandidato key={candidato.id} candidatoId={candidato.id} nombreCv={candidato.nombreCv} />
 
       {/* 10. Observaciones técnicas: textarea controlado por el estado "observaciones". */}
       <label className="form-label small fw-bold w-100 mt-3">

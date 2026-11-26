@@ -10,6 +10,8 @@ public record ArchivoResponse(
         String nombreOriginal,
         String tipoContenido,
         String extension,
+        String categoria,
+        String carpeta,
         long tamano,
         LocalDateTime fechaCarga) {
 
@@ -20,7 +22,17 @@ public record ArchivoResponse(
                 archivo.getNombreOriginal(),
                 archivo.getTipoContenido(),
                 archivo.getExtension(),
+                archivo.getCategoria() == null ? null : archivo.getCategoria().name(),
+                carpetaDe(archivo.getNombreAlmacenado()),
                 archivo.getTamano(),
                 archivo.getFechaCarga());
+    }
+
+    // "tomas-fuentes-12/abc.pdf" → "tomas-fuentes-12". Los archivos antiguos no tienen carpeta.
+    private static String carpetaDe(String nombreAlmacenado) {
+        if (nombreAlmacenado == null || !nombreAlmacenado.contains("/")) {
+            return null;
+        }
+        return nombreAlmacenado.substring(0, nombreAlmacenado.lastIndexOf('/'));
     }
 }

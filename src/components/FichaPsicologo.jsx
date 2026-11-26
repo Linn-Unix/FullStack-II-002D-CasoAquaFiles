@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { ESTADOS, RESULTADOS } from '../data/candidatos'
-import ArchivoFila from './ArchivoFila'
+import ArchivosCandidato from './ArchivosCandidato'
 import EstadoBadge from './EstadoBadge'
 
 // Ficha del candidato seleccionado en el panel del psicólogo.
@@ -47,7 +47,8 @@ function FichaPsicologo({ candidato, actualizarCandidato }) {
       <p>{candidato.cargo} · {candidato.ubicacion}</p>
       <EstadoBadge estado={candidato.estado} />
       <hr />
-      <ArchivoFila nombre={candidato.nombreCv} icono="bi-file-earmark-pdf" />
+      {/* En la API, "id" es el de la evaluación; el del candidato viene en "candidatoId". */}
+      <ArchivosCandidato key={candidato.id} candidatoId={candidato.candidatoId ?? candidato.id} nombreCv={candidato.nombreCv} />
 
       {/* Observaciones del supervisor: el psicólogo solo puede leerlas. */}
       <div className="stage-note">
