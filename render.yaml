@@ -5,8 +5,9 @@ services:
     name: aquafiles-backend
     runtime: docker
     plan: free
-    rootDir: backend
-    dockerfilePath: ./Dockerfile
+    # Rutas desde la raíz del repositorio: el backend está en la carpeta backend/.
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
     healthCheckPath: /api/v1/verificacion
     autoDeploy: false
     envVars:
