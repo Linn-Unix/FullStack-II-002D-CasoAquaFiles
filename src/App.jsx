@@ -83,8 +83,7 @@ function App({ rolInicial = null }) {
   useEffect(() => {
     if (rol !== ROLES.PSICOLOGO || !leerSesion()?.token) return
 
-    setEvaluacionesCargadas(false)
-    setEvaluacionesFallaron(false)
+    // Los indicadores "cargadas" y "fallaron" se reinician al cerrar sesión (ver cerrarSesion).
     listarEvaluaciones()
       .then((datos) => {
         setEvaluaciones(datos)
@@ -194,6 +193,10 @@ function App({ rolInicial = null }) {
 
   function cerrarSesion() {
     borrarSesion()
+    // Se borran los datos del evaluador anterior para que el siguiente usuario no los vea.
+    setEvaluaciones([])
+    setEvaluacionesCargadas(false)
+    setEvaluacionesFallaron(false)
     setRol(null)
     setNombreUsuario('')
     salirDeMiPostulacion()
