@@ -1,0 +1,33 @@
+# Blueprint de Render: crea el backend de AquaFiles desde el Dockerfile de backend/.
+# En Render: New → Blueprint → elegir este repositorio. Las variables con "sync: false" se completan a mano.
+services:
+  - type: web
+    name: aquafiles-backend
+    runtime: docker
+    plan: free
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/v1/verificacion
+    autoDeploy: false
+    envVars:
+      # Base de datos MySQL en Aiven (ver docs/GUIA_DESPLIEGUE.md)
+      - key: DB_URL
+        sync: false
+      - key: DB_USUARIO
+        sync: false
+      - key: DB_CLAVE
+        sync: false
+      # Render genera una clave aleatoria para firmar los JWT
+      - key: JWT_SECRETO
+        generateValue: true
+      # URL de Vercel, sin "/" al final
+      - key: CORS_ORIGENES
+        sync: false
+      # Clave de Grok (xAI); sin ella la IA queda desactivada
+      - key: GROK_API_KEY
+        sync: false
+      - key: GROK_MODELO
+        value: grok-3-mini
+      # Usuarios y ofertas ficticias para la demostración
+      - key: CREAR_USUARIOS_PRUEBA
+        value: "true"
