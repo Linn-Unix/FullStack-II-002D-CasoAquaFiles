@@ -1,0 +1,8 @@
+# Lo que NO se copia a la imagen de Docker
+target/
+uploads/
+.env
+.idea/
+.vscode/
+*.iml
+*.log
