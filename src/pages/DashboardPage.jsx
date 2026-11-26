@@ -10,9 +10,11 @@ function DashboardPage({ candidatos, modoOscuro, alCambiarTema }) {
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState('')
 
-  // 2. Pedimos el resumen al abrir la página (y si cambian los candidatos).
+  // 2. Pedimos el resumen al abrir la página y cuando cambia el estado de algún candidato.
+  //    "firma" resume los candidatos en un texto: si no cambia, no se vuelve a pedir.
+  const firma = candidatos.map((candidato) => `${candidato.id}:${candidato.estado}`).join(',')
+
   useEffect(() => {
-    setCargando(true)
     obtenerResumen()
       .then((datos) => {
         setResumen(datos)
@@ -20,7 +22,7 @@ function DashboardPage({ candidatos, modoOscuro, alCambiarTema }) {
       })
       .catch((errorApi) => setError(errorApi.message))
       .finally(() => setCargando(false))
-  }, [candidatos])
+  }, [firma])
 
   // 3. Etapas a partir de los estados (misma regla que obtenerEtapa).
   const porEstado = resumen?.porEstado ?? {}

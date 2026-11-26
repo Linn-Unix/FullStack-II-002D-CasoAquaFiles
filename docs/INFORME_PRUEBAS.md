@@ -4,7 +4,7 @@
 
 | Proyecto | Herramientas | Pruebas | Cobertura de líneas | Mínimo exigido |
 | :--- | :--- | :---: | :---: | :---: |
-| **Frontend** | Vitest + React Testing Library + user-event + `@vitest/coverage-v8` | **96** en 19 archivos | **92,24 %** | 85 % ✅ |
+| **Frontend** | Vitest + React Testing Library + user-event + `@vitest/coverage-v8` | **99** en 20 archivos | **93,12 %** | 85 % ✅ |
 | **Backend** | JUnit 5 + Mockito + MockMvc + JaCoCo | **62** en 14 clases | **95,2 %** | 85 % ✅ |
 
 Las dos coberturas se miden por separado y cada proyecto **falla automáticamente** si sus líneas cubiertas bajan del 85 %:
@@ -21,7 +21,7 @@ Las pruebas usan solo **datos ficticios** y **CV de prueba**.
 
 ```bash
 npm install
-npm run test:run      # ejecuta las 96 pruebas
+npm run test:run      # ejecuta las 99 pruebas
 npm run coverage      # pruebas + reporte de cobertura (coverage/index.html)
 ```
 
@@ -43,7 +43,8 @@ mvn verify            # además comprueba el mínimo de 85 %
 
 | Archivo | Pruebas | Qué prueba |
 | :--- | :---: | :--- |
-| `src/App.test.jsx` | 28 | Rutas, login, acceso por rol, flujo analista → evaluador, vista del postulante, integración con la API simulada |
+| `src/App.test.jsx` | 29 | Rutas, login, acceso por rol, flujo analista → evaluador, vista del postulante, integración con la API simulada |
+| `src/pages/DashboardPage.test.jsx` | 2 | Indicadores, una sola petición si los datos no cambian, error de la API |
 | `src/pages/OfertasAdminPage.test.jsx` | 4 | Listar, crear con validaciones, editar, publicar, despublicar y eliminar ofertas |
 | `src/pages/PortalOfertasPage.test.jsx` | 3 | Portal sin sesión, filtro por categoría, modalidad y texto, sin resultados y error |
 | `src/pages/DetalleOfertaPage.test.jsx` | 4 | Detalle completo, postular con CV, error del backend, oferta no publicada |
@@ -71,10 +72,10 @@ mvn verify            # además comprueba el mínimo de 85 %
 
 | Métrica | Resultado |
 | :--- | :---: |
-| Líneas | **92,24 %** |
-| Sentencias | 91,12 % |
-| Funciones | 90,80 % |
-| Ramas | 88,28 % |
+| Líneas | **93,12 %** |
+| Sentencias | 91,94 % |
+| Funciones | 92,74 % |
+| Ramas | 89,06 % |
 
 Detalle por archivo: [`evidencias/cobertura-frontend.txt`](evidencias/cobertura-frontend.txt).
 

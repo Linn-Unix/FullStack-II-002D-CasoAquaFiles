@@ -18,6 +18,10 @@ Portal de empleos → Postulación con CV → Analista de Reclutamiento → Filt
 | [Guía de despliegue](docs/GUIA_DESPLIEGUE.md) | Publicar el frontend, el backend y la base de datos |
 | [Backend](backend/README.md) | Requisitos, base de datos y variables del backend |
 
+> Los tres documentos principales también están en PDF en [`docs/pdf/`](docs/pdf/), listos para entregar.
+
+**Entrega comprimida:** `npm run empaquetar` crea `entrega/AquaFiles-frontend.zip` y `entrega/AquaFiles-backend.zip` solo con los archivos guardados en git (sin `node_modules`, `target`, `uploads` ni archivos `.env`) y avisa si encuentra alguna clave.
+
 ---
 
 ## Objetivo
@@ -60,7 +64,7 @@ Hoy el proceso de selección se apoya en planillas Excel, Planner y archivos rep
 | 7. Postulación y CV | Formulario validado; el CV se guarda en una carpeta privada `nombre-del-postulante-ID`, ligada a la postulación y a la oferta |
 | 8. Evaluación y seguimiento | Solicitud con cargo y responsable, fechas, observaciones, estados (Pendiente, En proceso, Finalizada) y dashboard |
 | 9. Inteligencia artificial | La IA en **Groq** (como el ejemplo del profesor) sugiere al analista una puntuación orientativa, requisitos que cumple o no, brechas y preguntas de entrevista, con criterios visibles, CV anonimizado y revisión humana obligatoria |
-| 10. Pruebas y cobertura ≥ 85 % | Frontend **92,2 %** (96 pruebas) · Backend **95,2 %** (62 pruebas) |
+| 10. Pruebas y cobertura ≥ 85 % | Frontend **93,1 %** (99 pruebas) · Backend **95,2 %** (62 pruebas) |
 | 11. Despliegue | Frontend en Vercel, backend en Render con Docker y MySQL en Aiven ([guía de despliegue](docs/GUIA_DESPLIEGUE.md)) |
 | Extra | Agenda de entrevistas en **Google Calendar con Meet**, basada en el ejemplo del profesor |
 
@@ -331,7 +335,7 @@ Pendiente:
 
 | Proyecto | Pruebas | Cobertura de líneas | Comando |
 | :--- | :---: | :---: | :--- |
-| Frontend (Vitest + Testing Library) | 96 | **92,2 %** | `npm run coverage` |
+| Frontend (Vitest + Testing Library) | 99 | **93,1 %** | `npm run coverage` |
 | Backend (JUnit + MockMvc + JaCoCo) | 62 | **95,2 %** | `cd backend && mvn verify` |
 
 Cada proyecto falla si su cobertura baja del 85 %. Las pruebas del backend usan **H2 en memoria**, así que no necesitan MySQL. El detalle de cada prueba, los escenarios de la pauta y las evidencias están en el [Informe de pruebas](docs/INFORME_PRUEBAS.md).
@@ -414,6 +418,7 @@ npm run build       # Versión de producción
 npm run lint        # Revisa el código con Oxlint
 npm run test:run    # Pruebas del frontend
 npm run coverage    # Pruebas + cobertura del frontend
+npm run empaquetar  # Zip de la entrega sin dependencias ni claves
 cd backend && mvn verify   # Pruebas + cobertura del backend
 ```
 

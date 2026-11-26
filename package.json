@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:run": "vitest run",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "empaquetar": "node scripts/empaquetar-entrega.js"
   },
   "dependencies": {
     "bootstrap": "^5.3.8",

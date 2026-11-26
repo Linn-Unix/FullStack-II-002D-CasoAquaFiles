@@ -359,6 +359,31 @@ describe('Analista con datos de la API', () => {
     expect(screen.queryByRole('button', { name: /juanito pérez/i })).not.toBeInTheDocument()
   })
 
+  it('al cerrar sesión no quedan las evaluaciones del evaluador anterior', async () => {
+    prepararSesionApi(ROLES.PSICOLOGO)
+    simularApi({
+      'GET /evaluaciones': {
+        cuerpo: [{ id: 1, candidatoId: 3, nombre: 'Tomás Fuentes', rut: '12.345.678-5', cargo: 'Técnico Acuícola', estado: 'DERIVADO' }],
+      },
+    })
+    const usuario = userEvent.setup()
+    renderizarApp('/psicologo', ROLES.PSICOLOGO)
+    expect(await screen.findByRole('button', { name: /tomás fuentes/i })).toBeInTheDocument()
+
+    await usuario.click(screen.getByRole('button', { name: /cerrar sesión/i }))
+    // Las evaluaciones del nuevo evaluador quedan "cargando" (la petición nunca responde):
+    // en ese momento no deben verse las del evaluador anterior.
+    const fetchFalso = simularApi({ 'POST /auth/login': loginApi('evaluador') })
+    vi.stubGlobal('fetch', (url, opciones) => (url.endsWith('/evaluaciones') ? new Promise(() => {}) : fetchFalso(url, opciones)))
+    await usuario.click(screen.getByRole('link', { name: /personal aquachile/i }))
+    await usuario.type(screen.getByLabelText('Usuario'), 'evaluador')
+    await usuario.type(screen.getByLabelText('Contraseña'), 'aqua123')
+    await usuario.click(screen.getByRole('button', { name: /ingresar/i }))
+
+    expect(await screen.findByRole('heading', { name: 'Panel de Evaluaciones' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /tomás fuentes/i })).not.toBeInTheDocument()
+  })
+
   it('deriva con el responsable elegido de la lista de evaluadores', async () => {
     prepararSesionApi()
     const aprobado = { ...candidatosApi.find((candidato) => candidato.estado === 'REVISION'), estado: 'APROBADO' }
