@@ -30,3 +30,6 @@ dist-ssr
 
 # Reportes de cobertura (se generan con npm run coverage)
 coverage
+
+# Zip de la entrega (se generan con npm run empaquetar)
+entrega/
