@@ -12,6 +12,9 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -117,6 +120,27 @@ public class ArchivoService {
             return new ArchivoDescarga(recurso, archivo.getNombreOriginal(), archivo.getTipoContenido());
         } catch (IOException error) {
             throw new AlmacenamientoException("No se pudo leer el archivo.", error);
+        }
+    }
+
+    // Texto del CV en PDF (para el apoyo de IA). Si no hay CV o no es PDF, devuelve "".
+    public String textoDelCv(Candidato candidato) {
+        if (candidato.getId() == null) {
+            return "";
+        }
+        return archivoRepository.findByCandidatoIdOrderByFechaCargaDesc(candidato.getId()).stream()
+                .filter(archivo -> archivo.getCategoria() == CategoriaArchivo.CV && "pdf".equals(archivo.getExtension()))
+                .findFirst()
+                .map(archivo -> leerPdf(resolver(archivo.getNombreAlmacenado())))
+                .orElse("");
+    }
+
+    private String leerPdf(Path ruta) {
+        try (PDDocument documento = Loader.loadPDF(ruta.toFile())) {
+            return new PDFTextStripper().getText(documento);
+        } catch (IOException error) {
+            LOGGER.warn("No se pudo leer el texto del CV {}", ruta, error);
+            return "";
         }
     }
 

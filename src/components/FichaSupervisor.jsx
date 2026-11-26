@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { CENTROS_COSTO, ESTADOS, EVALUADORES, UBICACIONES } from '../data/candidatos'
 import { obtenerIniciales } from '../utils/candidatos'
+import ApoyoIa from './ApoyoIa'
 import ArchivosCandidato from './ArchivosCandidato'
 import EstadoBadge from './EstadoBadge'
 
@@ -126,6 +127,7 @@ function FichaSupervisor({ candidato, evaluadores = EVALUADORES, actualizarCandi
       )}
 
       <ArchivosCandidato key={candidato.id} candidatoId={candidato.id} nombreCv={candidato.nombreCv} />
+      <ApoyoIa key={`ia-${candidato.id}`} candidatoId={candidato.id} />
 
       {/* 10. Observaciones técnicas: textarea controlado por el estado "observaciones". */}
       <label className="form-label small fw-bold w-100 mt-3">

@@ -269,6 +269,16 @@ class ApiIntegracionTest {
     }
 
     @Test
+    void elApoyoDeIaEsSoloDelAnalistaYAvisaSiNoEstaConfigurado() throws Exception {
+        mvc.perform(post(API + "/ia/candidatos/1/analisis")).andExpect(status().isUnauthorized());
+        conToken(post(API + "/ia/candidatos/1/analisis"), token("evaluador")).andExpect(status().isForbidden());
+        // En las pruebas no hay GROK_API_KEY: la API responde 503 con un mensaje claro.
+        conToken(post(API + "/ia/candidatos/1/analisis"), token("analista"))
+                .andExpect(status().isServiceUnavailable())
+                .andExpect(jsonPath("$.mensaje").value(containsString("GROK_API_KEY")));
+    }
+
+    @Test
     void laVerificacionYSwaggerSonPublicos() throws Exception {
         mvc.perform(get(API + "/verificacion")).andExpect(status().isOk());
         mvc.perform(get("/v3/api-docs"))

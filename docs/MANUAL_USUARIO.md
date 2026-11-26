@@ -131,7 +131,20 @@ Al seleccionar una fila se abre la ficha del candidato. Desde ahí puedes:
 
 ![Ficha del candidato con CV](manual/09_ficha_candidato_cv.png)
 
-### 5.3 Ofertas laborales
+### 5.3 Apoyo de IA (Grok)
+
+En la ficha del candidato, **Analizar CV con IA** le pide a Grok una sugerencia:
+
+- **Puntuación orientativa** de 0 a 100 de qué tan bien calza el CV con el cargo.
+- **Fortalezas** y **brechas** (información que falta o no se cumple).
+- **Preguntas sugeridas** para la entrevista.
+- **Criterios** usados para llegar al puntaje (en "Criterios usados por la IA").
+
+<img src="manual/17_apoyo_ia.png" alt="Apoyo de IA" width="300" />
+
+> ⚠️ La IA **no decide**: no aprueba, rechaza ni deriva. Es una ayuda que puede equivocarse; siempre revisa el CV y toma la decisión con los botones de la ficha. A Grok se le envía el texto del CV **sin nombre, RUT, correo ni teléfono**. Solo se lee el texto de CV en PDF.
+
+### 5.4 Ofertas laborales
 
 En **Ofertas** se administran las ofertas del portal:
 
@@ -149,7 +162,7 @@ Cada oferta registra: cargo, categoría, ubicación, modalidad, cupos, sueldo m�
 
 ![Formulario de nueva oferta](manual/11_nueva_oferta.png)
 
-### 5.4 Dashboard
+### 5.5 Dashboard
 
 Resume el proceso con los estados de referencia **Pendiente**, **En proceso** y **Finalizada**, la cantidad por familia de cargo y por ubicación, los tiempos promedio y el responsable de cada solicitud.
 
@@ -189,5 +202,7 @@ El evaluador ve **solo** los candidatos derivados. No puede modificar la calific
 **La página dice "No se pudo conectar con el servidor".** El backend está apagado o la dirección configurada en `VITE_API_URL` no es correcta (ver [Documento técnico](DOCUMENTO_TECNICO.md)).
 
 **"Tu sesión expiró".** El token dura 60 minutos. Vuelve a iniciar sesión.
+
+**"El apoyo de IA no está configurado".** Falta `GROK_API_KEY` en el backend (ver [Documento técnico](DOCUMENTO_TECNICO.md#9-integración-de-inteligencia-artificial)).
 
 **El bloque de Google Calendar dice "no está configurado".** Falta la variable `VITE_GOOGLE_CLIENT_ID` en el frontend (ver [Documento técnico](DOCUMENTO_TECNICO.md#8-integración-con-google-calendar)).

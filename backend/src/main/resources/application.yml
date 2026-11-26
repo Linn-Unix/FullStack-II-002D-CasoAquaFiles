@@ -49,3 +49,8 @@ app:
 
   archivos:
     directorio: ${ARCHIVOS_DIRECTORIO:uploads}
+  # Apoyo de IA con Grok (xAI). Sin GROK_API_KEY, la función responde 503 y el resto del sistema sigue igual.
+  ia:
+    url: ${GROK_URL:https://api.x.ai/v1/chat/completions}
+    modelo: ${GROK_MODELO:grok-3-mini}
+    clave: ${GROK_API_KEY:}

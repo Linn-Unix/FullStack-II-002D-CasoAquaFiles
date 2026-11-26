@@ -1,87 +1,81 @@
  RUN  v5.0.5 FullStack-II-002D-CasoAquaFiles
- ✓ src/pages/DetalleOfertaPage.test.jsx > DetalleOfertaPage > muestra todos los antecedentes de la oferta 186ms
- ✓ src/pages/OfertasAdminPage.test.jsx > OfertasAdminPage > lista las ofertas y publica una 244ms
- ✓ src/App.test.jsx > Navegación con React Router > el inicio muestra el acceso del postulante y del personal 174ms
- ✓ src/pages/DetalleOfertaPage.test.jsx > DetalleOfertaPage > postula a la oferta y sube el CV 425ms
- ✓ src/App.test.jsx > Navegación con React Router > el analista inicia sesión y llega a su panel 226ms
- ✓ src/App.test.jsx > Navegación con React Router > no inicia sesión con una contraseña incorrecta 114ms
- ✓ src/pages/DetalleOfertaPage.test.jsx > DetalleOfertaPage > muestra el error si la postulación es rechazada 289ms
- ✓ src/pages/DetalleOfertaPage.test.jsx > DetalleOfertaPage > avisa si la oferta no está publicada 12ms
- ✓ src/pages/OfertasAdminPage.test.jsx > OfertasAdminPage > crea una oferta nueva con el formulario 589ms
- ✓ src/App.test.jsx > Navegación con React Router > muestra un error si el backend está apagado 107ms
- ✓ src/App.test.jsx > Navegación con React Router > navega desde el menú del navbar 56ms
- ✓ src/App.test.jsx > Navegación con React Router > el menú solo muestra la pantalla del rol actual 20ms
- ✓ src/App.test.jsx > Navegación con React Router > el postulante no puede entrar al panel del supervisor 10ms
- ✓ src/pages/OfertasAdminPage.test.jsx > OfertasAdminPage > edita, despublica y elimina 111ms
- ✓ src/pages/OfertasAdminPage.test.jsx > OfertasAdminPage > muestra un mensaje si no hay ofertas o si la API falla 8ms
- ✓ src/App.test.jsx > Navegación con React Router > el postulante no puede entrar al panel psicolaboral 7ms
- ✓ src/App.test.jsx > Navegación con React Router > sin iniciar sesión no se puede entrar al panel del analista 12ms
- ✓ src/App.test.jsx > Navegación con React Router > el analista llega al dashboard desde el menú 67ms
- ✓ src/App.test.jsx > Navegación con React Router > muestra la página 404 en una ruta que no existe 4ms
- ✓ src/App.test.jsx > Flujo del proceso > el supervisor crea una nueva solicitud 527ms
- ✓ src/App.test.jsx > Flujo del proceso > el supervisor filtra por estado 44ms
- ✓ src/App.test.jsx > Flujo del proceso > el supervisor filtra por centro de costos 47ms
- ✓ src/components/FormularioPostulacion.test.jsx > FormularioPostulacion > muestra errores y no envía si el formulario está vacío 169ms
- ✓ src/App.test.jsx > Flujo del proceso > el supervisor edita el cargo de un candidato 180ms
- ✓ src/components/ConsultaPostulacion.test.jsx > ConsultaPostulacion > avisa si el RUT no es válido 208ms
- ✓ src/App.test.jsx > Flujo del proceso > no guarda un cargo demasiado corto 121ms
- ✓ src/components/ConsultaPostulacion.test.jsx > ConsultaPostulacion > avisa si no existe una postulación con ese RUT 60ms
+ ✓ src/pages/DetalleOfertaPage.test.jsx > DetalleOfertaPage > muestra todos los antecedentes de la oferta 277ms
+ ✓ src/pages/OfertasAdminPage.test.jsx > OfertasAdminPage > lista las ofertas y publica una 311ms
+ ✓ src/App.test.jsx > Navegación con React Router > el inicio muestra el acceso del postulante y del personal 222ms
+ ✓ src/App.test.jsx > Navegación con React Router > el analista inicia sesión y llega a su panel 321ms
+ ✓ src/pages/DetalleOfertaPage.test.jsx > DetalleOfertaPage > postula a la oferta y sube el CV 471ms
+ ✓ src/App.test.jsx > Navegación con React Router > no inicia sesión con una contraseña incorrecta 107ms
+ ✓ src/App.test.jsx > Navegación con React Router > muestra un error si el backend está apagado 134ms
+ ✓ src/App.test.jsx > Navegación con React Router > navega desde el menú del navbar 62ms
+ ✓ src/App.test.jsx > Navegación con React Router > el menú solo muestra la pantalla del rol actual 23ms
+ ✓ src/App.test.jsx > Navegación con React Router > el postulante no puede entrar al panel del supervisor 14ms
+ ✓ src/App.test.jsx > Navegación con React Router > el postulante no puede entrar al panel psicolaboral 9ms
+ ✓ src/App.test.jsx > Navegación con React Router > sin iniciar sesión no se puede entrar al panel del analista 5ms
+ ✓ src/App.test.jsx > Navegación con React Router > el analista llega al dashboard desde el menú 81ms
+ ✓ src/pages/DetalleOfertaPage.test.jsx > DetalleOfertaPage > muestra el error si la postulación es rechazada 403ms
+ ✓ src/pages/DetalleOfertaPage.test.jsx > DetalleOfertaPage > avisa si la oferta no está publicada 16ms
+ ✓ src/pages/OfertasAdminPage.test.jsx > OfertasAdminPage > crea una oferta nueva con el formulario 748ms
+ ✓ src/pages/OfertasAdminPage.test.jsx > OfertasAdminPage > edita, despublica y elimina 160ms
+ ✓ src/pages/OfertasAdminPage.test.jsx > OfertasAdminPage > muestra un mensaje si no hay ofertas o si la API falla 9ms
+ ✓ src/App.test.jsx > Navegación con React Router > muestra la página 404 en una ruta que no existe 6ms
+ ✓ src/App.test.jsx > Flujo del proceso > el supervisor crea una nueva solicitud 554ms
+ ✓ src/App.test.jsx > Flujo del proceso > el supervisor filtra por estado 79ms
+ ✓ src/App.test.jsx > Flujo del proceso > el supervisor filtra por centro de costos 58ms
+ ✓ src/App.test.jsx > Flujo del proceso > el supervisor edita el cargo de un candidato 248ms
+ ✓ src/App.test.jsx > Flujo del proceso > no guarda un cargo demasiado corto 143ms
+ ✓ src/components/FormularioPostulacion.test.jsx > FormularioPostulacion > muestra errores y no envía si el formulario está vacío 208ms
+ ✓ src/pages/PortalOfertasPage.test.jsx > PortalOfertasPage > muestra las ofertas publicadas sin iniciar sesión 229ms
+ ✓ src/pages/PortalOfertasPage.test.jsx > PortalOfertasPage > filtra por categoría, modalidad y texto 207ms
+ ✓ src/pages/PortalOfertasPage.test.jsx > PortalOfertasPage > avisa cuando no hay resultados o la API falla 30ms
+ ✓ src/components/FormularioPostulacion.test.jsx > FormularioPostulacion > envía la postulación cuando los datos son válidos 436ms
+ ✓ src/App.test.jsx > Flujo del proceso > el psicólogo ve las observaciones del supervisor 433ms
+ ✓ src/App.test.jsx > Flujo del proceso > el postulante consulta su estado con el RUT 101ms
+ ✓ src/App.test.jsx > Flujo del proceso > el postulante no ve las decisiones internas de RR. HH. 78ms
+ ✓ src/App.test.jsx > Flujo del proceso > el postulante no ve las observaciones técnicas 81ms
+ ✓ src/App.test.jsx > Flujo del proceso > el postulante ve la fecha de su entrevista 104ms
+ ✓ src/App.test.jsx > Flujo del proceso > el supervisor rechaza a un candidato en revisión 80ms
+ ✓ src/App.test.jsx > Flujo del proceso > el supervisor deriva un candidato y el psicólogo lo recibe 282ms
+ ✓ src/App.test.jsx > Flujo del proceso > el psicólogo registra el resultado y las observaciones de evaluación 227ms
+ ✓ src/App.test.jsx > Analista con datos de la API > carga los candidatos del backend 33ms
+ ✓ src/App.test.jsx > Analista con datos de la API > aprueba a un candidato y actualiza su estado 80ms
+ ✓ src/App.test.jsx > Analista con datos de la API > el evaluador con sesión solo ve las evaluaciones del backend 29ms
+ ✓ src/components/ArchivosCandidato.test.jsx > ArchivosCandidato > sin sesión solo muestra el nombre del CV 51ms
+ ✓ src/App.test.jsx > Analista con datos de la API > deriva con el responsable elegido de la lista de evaluadores 112ms
+Not implemented: navigation to another Document
+ ✓ src/components/ConsultaPostulacion.test.jsx > ConsultaPostulacion > avisa si el RUT no es válido 297ms
+ ✓ src/components/ConsultaPostulacion.test.jsx > ConsultaPostulacion > avisa si no existe una postulación con ese RUT 62ms
+ ✓ src/components/ArchivosCandidato.test.jsx > ArchivosCandidato > muestra la carpeta del postulante y descarga el CV con el token 176ms
+ ✓ src/components/ArchivosCandidato.test.jsx > ArchivosCandidato > avisa si la descarga falla 60ms
  ✓ src/components/ConsultaPostulacion.test.jsx > ConsultaPostulacion > encuentra la postulación aunque el RUT se escriba sin puntos ni guion 51ms
  ✓ src/components/ConsultaPostulacion.test.jsx > ConsultaPostulacion > busca en el servidor si el RUT no está en la lista 52ms
- ✓ src/components/FormularioPostulacion.test.jsx > FormularioPostulacion > envía la postulación cuando los datos son válidos 364ms
- ✓ src/App.test.jsx > Flujo del proceso > el psicólogo ve las observaciones del supervisor 336ms
- ✓ src/App.test.jsx > Flujo del proceso > el postulante consulta su estado con el RUT 127ms
- ✓ src/App.test.jsx > Flujo del proceso > el postulante no ve las decisiones internas de RR. HH. 67ms
- ✓ src/App.test.jsx > Flujo del proceso > el postulante no ve las observaciones técnicas 66ms
- ✓ src/App.test.jsx > Flujo del proceso > el postulante ve la fecha de su entrevista 79ms
- ✓ src/App.test.jsx > Flujo del proceso > el supervisor rechaza a un candidato en revisión 78ms
- ✓ src/components/ArchivosCandidato.test.jsx > ArchivosCandidato > sin sesión solo muestra el nombre del CV 33ms
-Not implemented: navigation to another Document
- ✓ src/App.test.jsx > Flujo del proceso > el supervisor deriva un candidato y el psicólogo lo recibe 244ms
- ✓ src/pages/PortalOfertasPage.test.jsx > PortalOfertasPage > muestra las ofertas publicadas sin iniciar sesión 166ms
- ✓ src/components/ArchivosCandidato.test.jsx > ArchivosCandidato > muestra la carpeta del postulante y descarga el CV con el token 182ms
- ✓ src/components/ArchivosCandidato.test.jsx > ArchivosCandidato > avisa si la descarga falla 45ms
- ✓ src/pages/PortalOfertasPage.test.jsx > PortalOfertasPage > filtra por categoría, modalidad y texto 173ms
- ✓ src/pages/PortalOfertasPage.test.jsx > PortalOfertasPage > avisa cuando no hay resultados o la API falla 32ms
- ✓ src/App.test.jsx > Flujo del proceso > el psicólogo registra el resultado y las observaciones de evaluación 232ms
- ✓ src/App.test.jsx > Analista con datos de la API > carga los candidatos del backend 23ms
- ✓ src/App.test.jsx > Analista con datos de la API > aprueba a un candidato y actualiza su estado 69ms
- ✓ src/App.test.jsx > Analista con datos de la API > el evaluador con sesión solo ve las evaluaciones del backend 16ms
- ✓ src/App.test.jsx > Analista con datos de la API > deriva con el responsable elegido de la lista de evaluadores 89ms
- ✓ src/components/CandidatoCard.test.jsx > muestra el nombre, cargo y estado recibidos por props 21ms
- ✓ src/components/AgendarGoogleCalendar.test.jsx > AgendarGoogleCalendar > avisa si Google Calendar no está configurado 18ms
- ✓ src/components/EstadoBadge.test.jsx > muestra el estado con el color que le corresponde 23ms
- ✓ src/components/AgendarGoogleCalendar.test.jsx > AgendarGoogleCalendar > crea el evento y muestra los enlaces de Calendar y Meet 151ms
- ✓ src/components/AgendarGoogleCalendar.test.jsx > AgendarGoogleCalendar > muestra el error si Google no está disponible 25ms
- ✓ src/utils/ofertas.test.js > validarOferta > no devuelve errores si la oferta está completa 3ms
+ ✓ src/components/CandidatoCard.test.jsx > muestra el nombre, cargo y estado recibidos por props 29ms
+ ✓ src/components/AgendarGoogleCalendar.test.jsx > AgendarGoogleCalendar > avisa si Google Calendar no está configurado 28ms
+ ✓ src/components/ApoyoIa.test.jsx > ApoyoIa > no aparece sin sesión 14ms
+ ✓ src/components/AgendarGoogleCalendar.test.jsx > AgendarGoogleCalendar > crea el evento y muestra los enlaces de Calendar y Meet 190ms
+ ✓ src/components/AgendarGoogleCalendar.test.jsx > AgendarGoogleCalendar > muestra el error si Google no está disponible 22ms
+ ✓ src/components/ApoyoIa.test.jsx > ApoyoIa > muestra la sugerencia con criterios, preguntas y la advertencia de revisión humana 218ms
+ ✓ src/components/ApoyoIa.test.jsx > ApoyoIa > muestra el aviso si la IA no está configurada 30ms
+ ✓ src/components/EstadoBadge.test.jsx > muestra el estado con el color que le corresponde 24ms
+ ✓ src/utils/ofertas.test.js > validarOferta > no devuelve errores si la oferta está completa 2ms
  ✓ src/utils/ofertas.test.js > validarOferta > marca los campos vacíos y los cupos fuera de rango 1ms
  ✓ src/utils/ofertas.test.js > validarOferta > no acepta un sueldo máximo menor que el mínimo 0ms
- ✓ src/utils/ofertas.test.js > utilidades de ofertas > convierte los números antes de enviarlos 2ms
- ✓ src/utils/ofertas.test.js > utilidades de ofertas > formatea el rango de sueldo en pesos chilenos 12ms
+ ✓ src/utils/ofertas.test.js > utilidades de ofertas > convierte los números antes de enviarlos 1ms
+ ✓ src/utils/ofertas.test.js > utilidades de ofertas > formatea el rango de sueldo en pesos chilenos 14ms
  ✓ src/utils/ofertas.test.js > utilidades de ofertas > separa un texto en una lista 0ms
+ ✓ src/services/googleCalendar.test.js > googleCalendar > sabe si falta el Client ID 3ms
+ ✓ src/services/googleCalendar.test.js > googleCalendar > arma un evento de 30 minutos con Google Meet e invitado 2ms
+ ✓ src/services/googleCalendar.test.js > googleCalendar > crea el evento con el token que entrega Google 3ms
+ ✓ src/services/googleCalendar.test.js > googleCalendar > rechaza fechas pasadas, falta de Google, cancelación y errores de la API 4ms
  ✓ src/services/api.test.js > pedir() > manda el token guardado 3ms
- ✓ src/services/api.test.js > pedir() > junta los mensajes de validación de cada campo 1ms
- ✓ src/services/api.test.js > pedir() > borra la sesión si el token venció 0ms
- ✓ src/services/api.test.js > pedir() > avisa cuando el rol no tiene permiso 0ms
+ ✓ src/services/api.test.js > pedir() > junta los mensajes de validación de cada campo 2ms
+ ✓ src/services/api.test.js > pedir() > borra la sesión si el token venció 1ms
+ ✓ src/services/api.test.js > pedir() > avisa cuando el rol no tiene permiso 1ms
  ✓ src/services/api.test.js > pedir() > avisa cuando no puede conectarse con el backend 0ms
- ✓ src/services/googleCalendar.test.js > googleCalendar > sabe si falta el Client ID 2ms
- ✓ src/services/googleCalendar.test.js > googleCalendar > arma un evento de 30 minutos con Google Meet e invitado 1ms
- ✓ src/services/googleCalendar.test.js > googleCalendar > crea el evento con el token que entrega Google 2ms
- ✓ src/services/googleCalendar.test.js > googleCalendar > rechaza fechas pasadas, falta de Google, cancelación y errores de la API 2ms
- ✓ src/utils/candidatos.test.js > filtrarCandidatos > filtra por texto sin importar mayúsculas 2ms
- ✓ src/utils/candidatos.test.js > filtrarCandidatos > filtra por estado 1ms
- ✓ src/utils/candidatos.test.js > filtrarCandidatos > filtra por centro de costos 0ms
- ✓ src/utils/candidatos.test.js > filtrarCandidatos > combina texto y estado 0ms
- ✓ src/utils/candidatos.test.js > utilidades > obtiene las iniciales del nombre 0ms
- ✓ src/utils/candidatos.test.js > utilidades > cuenta candidatos por estado 0ms
- ✓ src/utils/candidatos.test.js > obtenerColorEstado > devuelve un color distinto para cada estado 0ms
- ✓ src/utils/candidatos.test.js > obtenerColorEstado > usa un color neutro si el estado no existe 0ms
- ✓ src/utils/candidatos.test.js > obtenerEstadoPostulante > oculta las decisiones internas de RR. HH. y del psicólogo 0ms
- ✓ src/utils/candidatos.test.js > obtenerEstadoPostulante > muestra los estados que sí le corresponden al postulante 0ms
- ✓ src/utils/candidatos.test.js > formatearFecha > convierte la fecha al formato día-mes-año 0ms
- ✓ src/services/evaluacionesService.test.js > evaluacionesService > lista y adapta las evaluaciones del backend 3ms
+ ✓ src/services/authService.test.js > authService > guarda la sesión y traduce el rol del backend 3ms
+ ✓ src/services/authService.test.js > authService > muestra el mensaje del backend si la clave es incorrecta 2ms
+ ✓ src/services/evaluacionesService.test.js > evaluacionesService > lista y adapta las evaluaciones del backend 4ms
  ✓ src/services/evaluacionesService.test.js > evaluacionesService > guarda el resultado y las observaciones 1ms
- ✓ src/utils/validaciones.test.js > esRutValido > acepta un RUT válido con puntos y guion 1ms
+ ✓ src/utils/validaciones.test.js > esRutValido > acepta un RUT válido con puntos y guion 2ms
  ✓ src/utils/validaciones.test.js > esRutValido > acepta un RUT con dígito verificador K 0ms
  ✓ src/utils/validaciones.test.js > esRutValido > rechaza un RUT con dígito verificador incorrecto 0ms
  ✓ src/utils/validaciones.test.js > esRutValido > rechaza un texto que no es RUT 0ms
@@ -89,11 +83,20 @@ Not implemented: navigation to another Document
  ✓ src/utils/validaciones.test.js > validarPostulacion > no devuelve errores con datos válidos 1ms
  ✓ src/utils/validaciones.test.js > validarPostulacion > devuelve errores cuando faltan datos 0ms
  ✓ src/utils/validaciones.test.js > validarPostulacion > rechaza un CV que no es PDF ni Word 0ms
- ✓ src/services/authService.test.js > authService > guarda la sesión y traduce el rol del backend 2ms
- ✓ src/services/authService.test.js > authService > muestra el mensaje del backend si la clave es incorrecta 1ms
- ✓ src/services/candidatosApi.test.js > candidatosApi > envía los filtros al backend 2ms
- ✓ src/services/candidatosApi.test.js > candidatosApi > adapta la consulta pública de una postulación 1ms
- Test Files  18 passed (18)
-      Tests  93 passed (93)
-   Start at  23:58:40
-   Duration  6.93s (environment 48%, tests 37%, setup 6%, transform 5%, import 3%)
+ ✓ src/utils/candidatos.test.js > filtrarCandidatos > filtra por texto sin importar mayúsculas 11ms
+ ✓ src/utils/candidatos.test.js > filtrarCandidatos > filtra por estado 2ms
+ ✓ src/utils/candidatos.test.js > filtrarCandidatos > filtra por centro de costos 1ms
+ ✓ src/utils/candidatos.test.js > filtrarCandidatos > combina texto y estado 1ms
+ ✓ src/utils/candidatos.test.js > utilidades > obtiene las iniciales del nombre 1ms
+ ✓ src/utils/candidatos.test.js > utilidades > cuenta candidatos por estado 1ms
+ ✓ src/utils/candidatos.test.js > obtenerColorEstado > devuelve un color distinto para cada estado 1ms
+ ✓ src/utils/candidatos.test.js > obtenerColorEstado > usa un color neutro si el estado no existe 0ms
+ ✓ src/utils/candidatos.test.js > obtenerEstadoPostulante > oculta las decisiones internas de RR. HH. y del psicólogo 1ms
+ ✓ src/utils/candidatos.test.js > obtenerEstadoPostulante > muestra los estados que sí le corresponden al postulante 1ms
+ ✓ src/utils/candidatos.test.js > formatearFecha > convierte la fecha al formato día-mes-año 0ms
+ ✓ src/services/candidatosApi.test.js > candidatosApi > envía los filtros al backend 5ms
+ ✓ src/services/candidatosApi.test.js > candidatosApi > adapta la consulta pública de una postulación 3ms
+ Test Files  19 passed (19)
+      Tests  96 passed (96)
+   Start at  03:42:39
+   Duration  8.81s (environment 52%, tests 36%, setup 6%, import 4%, transform 1%)
