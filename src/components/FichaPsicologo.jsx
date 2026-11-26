@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ESTADOS, RESULTADOS } from '../data/candidatos'
-import ArchivoFila from './ArchivoFila'
+import AgendarGoogleCalendar from './AgendarGoogleCalendar'
+import ArchivosCandidato from './ArchivosCandidato'
 import EstadoBadge from './EstadoBadge'
 
 // Ficha del candidato seleccionado en el panel del psicólogo.
@@ -26,7 +27,8 @@ function FichaPsicologo({ candidato, actualizarCandidato }) {
       setError('Guarda el resultado de la evaluación antes de subir el informe.')
       return
     }
-    actualizarCandidato(candidato.id, { informe: archivo.name, estado: ESTADOS.FINALIZADO })
+    // NUEVO: el tercer parámetro es el archivo, para subirlo al backend.
+    actualizarCandidato(candidato.id, { informe: archivo.name, estado: ESTADOS.FINALIZADO }, archivo)
   }
 
   function guardarEvaluacion() {
@@ -46,7 +48,8 @@ function FichaPsicologo({ candidato, actualizarCandidato }) {
       <p>{candidato.cargo} · {candidato.ubicacion}</p>
       <EstadoBadge estado={candidato.estado} />
       <hr />
-      <ArchivoFila nombre={candidato.nombreCv} icono="bi-file-earmark-pdf" />
+      {/* En la API, "id" es el de la evaluación; el del candidato viene en "candidatoId". */}
+      <ArchivosCandidato key={candidato.id} candidatoId={candidato.candidatoId ?? candidato.id} nombreCv={candidato.nombreCv} />
 
       {/* Observaciones del supervisor: el psicólogo solo puede leerlas. */}
       <div className="stage-note">
@@ -55,9 +58,12 @@ function FichaPsicologo({ candidato, actualizarCandidato }) {
       </div>
 
       <label className="date-field">
-        Fecha de entrevista (Teams)
+        Fecha de entrevista
         <input type="date" value={candidato.fechaEntrevista} onChange={agendar} disabled={finalizado} />
       </label>
+
+      {/* Con la fecha agendada, el evaluador puede crear la reunión en Google Calendar. */}
+      {candidato.fechaEntrevista && !finalizado && <AgendarGoogleCalendar key={candidato.fechaEntrevista} candidato={candidato} />}
 
       {/* 3. Renderizado condicional según el avance del proceso. */}
       {!candidato.fechaEntrevista && (

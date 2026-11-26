@@ -13,11 +13,13 @@ import cl.aquachile.aquafiles.dto.PostulacionResponse;
 import cl.aquachile.aquafiles.entity.Candidato;
 import cl.aquachile.aquafiles.entity.EstadoCandidato;
 import cl.aquachile.aquafiles.entity.Evaluacion;
+import cl.aquachile.aquafiles.entity.Oferta;
 import cl.aquachile.aquafiles.repository.EvaluacionRepository;
 import cl.aquachile.aquafiles.exception.DatoInvalidoException;
 import cl.aquachile.aquafiles.exception.RecursoNoEncontradoException;
 import cl.aquachile.aquafiles.exception.ReglaNegocioException;
 import cl.aquachile.aquafiles.repository.CandidatoRepository;
+import cl.aquachile.aquafiles.repository.OfertaRepository;
 import cl.aquachile.aquafiles.util.RutUtil;
 
 @Service
@@ -26,11 +28,14 @@ public class CandidatoService {
 
     private final CandidatoRepository candidatoRepository;
     private final EvaluacionRepository evaluacionRepository;
+    private final OfertaRepository ofertaRepository;
 
     public CandidatoService(CandidatoRepository candidatoRepository,
-                            EvaluacionRepository evaluacionRepository) {
+                            EvaluacionRepository evaluacionRepository,
+                            OfertaRepository ofertaRepository) {
         this.candidatoRepository = candidatoRepository;
         this.evaluacionRepository = evaluacionRepository;
+        this.ofertaRepository = ofertaRepository;
     }
 
     public List<CandidatoResponse> listar(String busqueda, EstadoCandidato estado,
@@ -78,7 +83,23 @@ public class CandidatoService {
 
     @Transactional
     public PostulacionResponse registrarPostulacion(PostulacionRequest datos) {
-        return PostulacionResponse.desde(crearEntidad(datos.comoCandidato()), null);
+        // Si postula a una oferta, debe estar publicada. El cargo, la familia y la ubicación
+        // se toman de la oferta para que la postulación quede coherente con ella.
+        Oferta oferta = null;
+        if (datos.ofertaId() != null) {
+            oferta = ofertaRepository.findByIdAndPublicadaTrue(datos.ofertaId())
+                    .orElseThrow(() -> new RecursoNoEncontradoException(
+                            "La oferta " + datos.ofertaId() + " no existe o ya no está publicada."));
+        }
+
+        Candidato candidato = crearEntidad(datos.comoCandidato());
+        if (oferta != null) {
+            candidato.setOferta(oferta);
+            candidato.setCargo(oferta.getCargo());
+            candidato.setFamilia(oferta.getFamilia());
+            candidato.setUbicacion(oferta.getUbicacion());
+        }
+        return PostulacionResponse.desde(candidato, null);
     }
 
     @Transactional
@@ -114,6 +135,18 @@ public class CandidatoService {
         } else if (nuevoEstado == EstadoCandidato.FINALIZADO) {
             candidato.setFechaFinalizacion(LocalDate.now());
         }
+        return CandidatoResponse.desde(candidato);
+    }
+
+    // Derivar exige indicar el profesional responsable.
+    @Transactional
+    public CandidatoResponse derivar(Long id, String responsable) {
+        if (responsable == null || responsable.isBlank()) {
+            throw new DatoInvalidoException("Selecciona el profesional responsable.");
+        }
+        cambiarEstado(id, EstadoCandidato.DERIVADO);
+        Candidato candidato = buscarEntidad(id);
+        candidato.setResponsable(responsable.trim());
         return CandidatoResponse.desde(candidato);
     }
 

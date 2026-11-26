@@ -5,12 +5,16 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.text.Normalizer;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -27,6 +31,7 @@ import cl.aquachile.aquafiles.entity.CategoriaArchivo;
 import cl.aquachile.aquafiles.exception.AlmacenamientoException;
 import cl.aquachile.aquafiles.exception.DatoInvalidoException;
 import cl.aquachile.aquafiles.exception.RecursoNoEncontradoException;
+import cl.aquachile.aquafiles.exception.ReglaNegocioException;
 import cl.aquachile.aquafiles.repository.ArchivoRepository;
 
 @Service
@@ -52,6 +57,11 @@ public class ArchivoService {
     @Transactional
     public ArchivoResponse guardarCv(Long candidatoId, MultipartFile archivo) {
         Candidato candidato = candidatoService.buscarEntidad(candidatoId);
+        // La subida del CV es pública (la hace el postulante sin sesión), por eso solo se permite
+        // una vez: así nadie puede reemplazar el CV de otra persona.
+        if (archivoRepository.existsByCandidatoIdAndCategoria(candidatoId, CategoriaArchivo.CV)) {
+            throw new ReglaNegocioException("Esta postulación ya tiene un CV adjunto.");
+        }
         return ArchivoResponse.desde(guardarEntidad(candidato, archivo, CategoriaArchivo.CV));
     }
 
@@ -59,11 +69,13 @@ public class ArchivoService {
     public Archivo guardarEntidad(Candidato candidato, MultipartFile archivo, CategoriaArchivo categoria) {
         validarArchivo(archivo);
         String extension = extensionDe(archivo.getOriginalFilename());
-        String nombreAlmacenado = UUID.randomUUID() + "." + extension;
-        Path destino = directorio.resolve(nombreAlmacenado).normalize();
+        // Cada postulante tiene su propia carpeta: "nombre-del-postulante-ID".
+        // Dentro, el archivo se guarda con un nombre aleatorio para que nunca se repita.
+        String nombreAlmacenado = carpetaDe(candidato) + "/" + UUID.randomUUID() + "." + extension;
+        Path destino = resolver(nombreAlmacenado);
 
         try {
-            Files.createDirectories(directorio);
+            Files.createDirectories(destino.getParent());
             try (InputStream contenido = archivo.getInputStream()) {
                 Files.copy(contenido, destino, StandardCopyOption.REPLACE_EXISTING);
             }
@@ -99,7 +111,7 @@ public class ArchivoService {
 
     public ArchivoDescarga descargar(Long archivoId) {
         Archivo archivo = buscarArchivo(archivoId);
-        Path ruta = directorio.resolve(archivo.getNombreAlmacenado()).normalize();
+        Path ruta = resolver(archivo.getNombreAlmacenado());
         try {
             Resource recurso = new UrlResource(ruta.toUri());
             if (!recurso.exists() || !recurso.isReadable()) {
@@ -111,10 +123,31 @@ public class ArchivoService {
         }
     }
 
+    // Texto del CV en PDF (para el apoyo de IA). Si no hay CV o no es PDF, devuelve "".
+    public String textoDelCv(Candidato candidato) {
+        if (candidato.getId() == null) {
+            return "";
+        }
+        return archivoRepository.findByCandidatoIdOrderByFechaCargaDesc(candidato.getId()).stream()
+                .filter(archivo -> archivo.getCategoria() == CategoriaArchivo.CV && "pdf".equals(archivo.getExtension()))
+                .findFirst()
+                .map(archivo -> leerPdf(resolver(archivo.getNombreAlmacenado())))
+                .orElse("");
+    }
+
+    private String leerPdf(Path ruta) {
+        try (PDDocument documento = Loader.loadPDF(ruta.toFile())) {
+            return new PDFTextStripper().getText(documento);
+        } catch (IOException error) {
+            LOGGER.warn("No se pudo leer el texto del CV {}", ruta, error);
+            return "";
+        }
+    }
+
     @Transactional
     public void eliminar(Long archivoId) {
         Archivo archivo = buscarArchivo(archivoId);
-        Path ruta = directorio.resolve(archivo.getNombreAlmacenado()).normalize();
+        Path ruta = resolver(archivo.getNombreAlmacenado());
         try {
             Files.deleteIfExists(ruta);
             archivoRepository.delete(archivo);
@@ -127,6 +160,32 @@ public class ArchivoService {
         return archivoRepository.findById(archivoId)
                 .orElseThrow(() -> new RecursoNoEncontradoException(
                         "No existe el archivo con id " + archivoId + "."));
+    }
+
+    // Ej: "Tomás Fuentes" con id 12 → "tomas-fuentes-12".
+    static String carpetaDe(Candidato candidato) {
+        String nombre = candidato.getNombre() == null ? "" : candidato.getNombre();
+        String sinTildes = Normalizer.normalize(nombre, Normalizer.Form.NFD).replaceAll("\\p{M}", "");
+        String carpeta = sinTildes.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9]+", "-").replaceAll("(^-|-$)", "");
+        if (carpeta.isEmpty()) {
+            carpeta = "postulante";
+        }
+        if (carpeta.length() > 50) {
+            carpeta = carpeta.substring(0, 50).replaceAll("-$", "");
+        }
+        String identificador = candidato.getId() == null
+                ? UUID.randomUUID().toString().substring(0, 8)
+                : candidato.getId().toString();
+        return carpeta + "-" + identificador;
+    }
+
+    // Evita que una ruta guardada salga del directorio de archivos (ej. "../../etc").
+    private Path resolver(String nombreAlmacenado) {
+        Path ruta = directorio.resolve(nombreAlmacenado).normalize();
+        if (!ruta.startsWith(directorio)) {
+            throw new DatoInvalidoException("La ruta del archivo no es válida.");
+        }
+        return ruta;
     }
 
     private void validarArchivo(MultipartFile archivo) {

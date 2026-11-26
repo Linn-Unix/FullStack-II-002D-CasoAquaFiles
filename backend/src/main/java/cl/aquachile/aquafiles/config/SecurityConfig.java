@@ -50,15 +50,20 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/postulaciones", "/api/v1/postulaciones/*/cv").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/candidatos/consulta").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/portal/**").permitAll()
                         // 3.2- Solo evaluador
                         .requestMatchers(HttpMethod.PATCH, "/api/v1/candidatos/*/agendar", "/api/v1/candidatos/*/finalizar").hasRole("EVALUADOR")
                         .requestMatchers("/api/v1/evaluaciones/**").hasRole("EVALUADOR")
                         // 3.3- Los dos roles internos
                         .requestMatchers(HttpMethod.GET, "/api/v1/archivos/*/descargar").hasAnyRole("ANALISTA", "EVALUADOR")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/candidatos/*/archivos").hasAnyRole("ANALISTA", "EVALUADOR")
                         // 3.4- Solo analista
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/archivos/*").hasRole("ANALISTA")
                         .requestMatchers("/api/v1/candidatos/**").hasRole("ANALISTA")
-                        .requestMatchers("/api/dashboard/**").hasRole("ANALISTA")
+                        .requestMatchers("/api/v1/dashboard/**").hasRole("ANALISTA")
+                        .requestMatchers("/api/v1/ofertas/**").hasRole("ANALISTA")
+                        .requestMatchers("/api/v1/usuarios/**").hasRole("ANALISTA")
+                        .requestMatchers("/api/v1/ia/**").hasRole("ANALISTA")
                         // 3.5- Cualquier otra cosa (ej. /api/v1/auth/renovar): al menos con sesión
                         .anyRequest().authenticated())
                 // 4. Nuestro filtro JWT corre antes que el filtro normal de usuario y clave.

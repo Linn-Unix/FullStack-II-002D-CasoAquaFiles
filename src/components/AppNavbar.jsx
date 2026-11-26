@@ -5,6 +5,7 @@ import { NOMBRES_ROL, ROLES } from '../data/roles'
 const enlaces = [
   { ruta: '/postulacion', texto: 'Mi postulación', rol: ROLES.POSTULANTE },
   { ruta: '/supervisor', texto: 'Reclutamiento', rol: ROLES.SUPERVISOR },
+  { ruta: '/ofertas', texto: 'Ofertas', rol: ROLES.SUPERVISOR },
   { ruta: '/dashboard', texto: 'Dashboard', rol: ROLES.SUPERVISOR },
   { ruta: '/psicologo', texto: 'Evaluaciones', rol: ROLES.PSICOLOGO },
 ]
@@ -45,6 +46,8 @@ function AppNavbar({ rol, nombreUsuario, alCerrarSesion }) {
         <div className="collapse navbar-collapse" id="menuPrincipal">
           <div className="navbar-nav ms-auto align-items-lg-center">
             <NavLink to="/" end className="nav-link">Inicio</NavLink>
+            {/* El portal de empleos es público; el personal interno no lo necesita en su menú. */}
+            {(!rol || rol === ROLES.POSTULANTE) && <NavLink to="/empleos" className="nav-link">Empleos</NavLink>}
 
             {/* 5. NavLink marca con la clase "active" el enlace de la página actual. */}
             {enlacesVisibles.map((enlace) => (

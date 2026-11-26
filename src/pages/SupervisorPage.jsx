@@ -10,7 +10,7 @@ import { contarPorEstado, filtrarCandidatos } from '../utils/candidatos'
 
 // Página del supervisor técnico (ruta "/supervisor").
 // Recibe por props la lista de candidatos y la función para actualizarlos.
-function SupervisorPage({ candidatos, actualizarCandidato, alCrearSolicitud, modoOscuro, alCambiarTema }) {
+function SupervisorPage({ candidatos, evaluadores, actualizarCandidato, alCrearSolicitud, modoOscuro, alCambiarTema }) {
   // 1. Estados de esta página: texto buscado, filtros y candidato seleccionado.
   const [busqueda, setBusqueda] = useState('')
   const [estadoFiltro, setEstadoFiltro] = useState('')
@@ -134,7 +134,7 @@ function SupervisorPage({ candidatos, actualizarCandidato, alCrearSolicitud, mod
         </div>
         <div className="col-lg-4">
           {/* key reinicia la ficha (y su edición) cada vez que se selecciona otro candidato. */}
-          <FichaSupervisor key={seleccionado?.id} candidato={seleccionado} actualizarCandidato={actualizarCandidato} />
+          <FichaSupervisor key={seleccionado?.id} candidato={seleccionado} evaluadores={evaluadores} actualizarCandidato={actualizarCandidato} />
         </div>
       </div>
     </main>

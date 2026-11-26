@@ -1,12 +1,13 @@
 import { useState } from 'react'
-import { CENTROS_COSTO, ESTADOS, UBICACIONES } from '../data/candidatos'
+import { CENTROS_COSTO, ESTADOS, EVALUADORES, UBICACIONES } from '../data/candidatos'
 import { obtenerIniciales } from '../utils/candidatos'
-import ArchivoFila from './ArchivoFila'
+import ApoyoIa from './ApoyoIa'
+import ArchivosCandidato from './ArchivosCandidato'
 import EstadoBadge from './EstadoBadge'
 
 // Ficha del candidato seleccionado en el panel del supervisor.
-// Recibe el candidato y la función para actualizarlo (viene de App).
-function FichaSupervisor({ candidato, actualizarCandidato }) {
+// Recibe el candidato, los evaluadores que se pueden asignar y la función para actualizarlo (viene de App).
+function FichaSupervisor({ candidato, evaluadores = EVALUADORES, actualizarCandidato }) {
   // 1. Estados para editar los datos: si está en modo edición y la copia que se está editando.
   const [editando, setEditando] = useState(false)
   const [borrador, setBorrador] = useState(null)
@@ -15,6 +16,9 @@ function FichaSupervisor({ candidato, actualizarCandidato }) {
   // 2. Estados para las observaciones técnicas.
   const [observaciones, setObservaciones] = useState(candidato?.observaciones ?? '')
   const [observacionGuardada, setObservacionGuardada] = useState(false)
+
+  // 2.1- Profesional responsable que se asigna al derivar.
+  const [responsable, setResponsable] = useState('')
 
   // 3. Si no hay candidato seleccionado, mostramos un mensaje.
   if (!candidato) {
@@ -122,7 +126,8 @@ function FichaSupervisor({ candidato, actualizarCandidato }) {
         </>
       )}
 
-      <ArchivoFila nombre={candidato.nombreCv} icono="bi-file-earmark-pdf" />
+      <ArchivosCandidato key={candidato.id} candidatoId={candidato.id} nombreCv={candidato.nombreCv} />
+      <ApoyoIa key={`ia-${candidato.id}`} candidatoId={candidato.id} />
 
       {/* 10. Observaciones técnicas: textarea controlado por el estado "observaciones". */}
       <label className="form-label small fw-bold w-100 mt-3">
@@ -157,9 +162,23 @@ function FichaSupervisor({ candidato, actualizarCandidato }) {
 
       {/* 12. Aprobado: el supervisor puede derivarlo al psicólogo. */}
       {puedeDerivar && (
-        <button className="btn btn-aqua w-100 mt-3" type="button" onClick={() => actualizarCandidato(candidato.id, { estado: ESTADOS.DERIVADO })}>
-          Derivar al evaluador <i className="bi bi-send" />
-        </button>
+        <div className="mt-3">
+          <label className="form-label small fw-bold w-100">
+            Profesional responsable
+            <select className="form-select" value={responsable} onChange={(evento) => setResponsable(evento.target.value)}>
+              <option value="">Selecciona un evaluador</option>
+              {evaluadores.map((nombre) => <option key={nombre}>{nombre}</option>)}
+            </select>
+          </label>
+          {/* El botón queda deshabilitado hasta elegir un responsable. */}
+          <button className="btn btn-aqua w-100" type="button" disabled={!responsable} onClick={() => actualizarCandidato(candidato.id, { estado: ESTADOS.DERIVADO, responsable })}>
+            Derivar al evaluador <i className="bi bi-send" />
+          </button>
+        </div>
+      )}
+
+      {candidato.responsable && !puedeDerivar && (
+        <p className="small mt-2 mb-0"><i className="bi bi-person-check" /> Responsable: <strong>{candidato.responsable}</strong></p>
       )}
 
       {/* 13. En cualquier otro estado, la etapa técnica ya terminó. */}

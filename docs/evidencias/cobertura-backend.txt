@@ -1,0 +1,13 @@
+Cobertura de líneas del backend (JaCoCo)
+
+(raíz)          1/3      33.3%
+config         74/74    100.0%
+controller     73/80     91.2%
+dto            84/86     97.7%
+entity        172/175    98.3%
+exception      31/34     91.2%
+security       34/34    100.0%
+service       416/444    93.7%
+util           57/59     96.6%
+
+TOTAL         942/989    95.2%

@@ -2,6 +2,7 @@ package cl.aquachile.aquafiles.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -17,8 +18,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import cl.aquachile.aquafiles.dto.CandidatoResponse;
 import cl.aquachile.aquafiles.entity.Candidato;
 import cl.aquachile.aquafiles.entity.EstadoCandidato;
+import cl.aquachile.aquafiles.exception.DatoInvalidoException;
 import cl.aquachile.aquafiles.exception.ReglaNegocioException;
 import cl.aquachile.aquafiles.repository.CandidatoRepository;
+import cl.aquachile.aquafiles.repository.EvaluacionRepository;
+import cl.aquachile.aquafiles.repository.OfertaRepository;
 
 @ExtendWith(MockitoExtension.class)
 class CandidatoServiceEstadosTest {
@@ -26,11 +30,17 @@ class CandidatoServiceEstadosTest {
     @Mock
     private CandidatoRepository candidatoRepository;
 
+    @Mock
+    private EvaluacionRepository evaluacionRepository;
+
+    @Mock
+    private OfertaRepository ofertaRepository;
+
     private CandidatoService candidatoService;
 
     @BeforeEach
     void setUp() {
-        candidatoService = new CandidatoService(candidatoRepository);
+        candidatoService = new CandidatoService(candidatoRepository, evaluacionRepository, ofertaRepository);
     }
 
     @Test
@@ -64,6 +74,23 @@ class CandidatoServiceEstadosTest {
         assertThrows(ReglaNegocioException.class,
                 () -> candidatoService.cambiarEstado(1L, EstadoCandidato.FINALIZADO));
         assertEquals(EstadoCandidato.REVISION, candidato.getEstado());
+    }
+
+    @Test
+    void derivarGuardaElResponsable() {
+        Candidato candidato = candidato(EstadoCandidato.APROBADO);
+        when(candidatoRepository.findById(1L)).thenReturn(Optional.of(candidato));
+
+        CandidatoResponse respuesta = candidatoService.derivar(1L, "  Luis Herrera ");
+
+        assertEquals(EstadoCandidato.DERIVADO, respuesta.estado());
+        assertEquals("Luis Herrera", respuesta.responsable());
+    }
+
+    @Test
+    void derivarSinResponsableNoCambiaElEstado() {
+        assertThrows(DatoInvalidoException.class, () -> candidatoService.derivar(1L, " "));
+        verify(candidatoRepository, never()).findById(1L);
     }
 
     private Candidato candidato(EstadoCandidato estado) {

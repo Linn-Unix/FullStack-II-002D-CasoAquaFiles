@@ -37,4 +37,15 @@ describe('ConsultaPostulacion', () => {
 
     expect(alEncontrar).toHaveBeenCalledWith(4)
   })
+  it('busca en el servidor si el RUT no está en la lista', async () => {
+    const usuario = userEvent.setup()
+    const buscarEnServidor = vi.fn().mockResolvedValue({ id: 99, nombre: 'Tomás Fuentes' })
+    render(<ConsultaPostulacion candidatos={[]} alEncontrar={vi.fn()} buscarEnServidor={buscarEnServidor} />)
+
+    await usuario.type(screen.getByLabelText(/rut de tu postulación/i), '12.345.678-5')
+    await usuario.click(screen.getByRole('button', { name: /consultar/i }))
+
+    expect(buscarEnServidor).toHaveBeenCalledWith('12.345.678-5')
+    expect(screen.queryByText(/no encontramos una postulación/i)).not.toBeInTheDocument()
+  })
 })

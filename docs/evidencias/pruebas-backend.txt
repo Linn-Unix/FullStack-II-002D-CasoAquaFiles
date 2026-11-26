@@ -1,0 +1,33 @@
+[INFO]  T E S T S
+[INFO] Running cl.aquachile.aquafiles.util.AnonimizadorTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.060 s -- in cl.aquachile.aquafiles.util.AnonimizadorTest
+[INFO] Running cl.aquachile.aquafiles.util.RutUtilTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.010 s -- in cl.aquachile.aquafiles.util.RutUtilTest
+[INFO] Running cl.aquachile.aquafiles.integracion.ApiIntegracionTest
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 13.51 s -- in cl.aquachile.aquafiles.integracion.ApiIntegracionTest
+[INFO] Running cl.aquachile.aquafiles.AquaFilesApplicationTests
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.676 s -- in cl.aquachile.aquafiles.AquaFilesApplicationTests
+[INFO] Running cl.aquachile.aquafiles.service.AuthServiceTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.436 s -- in cl.aquachile.aquafiles.service.AuthServiceTest
+[INFO] Running cl.aquachile.aquafiles.service.EvaluacionServiceTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.436 s -- in cl.aquachile.aquafiles.service.EvaluacionServiceTest
+[INFO] Running cl.aquachile.aquafiles.service.CandidatoServicePostulacionTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.259 s -- in cl.aquachile.aquafiles.service.CandidatoServicePostulacionTest
+[INFO] Running cl.aquachile.aquafiles.service.CandidatoServiceEstadosTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.018 s -- in cl.aquachile.aquafiles.service.CandidatoServiceEstadosTest
+[INFO] Running cl.aquachile.aquafiles.service.ArchivoServiceTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.456 s -- in cl.aquachile.aquafiles.service.ArchivoServiceTest
+[INFO] Running cl.aquachile.aquafiles.service.ClienteGroqTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.091 s -- in cl.aquachile.aquafiles.service.ClienteGroqTest
+[INFO] Running cl.aquachile.aquafiles.service.OfertaServiceTest
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.022 s -- in cl.aquachile.aquafiles.service.OfertaServiceTest
+[INFO] Running cl.aquachile.aquafiles.service.IaServiceTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.104 s -- in cl.aquachile.aquafiles.service.IaServiceTest
+[INFO] Running cl.aquachile.aquafiles.service.UsuarioServiceTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.270 s -- in cl.aquachile.aquafiles.service.UsuarioServiceTest
+[INFO] Running cl.aquachile.aquafiles.entity.EstadoCandidatoTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in cl.aquachile.aquafiles.entity.EstadoCandidatoTest
+[INFO] Results:
+[INFO] Tests run: 62, Failures: 0, Errors: 0, Skipped: 0
+[INFO] All coverage checks have been met.
+[INFO] BUILD SUCCESS

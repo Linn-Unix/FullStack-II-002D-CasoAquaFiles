@@ -8,6 +8,22 @@ const MENSAJES_HTTP = {
   404: 'No se encontró lo que buscabas.',
 }
 
+// Descarga un archivo protegido (CV o informe) con el token de la sesión.
+// Devuelve un Blob, que el navegador puede abrir o guardar.
+export async function pedirArchivo(ruta) {
+  const sesion = leerSesion()
+  const cabeceras = sesion?.token ? { Authorization: `Bearer ${sesion.token}` } : {}
+
+  let respuesta
+  try {
+    respuesta = await fetch(`${URL_API}${ruta}`, { headers: cabeceras })
+  } catch {
+    throw new Error('No se pudo conectar con el servidor. Revisa que el backend esté encendido.')
+  }
+  if (!respuesta.ok) throw new Error(MENSAJES_HTTP[respuesta.status] ?? 'No se pudo descargar el archivo.')
+  return respuesta.blob()
+}
+
 export async function pedir(ruta, { metodo = 'GET', cuerpo } = {}) {
   const cabeceras = {}
   const sesion = leerSesion()

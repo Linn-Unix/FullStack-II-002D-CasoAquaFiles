@@ -18,15 +18,22 @@ const formularioVacio = {
 }
 
 // Recibe por props la función alEnviar, que viene del componente padre (App).
+// Si recibe "oferta", el cargo, la familia y la ubicación se toman de la oferta y no se piden.
 function FormularioPostulacion({
   alEnviar,
+  oferta = null,
+  enviando = false,
   etiqueta = 'POSTULACIÓN',
   titulo = 'Ingresa tus antecedentes',
   descripcion = 'Completa tus datos y adjunta tu CV para iniciar la revisión técnica.',
   textoBoton = 'Enviar postulación',
 }) {
   // 1. "valores" guarda lo que escribe el usuario en cada campo.
-  const [valores, setValores] = useState(formularioVacio)
+  const [valores, setValores] = useState(() =>
+    oferta
+      ? { ...formularioVacio, cargo: oferta.cargo, familia: oferta.familia, ubicacion: oferta.ubicacion }
+      : formularioVacio,
+  )
 
   // 2. "errores" guarda los mensajes de error de cada campo.
   const [errores, setErrores] = useState({})
@@ -74,6 +81,7 @@ function FormularioPostulacion({
       observaciones: '',
       resultado: '',
       observacionesEvaluacion: '',
+      ofertaId: oferta?.id ?? null,
     })
   }
 
@@ -113,25 +121,28 @@ function FormularioPostulacion({
         </label>
         {errores.telefono && <span className="field-error">{errores.telefono}</span>}
 
-        <div className="form-row">
-          <label>
-            Familia de cargo
-            <select name="familia" value={valores.familia} onChange={manejarCambio}>
-              {/* 7. map() crea una opción por cada familia de cargo. */}
-              {FAMILIAS.map((familia) => (
-                <option key={familia}>{familia}</option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Ubicación
-            <select name="ubicacion" value={valores.ubicacion} onChange={manejarCambio}>
-              {UBICACIONES.map((ubicacion) => (
-                <option key={ubicacion}>{ubicacion}</option>
-              ))}
-            </select>
-          </label>
-        </div>
+        {/* Al postular a una oferta, estos datos vienen de la oferta. */}
+        {!oferta && (
+          <div className="form-row">
+            <label>
+              Familia de cargo
+              <select name="familia" value={valores.familia} onChange={manejarCambio}>
+                {/* 7. map() crea una opción por cada familia de cargo. */}
+                {FAMILIAS.map((familia) => (
+                  <option key={familia}>{familia}</option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Ubicación
+              <select name="ubicacion" value={valores.ubicacion} onChange={manejarCambio}>
+                {UBICACIONES.map((ubicacion) => (
+                  <option key={ubicacion}>{ubicacion}</option>
+                ))}
+              </select>
+            </label>
+          </div>
+        )}
 
         <label>
           Centro de costos
@@ -142,10 +153,12 @@ function FormularioPostulacion({
           </select>
         </label>
 
-        <label>
-          Cargo al que postula
-          <input name="cargo" value={valores.cargo} onChange={manejarCambio} className={errores.cargo ? 'is-invalid' : ''} placeholder="Ej. Técnico Acuícola" />
-        </label>
+        {!oferta && (
+          <label>
+            Cargo al que postula
+            <input name="cargo" value={valores.cargo} onChange={manejarCambio} className={errores.cargo ? 'is-invalid' : ''} placeholder="Ej. Técnico Acuícola" />
+          </label>
+        )}
         {errores.cargo && <span className="field-error">{errores.cargo}</span>}
 
         <label className={errores.cv ? 'upload-field is-invalid' : 'upload-field'}>
@@ -156,8 +169,8 @@ function FormularioPostulacion({
         </label>
         {errores.cv && <span className="field-error">{errores.cv}</span>}
 
-        <button className="btn btn-aqua mt-3" type="submit">
-          {textoBoton} <i className="bi bi-send" />
+        <button className="btn btn-aqua mt-3" type="submit" disabled={enviando}>
+          {enviando ? 'Enviando...' : textoBoton} <i className="bi bi-send" />
         </button>
       </form>
     </section>

@@ -7,9 +7,12 @@ import RutaProtegida from './components/RutaProtegida'
 import { candidatosIniciales } from './data/candidatos'
 import { ROLES } from './data/roles'
 import DashboardPage from './pages/DashboardPage'
+import DetalleOfertaPage from './pages/DetalleOfertaPage'
 import InicioPage from './pages/InicioPage'
 import LoginPage from './pages/LoginPage'
 import NoEncontradaPage from './pages/NoEncontradaPage'
+import OfertasAdminPage from './pages/OfertasAdminPage'
+import PortalOfertasPage from './pages/PortalOfertasPage'
 import PostulacionPage from './pages/PostulacionPage'
 import PsicologoPage from './pages/PsicologoPage'
 import SupervisorPage from './pages/SupervisorPage'
@@ -18,10 +21,18 @@ import {
   adaptarCandidato,
   actualizarCandidatoApi,
   cambiarEstado,
+  consultarPostulacion,
   listarCandidatos,
   registrarPostulacion,
   subirArchivo,
 } from './services/candidatosApi'
+import {
+  guardarEvaluacionApi,
+  listarEvaluaciones,
+  subirInformeApi,
+} from './services/evaluacionesService'
+import { listarEvaluadores } from './services/usuariosService'
+import { EVALUADORES } from './data/candidatos'
 
 // rolInicial permite partir con una sesión ya iniciada (se usa en las pruebas).
 function App({ rolInicial = null }) {
@@ -30,8 +41,16 @@ function App({ rolInicial = null }) {
   //    Vive en App para que todas las páginas compartan los mismos datos.
   const [candidatos, setCandidatos] = useState(candidatosIniciales)
 
+  const [evaluaciones, setEvaluaciones] = useState([])
+  // Profesionales que el analista puede asignar como responsables al derivar.
+  const [evaluadores, setEvaluadores] = useState(EVALUADORES)
+  const [evaluacionesCargadas, setEvaluacionesCargadas] = useState(false)
+  const [evaluacionesFallaron, setEvaluacionesFallaron] = useState(false)
+
   // 2. id de la postulación del usuario que entra como postulante.
+  //    Si la postulación se encontró en el backend, se guarda completa en postulacionServidor.
   const [idMiPostulacion, setIdMiPostulacion] = useState(null)
+  const [postulacionServidor, setPostulacionServidor] = useState(null)
 
   // 3. Sesión actual: el rol y el nombre de quien entró.
   //    El postulante entra sin cuenta. El personal interno entra con usuario y contraseña.
@@ -43,10 +62,11 @@ function App({ rolInicial = null }) {
   const [modoOscuro, setModoOscuro] = useState(false)
   const [apiDisponible, setApiDisponible] = useState(false)
 
+  // Solo el analista necesita la lista completa de candidatos.
+  // El evaluador trae sus datos desde /evaluaciones (no tiene permiso para /candidatos).
   useEffect(() => {
-    if (!import.meta.env.PROD) return
     const sesion = leerSesion()
-    const rutasInternas = ['/supervisor', '/psicologo', '/dashboard']
+    const rutasInternas = ['/supervisor', '/dashboard']
     if (!sesion?.token || !rutasInternas.includes(location.pathname) || rol === ROLES.POSTULANTE || !rol) return
 
     listarCandidatos()
@@ -60,6 +80,30 @@ function App({ rolInicial = null }) {
       })
   }, [location.pathname, rol])
 
+  useEffect(() => {
+    if (rol !== ROLES.PSICOLOGO || !leerSesion()?.token) return
+
+    // Los indicadores "cargadas" y "fallaron" se reinician al cerrar sesión (ver cerrarSesion).
+    listarEvaluaciones()
+      .then((datos) => {
+        setEvaluaciones(datos)
+        setEvaluacionesCargadas(true)
+      })
+      .catch((error) => {
+        setErrorApi(error.message)
+        setEvaluacionesFallaron(true)
+      })
+  }, [rol])
+
+  useEffect(() => {
+    if (rol !== ROLES.SUPERVISOR || !leerSesion()?.token) return
+    listarEvaluadores()
+      .then((nombres) => nombres.length > 0 && setEvaluadores(nombres))
+      .catch(() => {
+        // Si falla, se mantiene la lista de demostración.
+      })
+  }, [rol])
+
   // 5. Actualiza los datos de un candidato.
   //    map() recorre la lista y reemplaza solo el candidato con ese id.
   function actualizarCandidato(id, cambios) {
@@ -72,13 +116,32 @@ function App({ rolInicial = null }) {
     if (!leerSesion()?.token || !apiDisponible || !actualizado) return
 
     const operacion = cambios.estado
-      ? cambiarEstado(id, cambios.estado)
+      ? cambiarEstado(id, cambios.estado, cambios)
       : actualizarCandidatoApi(actualizado)
     operacion
       .then((respuesta) => setCandidatos((actuales) =>
         actuales.map((candidato) => (candidato.id === id ? { ...candidato, ...respuesta } : candidato)),
       ))
       .catch((error) => setErrorApi(error.message))
+  }
+
+  async function actualizarEvaluacion(id, cambios, archivo) {
+    const actual = evaluaciones.find((evaluacion) => evaluacion.id === id)
+
+    try {
+      const actualizada = archivo
+        ? await subirInformeApi(id, archivo)
+        : await guardarEvaluacionApi({ ...actual, ...cambios })
+
+      setEvaluaciones((lista) =>
+        lista.map((evaluacion) =>
+          evaluacion.id === id ? actualizada : evaluacion,
+        ),
+      )
+      setErrorApi('')
+    } catch (error) {
+      setErrorApi(error.message)
+    }
   }
 
   // 6. Agrega una nueva postulación al inicio de la lista.
@@ -100,6 +163,18 @@ function App({ rolInicial = null }) {
       .catch((error) => setErrorApi(error.message))
   }
 
+  // Busca la postulación por RUT en el backend (no necesita sesión).
+  async function consultarEnServidor(rut) {
+    const encontrada = await consultarPostulacion(rut)
+    setPostulacionServidor(encontrada)
+    return encontrada
+  }
+
+  function salirDeMiPostulacion() {
+    setIdMiPostulacion(null)
+    setPostulacionServidor(null)
+  }
+
   function crearSolicitud(candidato) {
     agregarCandidato(candidato)
   }
@@ -118,12 +193,21 @@ function App({ rolInicial = null }) {
 
   function cerrarSesion() {
     borrarSesion()
+    // Se borran los datos del evaluador anterior para que el siguiente usuario no los vea.
+    setEvaluaciones([])
+    setEvaluacionesCargadas(false)
+    setEvaluacionesFallaron(false)
     setRol(null)
     setNombreUsuario('')
-    setIdMiPostulacion(null)
+    salirDeMiPostulacion()
   }
 
-  const miPostulacion = candidatos.find((candidato) => candidato.id === idMiPostulacion)
+  // Con sesión, el evaluador ve las evaluaciones del backend. Mientras cargan, la lista queda vacía;
+  // los datos de ejemplo solo se usan en modo demostración (sin sesión) o si el backend no responde.
+  const esperandoEvaluaciones = Boolean(leerSesion()?.token) && !evaluacionesCargadas && !evaluacionesFallaron
+  const datosEvaluador = evaluacionesCargadas ? evaluaciones : (esperandoEvaluaciones ? [] : candidatos)
+
+  const miPostulacion = postulacionServidor ?? candidatos.find((candidato) => candidato.id === idMiPostulacion)
 
   // Props del modo oscuro que comparten todas las páginas.
   const propsTema = { modoOscuro, alCambiarTema: () => setModoOscuro((actual) => !actual) }
@@ -144,6 +228,9 @@ function App({ rolInicial = null }) {
       <Routes>
         <Route path="/" element={<InicioPage {...propsTema} alEntrarComoPostulante={entrarComoPostulante} />} />
         <Route path="/login" element={<LoginPage {...propsTema} alIniciarSesion={iniciarSesion} />} />
+        {/* Portal público: no necesita iniciar sesión. */}
+        <Route path="/empleos" element={<PortalOfertasPage {...propsTema} />} />
+        <Route path="/empleos/:id" element={<DetalleOfertaPage {...propsTema} />} />
         <Route
           path="/postulacion"
           element={
@@ -154,7 +241,8 @@ function App({ rolInicial = null }) {
                 candidatos={candidatos}
                 alEnviar={agregarCandidato}
                 alConsultar={setIdMiPostulacion}
-                alSalir={() => setIdMiPostulacion(null)}
+                alConsultarServidor={consultarEnServidor}
+                alSalir={salirDeMiPostulacion}
               />
             </RutaProtegida>
           }
@@ -163,7 +251,7 @@ function App({ rolInicial = null }) {
           path="/supervisor"
           element={
             <RutaProtegida rolActual={rol} rolesPermitidos={[ROLES.SUPERVISOR]}>
-              <SupervisorPage {...propsTema} candidatos={candidatos} actualizarCandidato={actualizarCandidato} alCrearSolicitud={crearSolicitud} />
+              <SupervisorPage {...propsTema} candidatos={candidatos} evaluadores={evaluadores} actualizarCandidato={actualizarCandidato} alCrearSolicitud={crearSolicitud} />
             </RutaProtegida>
           }
         />
@@ -171,7 +259,11 @@ function App({ rolInicial = null }) {
           path="/psicologo"
           element={
             <RutaProtegida rolActual={rol} rolesPermitidos={[ROLES.PSICOLOGO]}>
-              <PsicologoPage {...propsTema} candidatos={candidatos} actualizarCandidato={actualizarCandidato} />
+              <PsicologoPage
+                {...propsTema}
+                candidatos={datosEvaluador}
+                actualizarCandidato={actualizarEvaluacion}
+              />
             </RutaProtegida>
           }
         />
@@ -180,6 +272,14 @@ function App({ rolInicial = null }) {
           element={
             <RutaProtegida rolActual={rol} rolesPermitidos={[ROLES.SUPERVISOR]}>
               <DashboardPage {...propsTema} candidatos={candidatos} />
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path="/ofertas"
+          element={
+            <RutaProtegida rolActual={rol} rolesPermitidos={[ROLES.SUPERVISOR]}>
+              <OfertasAdminPage {...propsTema} />
             </RutaProtegida>
           }
         />

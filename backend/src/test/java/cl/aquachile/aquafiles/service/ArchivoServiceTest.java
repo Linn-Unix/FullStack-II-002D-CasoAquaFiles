@@ -2,6 +2,7 @@ package cl.aquachile.aquafiles.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -17,9 +18,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 
 import cl.aquachile.aquafiles.dto.ArchivoResponse;
+import cl.aquachile.aquafiles.entity.Archivo;
 import cl.aquachile.aquafiles.entity.Candidato;
+import cl.aquachile.aquafiles.entity.CategoriaArchivo;
 import cl.aquachile.aquafiles.entity.EstadoCandidato;
 import cl.aquachile.aquafiles.exception.DatoInvalidoException;
+import cl.aquachile.aquafiles.exception.ReglaNegocioException;
 import cl.aquachile.aquafiles.repository.ArchivoRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -66,8 +70,15 @@ class ArchivoServiceTest {
 
         assertEquals("curriculum.pdf", respuesta.nombreOriginal());
         assertEquals("pdf", respuesta.extension());
-        try (var archivos = Files.list(directorio)) {
-            assertEquals(1, archivos.count());
+        assertEquals("CV", respuesta.categoria());
+        // El CV queda dentro de la carpeta del postulante.
+        assertTrue(respuesta.carpeta().startsWith("tomas-fuentes-"));
+        try (var carpetas = Files.list(directorio)) {
+            Path carpeta = carpetas.findFirst().orElseThrow();
+            assertEquals(respuesta.carpeta(), carpeta.getFileName().toString());
+            try (var archivos = Files.list(carpeta)) {
+                assertEquals(1, archivos.count());
+            }
         }
         verify(archivoRepository).save(org.mockito.ArgumentMatchers.any());
     }
@@ -89,8 +100,96 @@ class ArchivoServiceTest {
         assertThrows(DatoInvalidoException.class, () -> archivoService.guardarCv(7L, archivo));
     }
 
+    @Test
+    void noPermiteSubirUnSegundoCv() {
+        when(candidatoService.buscarEntidad(7L)).thenReturn(candidato());
+        when(archivoRepository.existsByCandidatoIdAndCategoria(7L, CategoriaArchivo.CV)).thenReturn(true);
+        MockMultipartFile cv = new MockMultipartFile(
+                "archivo", "otro.pdf", "application/pdf", "contenido".getBytes());
+
+        assertThrows(ReglaNegocioException.class, () -> archivoService.guardarCv(7L, cv));
+    }
+
+    @Test
+    void armaElNombreDeLaCarpetaSinTildesNiEspacios() {
+        Candidato candidato = candidato();
+        candidato.setNombre("  María José Ñúñez-Pérez ");
+        assertTrue(ArchivoService.carpetaDe(candidato).matches("maria-jose-nunez-perez-[0-9a-f]{8}"));
+
+        candidato.setNombre("!!!");
+        assertTrue(ArchivoService.carpetaDe(candidato).startsWith("postulante-"));
+    }
+
+    @Test
+    void descargaYEliminaElArchivoGuardado() throws Exception {
+        Candidato candidato = candidato();
+        when(candidatoService.buscarEntidad(7L)).thenReturn(candidato);
+        org.mockito.ArgumentCaptor<Archivo> guardado = org.mockito.ArgumentCaptor.forClass(Archivo.class);
+        when(archivoRepository.save(guardado.capture())).thenAnswer(invocacion -> invocacion.getArgument(0));
+        archivoService.guardarCv(7L, new MockMultipartFile(
+                "archivo", "cv.pdf", "application/pdf", "hola".getBytes()));
+        when(archivoRepository.findById(1L)).thenReturn(java.util.Optional.of(guardado.getValue()));
+
+        ArchivoService.ArchivoDescarga descarga = archivoService.descargar(1L);
+        assertEquals("cv.pdf", descarga.nombre());
+        assertEquals("hola", new String(descarga.recurso().getInputStream().readAllBytes()));
+
+        archivoService.eliminar(1L);
+        verify(archivoRepository).delete(guardado.getValue());
+        assertTrue(Files.notExists(directorio.resolve(guardado.getValue().getNombreAlmacenado())));
+    }
+
+    @Test
+    void leeElTextoDelCvEnPdf() throws Exception {
+        Candidato candidato = candidato();
+        when(candidatoService.buscarEntidad(7L)).thenReturn(candidato);
+        org.mockito.ArgumentCaptor<Archivo> guardado = org.mockito.ArgumentCaptor.forClass(Archivo.class);
+        when(archivoRepository.save(guardado.capture())).thenAnswer(invocacion -> invocacion.getArgument(0));
+        archivoService.guardarCv(7L, new MockMultipartFile("archivo", "cv.pdf", "application/pdf",
+                pdfCon("Experiencia en centros de cultivo")));
+
+        org.springframework.test.util.ReflectionTestUtils.setField(candidato, "id", 7L);
+        when(archivoRepository.findByCandidatoIdOrderByFechaCargaDesc(7L)).thenReturn(java.util.List.of(guardado.getValue()));
+
+        assertTrue(archivoService.textoDelCv(candidato).contains("Experiencia en centros de cultivo"));
+    }
+
+    @Test
+    void sinCvEnPdfNoHayTexto() {
+        Candidato candidato = candidato();
+        assertEquals("", archivoService.textoDelCv(candidato));
+
+        org.springframework.test.util.ReflectionTestUtils.setField(candidato, "id", 8L);
+        Archivo word = new Archivo();
+        word.setCategoria(CategoriaArchivo.CV);
+        word.setExtension("docx");
+        when(archivoRepository.findByCandidatoIdOrderByFechaCargaDesc(8L)).thenReturn(java.util.List.of(word));
+        assertEquals("", archivoService.textoDelCv(candidato));
+    }
+
+    // Crea un PDF de una página con el texto indicado (para no depender de archivos externos).
+    private byte[] pdfCon(String texto) throws Exception {
+        try (org.apache.pdfbox.pdmodel.PDDocument documento = new org.apache.pdfbox.pdmodel.PDDocument()) {
+            org.apache.pdfbox.pdmodel.PDPage pagina = new org.apache.pdfbox.pdmodel.PDPage();
+            documento.addPage(pagina);
+            try (org.apache.pdfbox.pdmodel.PDPageContentStream contenido =
+                         new org.apache.pdfbox.pdmodel.PDPageContentStream(documento, pagina)) {
+                contenido.beginText();
+                contenido.setFont(new org.apache.pdfbox.pdmodel.font.PDType1Font(
+                        org.apache.pdfbox.pdmodel.font.Standard14Fonts.FontName.HELVETICA), 12);
+                contenido.newLineAtOffset(50, 700);
+                contenido.showText(texto);
+                contenido.endText();
+            }
+            java.io.ByteArrayOutputStream salida = new java.io.ByteArrayOutputStream();
+            documento.save(salida);
+            return salida.toByteArray();
+        }
+    }
+
     private Candidato candidato() {
         Candidato candidato = new Candidato();
+        candidato.setNombre("Tomás Fuentes");
         candidato.setEstado(EstadoCandidato.REVISION);
         return candidato;
     }
