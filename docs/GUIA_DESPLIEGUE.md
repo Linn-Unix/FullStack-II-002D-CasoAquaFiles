@@ -1,71 +1,107 @@
 # Guía de despliegue de AquaFiles
 
-## Arquitectura
+| Parte | Servicio | Plan |
+| :--- | :--- | :--- |
+| Frontend (React) | **Vercel** | Gratis |
+| Backend (Spring Boot) | **Render** (Docker) | Gratis |
+| Base de datos (MySQL) | **Aiven for MySQL** | Gratis |
+| IA | **Grok** (API de xAI) | Según créditos de xAI |
+| Agenda | Google Calendar | Gratis |
 
-- Frontend: React/Vite desplegado en Vercel.
-- Backend: Spring Boot 3 desplegado en un servidor con Java 21 y Maven.
-- Base de datos: MySQL 8.
-- Archivos: carpeta persistente configurada por `ARCHIVOS_DIRECTORIO` (una subcarpeta por postulante).
-- Google Calendar: lo llama directamente el navegador del evaluador con su cuenta de Google.
+> Revisen los límites actuales de cada plan gratuito antes de la presentación: cambian con frecuencia.
 
-## Variables del backend
+---
 
-Configurar estos valores en el proveedor del backend:
+## 1. Base de datos en Aiven
+
+1. Crear una cuenta en https://aiven.io y un servicio **MySQL** con el plan **Free**.
+2. Esperar a que el servicio quede en estado *Running* y abrir **Connection information**. Anotar: **Host**, **Port**, **User** (normalmente `avnadmin`), **Password** y **Database name** (normalmente `defaultdb`).
+3. Armar la URL JDBC (Aiven exige SSL):
+
+```text
+jdbc:mysql://HOST:PORT/defaultdb?sslMode=REQUIRED&serverTimezone=America/Santiago
+```
+
+No hay que crear tablas: Flyway aplica las migraciones `V1` a `V6` cuando el backend arranca por primera vez.
+
+## 2. Backend en Render
+
+El repositorio trae `backend/Dockerfile` y `render.yaml`.
+
+1. En https://render.com: **New → Blueprint** y elegir el repositorio `Linn-Unix/FullStack-II-002D-CasoAquaFiles` (rama `main`).
+2. Render lee `render.yaml` y pide las variables marcadas para completar:
+
+| Variable | Valor |
+| :--- | :--- |
+| `DB_URL` | La URL JDBC del paso 1 |
+| `DB_USUARIO` | `avnadmin` (o el usuario de Aiven) |
+| `DB_CLAVE` | La contraseña de Aiven |
+| `CORS_ORIGENES` | La URL de Vercel, por ejemplo `https://full-stack-ii-002-d-caso-aqua-files.vercel.app` (sin `/` al final) |
+| `GROK_API_KEY` | La clave de https://console.x.ai (opcional: sin ella, la IA queda desactivada) |
+
+`JWT_SECRETO` la genera Render automáticamente. `CREAR_USUARIOS_PRUEBA=true` crea los usuarios y las ofertas ficticias.
+
+3. Esperar el primer despliegue (5 a 10 minutos: Docker compila con Maven). Al terminar, Render entrega una URL como `https://aquafiles-backend.onrender.com`.
+4. Comprobar:
+   - `https://aquafiles-backend.onrender.com/api/v1/verificacion` responde.
+   - `https://aquafiles-backend.onrender.com/swagger-ui.html` abre Swagger.
+
+> **Alternativa sin Blueprint:** New → Web Service → Docker, con *Dockerfile Path* `./backend/Dockerfile`, *Docker Build Context* `./backend` y las mismas variables. *Health Check Path*: `/api/v1/verificacion`.
+
+## 3. Frontend en Vercel
+
+1. En el proyecto de Vercel: **Settings → Environment Variables**.
+2. Agregar:
+
+| Variable | Valor |
+| :--- | :--- |
+| `VITE_API_URL` | `https://aquafiles-backend.onrender.com/api/v1` |
+| `VITE_GOOGLE_CLIENT_ID` | El ID de cliente de Google (opcional) |
+
+3. **Deployments → Redeploy**. Las variables `VITE_` se leen al compilar, así que hay que volver a desplegar después de cambiarlas.
+
+`vercel.json` ya redirige las rutas (`/empleos`, `/supervisor`, etc.) a la aplicación.
+
+## 4. Google Calendar (opcional)
+
+En Google Cloud Console → **Credenciales** → el ID de cliente OAuth → **Orígenes de JavaScript autorizados**, agregar la URL de Vercel. La API de Google Calendar debe estar habilitada en el proyecto.
+
+## 5. Verificación después de desplegar
+
+1. Abrir la página de Vercel → **Ofertas laborales**: aparecen las ofertas de ejemplo.
+2. Postular a una oferta con un CV PDF de prueba.
+3. Iniciar sesión como `analista` / `aqua123`: aparece la postulación; descargar el CV; **Analizar CV con IA**.
+4. Aprobar y derivar con responsable.
+5. Iniciar sesión como `evaluador` / `aqua123`: agendar, guardar el resultado y subir el informe.
+6. Sin sesión, abrir `/supervisor`: "Acceso restringido".
+
+## 6. Limitaciones del plan gratuito (explicarlas en la presentación)
+
+| Limitación | Efecto | Cómo manejarla en la demo |
+| :--- | :--- | :--- |
+| Render se "duerme" tras ~15 min sin uso | La primera petición tarda cerca de 1 minuto | Abrir la página unos minutos antes de presentar |
+| Render gratis **no tiene disco persistente** | Los CV se borran al redesplegar o cuando el servicio se duerme | Postular y descargar el CV en vivo; no redesplegar justo antes. En producción: disco persistente de Render (pagado) o un servicio de archivos como S3 |
+| `autoDeploy: false` | Un push a GitHub no redespliega solo | Redesplegar a mano desde Render cuando se quiera actualizar |
+| Créditos de xAI | Sin saldo, la IA responde "no configurada" o error | El resto del sistema funciona igual |
+
+Si no hay backend público disponible, la demostración se hace en local (ver [Documento técnico](DOCUMENTO_TECNICO.md#11-ejecución-local-y-despliegue)) y se justifica la limitación, como permite la pauta.
+
+## 7. Variables del backend (referencia)
 
 | Variable | Ejemplo | Observación |
 | :--- | :--- | :--- |
-| `DB_URL` | `jdbc:mysql://host:3306/aquafiles?...` | URL externa de MySQL |
-| `DB_USUARIO` | `aquafiles` | Usuario con permisos sobre la base |
-| `DB_CLAVE` | `clave-secreta` | Nunca subir a Git |
-| `JWT_SECRETO` | clave aleatoria de al menos 32 caracteres | Debe permanecer estable |
+| `DB_URL` | `jdbc:mysql://host:port/defaultdb?sslMode=REQUIRED&...` | URL de Aiven |
+| `DB_USUARIO` | `avnadmin` | |
+| `DB_CLAVE` | (secreta) | Nunca subir a Git |
+| `JWT_SECRETO` | (generada por Render) | Mínimo 32 caracteres y estable |
 | `CORS_ORIGENES` | `https://tu-app.vercel.app` | Sin barra final |
-| `ARCHIVOS_DIRECTORIO` | `/datos/aquafiles/uploads` | Ruta persistente y con permisos de escritura |
-| `CREAR_USUARIOS_PRUEBA` | `false` | Desactivar en producción |
-| `CLAVE_USUARIOS_PRUEBA` | `aqua123` | Solo si se crean usuarios de prueba |
-| `PORT` | `8080` | Solo si el proveedor lo requiere |
+| `ARCHIVOS_DIRECTORIO` | `/app/uploads` | Ya definida en el `Dockerfile` |
+| `GROK_API_KEY` | (secreta) | Opcional |
+| `GROK_MODELO` | `grok-3-mini` | |
+| `CREAR_USUARIOS_PRUEBA` | `true` | Poner `false` en un ambiente real |
+| `PORT` | (lo pone Render) | El backend lo lee solo |
 
-## Configuración del frontend
-
-Definir `VITE_API_URL` con la URL pública del backend y, para agendar en Google Calendar, `VITE_GOOGLE_CLIENT_ID`:
-
-```text
-VITE_API_URL=https://api.tu-dominio.cl/api/v1
-VITE_GOOGLE_CLIENT_ID=xxxxxxxx.apps.googleusercontent.com
-```
-
-En Google Cloud Console, agrega la URL de Vercel en **Orígenes de JavaScript autorizados** del ID de cliente OAuth.
-
-En Vercel:
-
-1. Framework preset: `Vite`.
-2. Build command: `npm run build`.
-3. Output directory: `dist`.
-4. Variables: `VITE_API_URL` y `VITE_GOOGLE_CLIENT_ID`.
-5. Configurar el backend para permitir el dominio de Vercel en `CORS_ORIGENES`.
-
-## Base de datos
-
-Crear la base antes del primer arranque. Flyway aplica las migraciones V1 a V6 automáticamente.
-
-No modificar migraciones ya desplegadas. Crear una nueva migración V7 o superior para cambios futuros.
-
-## Archivos
-
-La ruta configurada en `ARCHIVOS_DIRECTORIO` debe estar disponible después de reinicios. Dentro, el backend crea una carpeta por postulante (`nombre-del-postulante-ID`). En Render, usa un *Persistent Disk* montado (por ejemplo en `/datos`) y define `ARCHIVOS_DIRECTORIO=/datos/uploads`; en Railway, un *Volume*. Un proveedor sin disco persistente pierde los CV al reiniciar.
-
-## Opciones recomendadas (planes gratuitos o con créditos)
-
-| Parte | Opción | Nota |
-| :--- | :--- | :--- |
-| Frontend | Vercel | Ya configurado con `vercel.json` |
-| Backend | Render (Web Service, Java 21) o Railway | Build: `mvn -f backend/pom.xml -DskipTests package` · Start: `java -jar backend/target/aquafiles-backend-0.0.1-SNAPSHOT.jar` |
-| Base de datos | Railway MySQL o Aiven for MySQL | Copiar la URL JDBC a `DB_URL` |
-
-Revisa los límites del plan gratuito antes de la presentación (horas de uso, suspensión por inactividad y tamaño del disco). Si no hay backend público disponible, la demostración se hace en local y se justifica la limitación.
-
-## Verificación
-
-Antes de desplegar:
+## 8. Antes de cada despliegue
 
 ```bash
 npm run coverage
@@ -74,13 +110,4 @@ npm run build
 mvn -f backend/pom.xml verify
 ```
 
-Después del despliegue:
-
-1. Abrir `/api/v1/verificacion`.
-2. Iniciar sesión como analista.
-3. Crear y publicar una oferta; verla en `/empleos` sin sesión.
-4. Postular a la oferta con un CV de prueba.
-5. Aprobar y derivar con responsable.
-6. Iniciar sesión como evaluador, agendar, guardar el resultado y subir el informe.
-7. Confirmar respuestas `401` y `403` fuera de permisos.
-8. Abrir `/swagger-ui.html`.
+No modificar migraciones ya aplicadas. Los cambios de base de datos van en una migración nueva (`V7` en adelante).

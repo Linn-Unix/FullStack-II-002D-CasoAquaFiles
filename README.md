@@ -61,7 +61,7 @@ Hoy el proceso de selección se apoya en planillas Excel, Planner y archivos rep
 | 8. Evaluación y seguimiento | Solicitud con cargo y responsable, fechas, observaciones, estados (Pendiente, En proceso, Finalizada) y dashboard |
 | 9. Inteligencia artificial | **Grok** sugiere al analista una puntuación orientativa, fortalezas, brechas y preguntas de entrevista, con criterios visibles, CV anonimizado y revisión humana obligatoria |
 | 10. Pruebas y cobertura ≥ 85 % | Frontend **92,5 %** (96 pruebas) · Backend **95,4 %** (61 pruebas) |
-| 11. Despliegue | Frontend en Vercel; backend según la [guía de despliegue](docs/GUIA_DESPLIEGUE.md) |
+| 11. Despliegue | Frontend en Vercel, backend en Render con Docker y MySQL en Aiven ([guía de despliegue](docs/GUIA_DESPLIEGUE.md)) |
 | Extra | Agenda de entrevistas en **Google Calendar con Meet**, basada en el ejemplo del profesor |
 
 > Todos los datos son **ficticios**. No se usan nombres, RUT, teléfonos, correos ni CV reales.
@@ -378,6 +378,7 @@ FullStack-II-002D-CasoAquaFiles/
 │   ├── App.jsx                        # Estado global y rutas
 │   └── main.jsx                       # Entrada de React y Router
 ├── .env.example                       # Variables del frontend (sin valores reales)
+├── render.yaml                        # Despliegue del backend en Render
 ├── vercel.json
 ├── vite.config.ts                     # Vite, Vitest y cobertura
 └── README.md
@@ -418,7 +419,13 @@ cd backend && mvn verify   # Pruebas + cobertura del backend
 
 ### Despliegue
 
-El frontend está publicado en **Vercel** (`vercel.json`: Framework `Vite`, Build Command `npm run build`, Output Directory `dist`). Para que la demo publicada use datos reales, el backend debe estar publicado y `VITE_API_URL` configurada en Vercel. Los pasos para el backend y la base de datos están en la [Guía de despliegue](docs/GUIA_DESPLIEGUE.md).
+| Parte | Servicio | Configuración |
+| :--- | :--- | :--- |
+| Frontend | Vercel | `vercel.json` + variables `VITE_API_URL` y `VITE_GOOGLE_CLIENT_ID` |
+| Backend | Render (Docker, plan gratis) | `backend/Dockerfile` + `render.yaml` |
+| Base de datos | Aiven for MySQL (plan gratis) | URL JDBC con `sslMode=REQUIRED` |
+
+Paso a paso y limitaciones de los planes gratuitos: [Guía de despliegue](docs/GUIA_DESPLIEGUE.md).
 
 ---
 

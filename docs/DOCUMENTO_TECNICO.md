@@ -355,8 +355,9 @@ npm run dev               # http://localhost:5173
 
 **Despliegue:** ver [`GUIA_DESPLIEGUE.md`](GUIA_DESPLIEGUE.md). En resumen:
 - Frontend en **Vercel** (`vercel.json` ya redirige las rutas de la SPA), con `VITE_API_URL` y `VITE_GOOGLE_CLIENT_ID`.
-- Backend en **Render o Railway** (Java 21), con las variables de la sección 10 y un disco persistente para `ARCHIVOS_DIRECTORIO`.
-- MySQL administrado (por ejemplo Railway o Aiven, plan gratuito).
+- Backend en **Render** con Docker (`backend/Dockerfile` y `render.yaml`), con las variables de la sección 10.
+- MySQL administrado en **Aiven** (plan gratuito, conexión con SSL).
+- En Render gratis el disco no es persistente: los CV sirven para la demostración, pero se pierden al redesplegar. En producción se usaría un disco persistente o un servicio de archivos.
 
 Si no se dispone de backend público, la demostración se hace en local y se justifica en la presentación (límites de los planes gratuitos).
 
