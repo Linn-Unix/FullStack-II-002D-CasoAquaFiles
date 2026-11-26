@@ -31,14 +31,21 @@
 | `JWT_EXPIRACION_MINUTOS` | Duración del token, 60 minutos por defecto |
 | `CORS_ORIGENES` | Orígenes frontend separados por coma |
 | `ARCHIVOS_DIRECTORIO` | Carpeta persistente para CV e informes |
-| `CREAR_USUARIOS_PRUEBA` | Crear usuarios iniciales al arrancar |
+| `CREAR_USUARIOS_PRUEBA` | Crear usuarios y ofertas de ejemplo al arrancar |
 
 `backend/.env` y todas las credenciales reales están excluidos de Git.
 
-## Pruebas
+## Swagger
 
-```powershell
-& "C:\Users\Felip\Downloads\apache-maven-3.10.0\bin\mvn.cmd" -f backend\pom.xml test
+Con el backend encendido: http://localhost:8080/swagger-ui.html. Para probar rutas internas, usa `POST /api/v1/auth/login`, copia el `token` y pégalo en **Authorize**.
+
+## Pruebas y cobertura
+
+```bash
+mvn test      # 47 pruebas + reporte en target/site/jacoco/index.html
+mvn verify    # además exige 85 % de líneas cubiertas
 ```
 
-La suite debe validar la aplicación, entidades, archivos, autenticación, candidatos, evaluaciones y utilidades RUT.
+Las pruebas usan el perfil `test` con **H2 en memoria** (`src/test/resources/application-test.yml`), así que **no necesitan MySQL**.
+
+> En Windows, si `mvn` no se reconoce, agrega la carpeta `bin` de Maven a la variable PATH, o ejecuta las pruebas con el botón ▶ de IntelliJ sobre `src/test`.
