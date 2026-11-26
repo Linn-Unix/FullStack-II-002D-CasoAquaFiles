@@ -3,7 +3,7 @@ package cl.aquachile.aquafiles.util;
 import java.text.Normalizer;
 import java.util.regex.Pattern;
 
-// Quita datos personales de un texto antes de enviarlo a un servicio externo (Grok).
+// Quita datos personales de un texto antes de enviarlo a un servicio externo (Groq).
 // Así la IA recibe la experiencia y la formación, pero no quién es la persona.
 public final class Anonimizador {
 

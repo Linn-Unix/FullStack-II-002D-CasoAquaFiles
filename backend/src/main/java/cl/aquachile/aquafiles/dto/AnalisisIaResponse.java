@@ -8,6 +8,7 @@ public record AnalisisIaResponse(
         Long candidatoId,
         int puntaje,
         String resumen,
+        List<RequisitoIa> requisitos,
         List<String> fortalezas,
         List<String> brechas,
         List<String> preguntas,
@@ -17,6 +18,10 @@ public record AnalisisIaResponse(
         String advertencia,
         LocalDateTime fecha) {
 
-    public static final String ADVERTENCIA = "Sugerencia generada por IA (Grok). Es orientativa: no aprueba, rechaza "
+    // Un requisito del cargo y si el CV lo cumple ("cumple", "parcial" o "no").
+    public record RequisitoIa(String nombre, String estado, String detalle) {
+    }
+
+    public static final String ADVERTENCIA = "Sugerencia generada por IA (Groq). Es orientativa: no aprueba, rechaza "
             + "ni deriva candidatos y puede equivocarse. El analista debe revisar el CV y decidir.";
 }
