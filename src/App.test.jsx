@@ -218,6 +218,7 @@ describe('Flujo del proceso', () => {
     await usuario.click(screen.getByRole('row', { name: /pedro soto/i }))
     await usuario.type(screen.getByLabelText(/observaciones técnicas/i), 'Buen manejo de equipos')
     await usuario.click(screen.getByRole('button', { name: /guardar observaciones/i }))
+    await usuario.selectOptions(screen.getByLabelText(/profesional responsable/i), 'Ps. Ana Fuentes')
     await usuario.click(screen.getByRole('button', { name: /derivar al evaluador/i }))
     await usuario.click(screen.getByRole('button', { name: /cerrar sesión/i }))
     await iniciarSesion(usuario, 'evaluador')
@@ -288,6 +289,7 @@ describe('Flujo del proceso', () => {
     renderizarApp('/supervisor', ROLES.SUPERVISOR)
 
     await usuario.click(screen.getByRole('row', { name: /pedro soto/i }))
+    await usuario.selectOptions(screen.getByLabelText(/profesional responsable/i), 'Ps. Ana Fuentes')
     await usuario.click(screen.getByRole('button', { name: /derivar al evaluador/i }))
     await usuario.click(screen.getByRole('button', { name: /cerrar sesión/i }))
     await iniciarSesion(usuario, 'evaluador')
@@ -342,6 +344,30 @@ describe('Analista con datos de la API', () => {
         expect.objectContaining({ method: 'PATCH' }),
       )
     })
+  })
+
+  it('deriva con el responsable elegido de la lista de evaluadores', async () => {
+    prepararSesionApi()
+    const aprobado = { ...candidatosApi.find((candidato) => candidato.estado === 'REVISION'), estado: 'APROBADO' }
+    const fetchFalso = simularApi({
+      'GET /candidatos': { cuerpo: [aprobado] },
+      'GET /usuarios/evaluadores': { cuerpo: ['Andrea Vidal', 'Luis Herrera'] },
+      [`PATCH /candidatos/${aprobado.id}/derivar`]: {
+        cuerpo: { ...aprobado, estado: 'DERIVADO', responsable: 'Luis Herrera' },
+      },
+    })
+    const usuario = userEvent.setup()
+    renderizarApp('/supervisor', ROLES.SUPERVISOR)
+
+    const derivar = await screen.findByRole('button', { name: /derivar al evaluador/i })
+    expect(derivar).toBeDisabled()
+    await screen.findByRole('option', { name: 'Luis Herrera' })
+    await usuario.selectOptions(screen.getByLabelText(/profesional responsable/i), 'Luis Herrera')
+    await usuario.click(derivar)
+
+    expect(await screen.findByText('Luis Herrera', { selector: 'strong' })).toBeInTheDocument()
+    const envio = fetchFalso.mock.calls.find(([url]) => url.endsWith('/derivar'))
+    expect(JSON.parse(envio[1].body)).toEqual({ responsable: 'Luis Herrera' })
   })
 })
 

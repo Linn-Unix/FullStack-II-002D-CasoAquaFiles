@@ -1,5 +1,6 @@
 package cl.aquachile.aquafiles.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,6 +42,14 @@ public class UsuarioService {
     // 3. BCrypt compara la clave escrita con la cifrada (sin "descifrarla"). Lo usa el login.
     public boolean claveCorrecta(Usuario usuario, String claveEscrita) {
         return passwordEncoder.matches(claveEscrita, usuario.getClave());
+    }
+
+    // 4. Nombres de los evaluadores activos (para el responsable de la derivación).
+    public List<String> nombresDeEvaluadores() {
+        return usuarioRepository.findByRolAndActivoTrueOrderByNombre(Rol.EVALUADOR)
+                .stream()
+                .map(Usuario::getNombre)
+                .toList();
     }
 
     private String normalizar(String usuario) {

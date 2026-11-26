@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cl.aquachile.aquafiles.dto.CandidatoRequest;
 import cl.aquachile.aquafiles.dto.CandidatoResponse;
+import cl.aquachile.aquafiles.dto.DerivacionRequest;
 import cl.aquachile.aquafiles.dto.PostulacionResponse;
 import cl.aquachile.aquafiles.entity.EstadoCandidato;
 import cl.aquachile.aquafiles.service.CandidatoService;
@@ -67,8 +68,8 @@ public class CandidatoController {
     }
 
     @PatchMapping("/{id}/derivar")
-    public CandidatoResponse derivar(@PathVariable Long id) {
-        return candidatoService.cambiarEstado(id, EstadoCandidato.DERIVADO);
+    public CandidatoResponse derivar(@PathVariable Long id, @Valid @RequestBody DerivacionRequest datos) {
+        return candidatoService.derivar(id, datos.responsable());
     }
 
     @PatchMapping("/{id}/agendar")

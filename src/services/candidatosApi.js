@@ -96,10 +96,12 @@ export async function actualizarCandidatoApi(candidato) {
   return adaptarCandidato(datos)
 }
 
-export async function cambiarEstado(candidatoId, estado) {
+export async function cambiarEstado(candidatoId, estado, cambios = {}) {
   const ruta = RUTA_ESTADO[estado]
   if (!ruta) throw new Error(`No existe una transición para el estado "${estado}".`)
-  const datos = await pedir(`/candidatos/${candidatoId}/${ruta}`, { metodo: 'PATCH' })
+  // Al derivar se envía el profesional responsable.
+  const cuerpo = estado === ESTADOS.DERIVADO ? { responsable: cambios.responsable } : undefined
+  const datos = await pedir(`/candidatos/${candidatoId}/${ruta}`, { metodo: 'PATCH', cuerpo })
   if (!datos?.id) throw new Error('La API devolvió un candidato inválido.')
   return adaptarCandidato(datos)
 }
