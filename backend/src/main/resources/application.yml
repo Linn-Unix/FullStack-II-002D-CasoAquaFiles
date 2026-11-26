@@ -49,8 +49,9 @@ app:
 
   archivos:
     directorio: ${ARCHIVOS_DIRECTORIO:uploads}
-  # Apoyo de IA con Grok (xAI). Sin GROK_API_KEY, la función responde 503 y el resto del sistema sigue igual.
+  # Apoyo de IA con Groq (como el ejemplo "aqua-ia" del profesor).
+  # Sin GROQ_API_KEY, la función responde 503 y el resto del sistema sigue igual.
   ia:
-    url: ${GROK_URL:https://api.x.ai/v1/chat/completions}
-    modelo: ${GROK_MODELO:grok-3-mini}
-    clave: ${GROK_API_KEY:}
+    url: ${GROQ_URL:https://api.groq.com/openai/v1/chat/completions}
+    modelo: ${GROQ_MODELO:qwen/qwen3.8-27b}
+    clave: ${GROQ_API_KEY:}

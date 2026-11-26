@@ -36,14 +36,14 @@ class IaServiceTest {
     private ArchivoService archivoService;
 
     @Mock
-    private ClienteGrok clienteGrok;
+    private ClienteGroq clienteGroq;
 
     private IaService iaService;
     private Candidato candidato;
 
     @BeforeEach
     void setUp() {
-        iaService = new IaService(candidatoService, archivoService, clienteGrok, new ObjectMapper());
+        iaService = new IaService(candidatoService, archivoService, clienteGroq, new ObjectMapper());
         Oferta oferta = new Oferta();
         oferta.setCargo("Técnico Acuícola");
         oferta.setFunciones("Monitorear jaulas.");
@@ -61,14 +61,17 @@ class IaServiceTest {
 
     @Test
     void enviaDatosAnonimizadosYDevuelveLaSugerencia() {
-        when(clienteGrok.configurado()).thenReturn(true);
-        when(clienteGrok.getModelo()).thenReturn("grok-3-mini");
+        when(clienteGroq.configurado()).thenReturn(true);
+        when(clienteGroq.getModelo()).thenReturn("qwen/qwen3.8-27b");
         when(candidatoService.buscarEntidad(5L)).thenReturn(candidato);
         when(archivoService.textoDelCv(candidato))
                 .thenReturn("Tomás Fuentes, 12.345.678-5, tomas@correo.cl. Técnico en acuicultura, 4 años en centros de cultivo.");
-        when(clienteGrok.completar(eq(IaService.INSTRUCCIONES), anyString())).thenReturn("""
+        when(clienteGroq.completar(eq(IaService.INSTRUCCIONES), anyString())).thenReturn("""
                 ```json
-                {"puntaje": 82, "resumen": "Perfil técnico adecuado.", "fortalezas": ["4 años en centros"],
+                {"puntaje": 82, "resumen": "Perfil técnico adecuado.",
+                 "requisitos": [{"nombre": "Título técnico", "estado": "cumple", "detalle": "Técnico en acuicultura"},
+                                {"nombre": "Licencia clase B", "estado": "desconocido", "detalle": "No aparece"}],
+                 "fortalezas": ["4 años en centros"],
                  "brechas": ["Sin licencia indicada"], "preguntas": ["¿Qué parámetros del agua monitoreaba?"],
                  "criterios": ["Cumple el título técnico"]}
                 ```""");
@@ -76,13 +79,16 @@ class IaServiceTest {
         AnalisisIaResponse sugerencia = iaService.analizar(5L);
 
         assertEquals(82, sugerencia.puntaje());
+        assertEquals("cumple", sugerencia.requisitos().get(0).estado());
+        // Un estado desconocido se muestra como "parcial".
+        assertEquals("parcial", sugerencia.requisitos().get(1).estado());
         assertEquals(List.of("4 años en centros"), sugerencia.fortalezas());
         assertEquals(List.of("¿Qué parámetros del agua monitoreaba?"), sugerencia.preguntas());
         assertTrue(sugerencia.cvAnalizado());
         assertEquals(AnalisisIaResponse.ADVERTENCIA, sugerencia.advertencia());
 
         ArgumentCaptor<String> datos = ArgumentCaptor.forClass(String.class);
-        verify(clienteGrok).completar(eq(IaService.INSTRUCCIONES), datos.capture());
+        verify(clienteGroq).completar(eq(IaService.INSTRUCCIONES), datos.capture());
         String enviado = datos.getValue();
         assertTrue(enviado.contains("REQUISITOS: Título técnico en acuicultura."));
         assertTrue(enviado.contains("4 años en centros de cultivo"));
@@ -106,7 +112,7 @@ class IaServiceTest {
 
     @Test
     void limitaElPuntajeYRechazaRespuestasSinJson() {
-        when(clienteGrok.getModelo()).thenReturn("grok-3-mini");
+        when(clienteGroq.getModelo()).thenReturn("qwen/qwen3.8-27b");
         assertEquals(100, iaService.leerRespuesta(1L, "{\"puntaje\": 140}", false).puntaje());
         assertEquals(0, iaService.leerRespuesta(1L, "{\"puntaje\": -5}", false).puntaje());
 
@@ -115,8 +121,8 @@ class IaServiceTest {
     }
 
     @Test
-    void sinClaveNoLlamaAGrok() {
-        when(clienteGrok.configurado()).thenReturn(false);
+    void sinClaveNoLlamaALaIa() {
+        when(clienteGroq.configurado()).thenReturn(false);
 
         assertThrows(IaNoDisponibleException.class, () -> iaService.analizar(5L));
         verify(candidatoService, never()).buscarEntidad(5L);

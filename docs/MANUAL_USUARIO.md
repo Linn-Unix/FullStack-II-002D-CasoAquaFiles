@@ -131,18 +131,19 @@ Al seleccionar una fila se abre la ficha del candidato. Desde ahí puedes:
 
 ![Ficha del candidato con CV](manual/09_ficha_candidato_cv.png)
 
-### 5.3 Apoyo de IA (Grok)
+### 5.3 Apoyo de IA (Groq)
 
-En la ficha del candidato, **Analizar CV con IA** le pide a Grok una sugerencia:
+En la ficha del candidato, **Analizar CV con IA** le pide a la IA una sugerencia:
 
 - **Puntuación orientativa** de 0 a 100 de qué tan bien calza el CV con el cargo.
+- **Requisitos del cargo**, cada uno marcado como ✅ cumple, ⚠️ en parte o ❌ no cumple / sin información.
 - **Fortalezas** y **brechas** (información que falta o no se cumple).
 - **Preguntas sugeridas** para la entrevista.
 - **Criterios** usados para llegar al puntaje (en "Criterios usados por la IA").
 
 <img src="manual/17_apoyo_ia.png" alt="Apoyo de IA" width="300" />
 
-> ⚠️ La IA **no decide**: no aprueba, rechaza ni deriva. Es una ayuda que puede equivocarse; siempre revisa el CV y toma la decisión con los botones de la ficha. A Grok se le envía el texto del CV **sin nombre, RUT, correo ni teléfono**. Solo se lee el texto de CV en PDF.
+> ⚠️ La IA **no decide**: no aprueba, rechaza ni deriva. Es una ayuda que puede equivocarse; siempre revisa el CV y toma la decisión con los botones de la ficha. A la IA se le envía el texto del CV **sin nombre, RUT, correo ni teléfono**. Solo se lee el texto de CV en PDF.
 
 ### 5.4 Ofertas laborales
 
@@ -203,6 +204,6 @@ El evaluador ve **solo** los candidatos derivados. No puede modificar la calific
 
 **"Tu sesión expiró".** El token dura 60 minutos. Vuelve a iniciar sesión.
 
-**"El apoyo de IA no está configurado".** Falta `GROK_API_KEY` en el backend (ver [Documento técnico](DOCUMENTO_TECNICO.md#9-integración-de-inteligencia-artificial)).
+**"El apoyo de IA no está configurado".** Falta `GROQ_API_KEY` en el backend (ver [Documento técnico](DOCUMENTO_TECNICO.md#9-integración-de-inteligencia-artificial)).
 
 **El bloque de Google Calendar dice "no está configurado".** Falta la variable `VITE_GOOGLE_CLIENT_ID` en el frontend (ver [Documento técnico](DOCUMENTO_TECNICO.md#8-integración-con-google-calendar)).

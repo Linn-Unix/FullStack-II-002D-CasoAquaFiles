@@ -31,7 +31,7 @@ flowchart LR
     B -->|JPA + Flyway| D[(MySQL)]
     B -->|archivos| S[/Carpeta privada<br/>ARCHIVOS_DIRECTORIO/]
     F -->|OAuth del evaluador| G[Google Calendar API]
-    B -->|texto anonimizado + GROK_API_KEY| X[Grok · API de xAI]
+    B -->|texto anonimizado + GROQ_API_KEY| X[IA en Groq]
 ```
 
 - **Frontend:** SPA en React. Llama a la API con `fetch` (`src/services/api.js`), que agrega el token, traduce los errores HTTP a mensajes en español y borra la sesión ante un 401.
@@ -48,7 +48,7 @@ flowchart LR
 | Base de datos | MySQL 8 + Flyway. H2 en memoria solo para las pruebas |
 | Documentación API | springdoc-openapi 2.8 (Swagger UI) |
 | Pruebas | Vitest, React Testing Library, user-event, `@vitest/coverage-v8` · JUnit 5, Mockito, MockMvc, JaCoCo |
-| Integraciones | Google Identity Services + Google Calendar API · Grok (API de xAI) · Apache PDFBox para leer el CV |
+| Integraciones | Google Identity Services + Google Calendar API · IA en Groq · Apache PDFBox para leer el CV |
 
 ## 3. Modelo de datos
 
@@ -176,7 +176,7 @@ erDiagram
 | POST | `/evaluaciones/{id}/informe` | Evaluador | Sube el informe y finaliza el proceso |
 | GET | `/usuarios/evaluadores` | Analista | Responsables disponibles |
 | GET | `/dashboard/resumen` | Analista | Indicadores del proceso |
-| POST | `/ia/candidatos/{id}/analisis` | Analista | Sugerencia de Grok: puntaje orientativo, fortalezas, brechas, preguntas y criterios |
+| POST | `/ia/candidatos/{id}/analisis` | Analista | Sugerencia de la IA: puntaje orientativo, requisitos, fortalezas, brechas, preguntas y criterios |
 
 **Respuestas de error.** Todas tienen el mismo formato (`ManejadorErrores`):
 
@@ -191,7 +191,7 @@ erDiagram
 | 401 | Sin token, token falso o vencido, o credenciales incorrectas |
 | 403 | El rol no tiene permiso para esa ruta |
 | 404 | El recurso no existe (o la oferta no está publicada, para el portal) |
-| 503 | El apoyo de IA no está configurado o Grok no respondió (el resto del sistema sigue funcionando) |
+| 503 | El apoyo de IA no está configurado, se alcanzó el límite del plan gratuito o la IA no respondió (el resto del sistema sigue funcionando) |
 | 409 | Regla de negocio: RUT duplicado, cambio de estado no permitido, segundo CV, eliminar una oferta con postulaciones |
 
 ## 5. Autenticación JWT, sesión y permisos
@@ -269,45 +269,45 @@ El token de Google **no** pasa por el backend ni se guarda: Google lo entrega di
 
 ## 9. Integración de inteligencia artificial
 
-AquaFiles usa **Grok** (modelo `grok-3-mini` de xAI, configurable con `GROK_MODELO`) como **apoyo al analista** en la ficha del candidato. Se eligió la opción de la pauta "puntuación orientativa de adecuación del CV al cargo", complementada con preguntas sugeridas para la entrevista.
+AquaFiles usa un modelo de lenguaje en **Groq** (`qwen/qwen3.8-27b`, configurable con `GROQ_MODELO`) como **apoyo al analista** en la ficha del candidato. La integración sigue el ejemplo **`aqua-ia`** entregado por el profesor (mismo proveedor, modelo, parámetros y forma de las instrucciones), adaptado al backend en Spring Boot y con anonimización del CV. Se eligió la opción de la pauta "puntuación orientativa de adecuación del CV al cargo", complementada con preguntas sugeridas para la entrevista.
 
 ![Apoyo de IA en la ficha del analista](manual/17_apoyo_ia.png)
 
-**Cómo funciona** (`IaService`, `ClienteGrok`, `Anonimizador`):
+**Cómo funciona** (`IaService`, `ClienteGroq`, `Anonimizador`):
 
 ```mermaid
 sequenceDiagram
     participant A as Analista (React)
     participant B as Backend
-    participant G as Grok (xAI)
+    participant G as IA en Groq
     A->>B: POST /api/v1/ia/candidatos/{id}/analisis (JWT de analista)
     B->>B: Lee el texto del CV en PDF (PDFBox)
     B->>B: Quita nombre, RUT, correo y teléfono, y recorta a 6.000 caracteres
     B->>G: Reglas + cargo, funciones, requisitos y CV anonimizado
-    G-->>B: JSON con puntaje, resumen, fortalezas, brechas, preguntas y criterios
+    G-->>B: JSON con puntaje, resumen, requisitos (cumple/parcial/no), fortalezas, brechas, preguntas y criterios
     B-->>A: Sugerencia + advertencia (no cambia el estado del candidato)
 ```
 
 1. El analista presiona **Analizar CV con IA**.
 2. El backend toma el cargo, las funciones y los requisitos de la **oferta**, las observaciones técnicas y el **texto del CV** (solo PDF).
 3. `Anonimizador` reemplaza el nombre (con o sin tildes), el RUT, los correos y los teléfonos por `[nombre]`, `[rut]`, `[correo]` y `[teléfono]`.
-4. Se envía a Grok con instrucciones fijas (`IaService.INSTRUCCIONES`): evaluar solo experiencia, formación y habilidades relacionadas con el cargo, ignorar edad, género, origen, salud y otros datos personales, y declarar la información faltante en vez de inventarla.
-5. La respuesta se valida: debe ser JSON y el puntaje se limita a 0–100. Si Grok falla o responde en otro formato, la API devuelve **503** con un mensaje claro.
+4. Se envía a Groq (`reasoning_format: hidden`, `temperature: 0.2`, `max_completion_tokens: 950`, como el ejemplo del profesor) con instrucciones fijas (`IaService.INSTRUCCIONES`): evaluar solo experiencia, formación y habilidades relacionadas con el cargo, ignorar edad, género, origen, salud y otros datos personales, y declarar la información faltante en vez de inventarla.
+5. La respuesta se valida: debe ser JSON y el puntaje se limita a 0–100. Si la IA falla o responde en otro formato, la API devuelve **503** con un mensaje claro. Si se alcanza el límite del plan gratuito (429), el mensaje pide esperar un minuto o usar un CV más corto.
 
 **Revisión humana y límites (punto 9.a de la pauta):**
 
 | Requisito | Cómo se cumple |
 | :--- | :--- |
 | Apoyo, no decisión | El endpoint **no modifica** al candidato. Aprobar, rechazar y derivar siguen siendo botones manuales del analista |
-| Criterios visibles | La sugerencia muestra los **criterios** con que se llegó al puntaje, las fortalezas y las brechas |
+| Criterios visibles | La sugerencia muestra cada **requisito** del cargo como cumple, parcial o no, y los **criterios** con que se llegó al puntaje |
 | Advertir limitaciones | Cada respuesta incluye la advertencia "Sugerencia generada por IA… puede equivocarse" y el texto **"Revisión humana obligatoria"** |
 | Sin datos sensibles a terceros | Solo sale el texto anonimizado: nunca el nombre, el RUT, el correo, el teléfono ni el archivo del CV. En la demo se usan CV ficticios |
-| Clave segura | `GROK_API_KEY` vive solo en el backend (variable de entorno). El frontend nunca ve la clave |
+| Clave segura | `GROQ_API_KEY` vive solo en el backend (variable de entorno). El frontend nunca ve la clave |
 | Sesgos | Las instrucciones prohíben usar datos personales para evaluar |
 
 **Limitaciones conocidas.** Solo se lee el texto de CV en PDF (un Word se evalúa sin CV, y la pantalla lo avisa). El puntaje depende del modelo y puede variar entre ejecuciones. No se guarda la sugerencia: es una ayuda puntual para el analista.
 
-**Configuración:** crear una clave en https://console.x.ai y definir `GROK_API_KEY` en `backend/.env` (local) o en Render. Sin la clave, el botón responde "El apoyo de IA no está configurado" y el resto del sistema funciona igual.
+**Configuración:** crear una clave gratuita en https://console.groq.com (**API Keys**) y definir `GROQ_API_KEY` en `backend/.env` (local) o en Render. Sin la clave, el botón responde "El apoyo de IA no está configurado" y el resto del sistema funciona igual.
 
 ## 10. Variables de entorno
 
@@ -323,9 +323,9 @@ sequenceDiagram
 | `ARCHIVOS_DIRECTORIO` | Carpeta privada de CV e informes | `uploads` |
 | `CREAR_USUARIOS_PRUEBA` | Crea los usuarios y ofertas ficticias al arrancar | `true` |
 | `CLAVE_USUARIOS_PRUEBA` | Clave de los usuarios ficticios | `aqua123` |
-| `GROK_API_KEY` | Clave de la API de xAI (Grok). Sin ella, la IA responde 503 | (vacía) |
-| `GROK_MODELO` | Modelo de Grok | `grok-3-mini` |
-| `GROK_URL` | Dirección de la API | `https://api.x.ai/v1/chat/completions` |
+| `GROQ_API_KEY` | Clave de Groq (empieza con `gsk_`). Sin ella, la IA responde 503 | (vacía) |
+| `GROQ_MODELO` | Modelo de Groq | `qwen/qwen3.8-27b` |
+| `GROQ_URL` | Dirección de la API | `https://api.groq.com/openai/v1/chat/completions` |
 | `PORT` | Puerto HTTP | `8080` |
 
 **Frontend** (`.env.local`, ver `.env.example`):
@@ -377,6 +377,6 @@ Si no se dispone de backend público, la demostración se hace en local y se jus
 | Secretos solo en variables de entorno | El repositorio no contiene claves ni `.env` |
 | Usuarios de prueba desactivables (`CREAR_USUARIOS_PRUEBA=false`) | En producción no existen cuentas con clave conocida |
 | Solo datos ficticios | Lo exige la pauta; no se publica información de personas reales |
-| CV anonimizado antes de enviarlo a Grok | Ningún dato personal sale hacia el proveedor de IA |
+| CV anonimizado antes de enviarlo a Groq | Ningún dato personal sale hacia el proveedor de IA |
 
 **Riesgo conocido.** El token se guarda en `localStorage`, que es accesible por JavaScript. Una vulnerabilidad XSS podría leerlo. React escapa el contenido por defecto y la app no usa `dangerouslySetInnerHTML`; para producción se recomienda una cookie `HttpOnly` con protección CSRF.

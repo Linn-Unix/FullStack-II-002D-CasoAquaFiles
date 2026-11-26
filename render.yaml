@@ -24,11 +24,11 @@ services:
       # URL de Vercel, sin "/" al final
       - key: CORS_ORIGENES
         sync: false
-      # Clave de Grok (xAI); sin ella la IA queda desactivada
-      - key: GROK_API_KEY
+      # Clave de Groq (console.groq.com); sin ella la IA queda desactivada
+      - key: GROQ_API_KEY
         sync: false
-      - key: GROK_MODELO
-        value: grok-3-mini
+      - key: GROQ_MODELO
+        value: qwen/qwen3.8-27b
       # Usuarios y ofertas ficticias para la demostración
       - key: CREAR_USUARIOS_PRUEBA
         value: "true"
