@@ -15,7 +15,9 @@ function AppNavbar({ rol, nombreUsuario, alCerrarSesion }) {
   const navegar = useNavigate()
 
   // 2. filter() deja solo el enlace que corresponde al rol actual.
-  const enlacesVisibles = enlaces.filter((enlace) => enlace.rol === rol)
+  //    Mientras nadie del personal inicie sesión, se muestra el menú del postulante ("Mi postulación").
+  const rolDelMenu = rol ?? ROLES.POSTULANTE
+  const enlacesVisibles = enlaces.filter((enlace) => enlace.rol === rolDelMenu)
 
   // El postulante no inicia sesión (no tiene cuenta): solo el personal interno ve su nombre, su rol y "Cerrar sesión".
   const conSesion = Boolean(rol) && rol !== ROLES.POSTULANTE

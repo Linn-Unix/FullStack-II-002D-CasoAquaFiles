@@ -234,7 +234,8 @@ function App({ rolInicial = null }) {
         <Route
           path="/postulacion"
           element={
-            <RutaProtegida rolActual={rol} rolesPermitidos={[ROLES.POSTULANTE]}>
+            // Sin sesión se entra como postulante; el analista y el evaluador no ven esta página.
+            <RutaProtegida rolActual={rol ?? ROLES.POSTULANTE} rolesPermitidos={[ROLES.POSTULANTE]}>
               <PostulacionPage
                 {...propsTema}
                 candidato={miPostulacion}
