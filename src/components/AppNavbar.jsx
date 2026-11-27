@@ -17,6 +17,9 @@ function AppNavbar({ rol, nombreUsuario, alCerrarSesion }) {
   // 2. filter() deja solo el enlace que corresponde al rol actual.
   const enlacesVisibles = enlaces.filter((enlace) => enlace.rol === rol)
 
+  // El postulante no inicia sesión (no tiene cuenta): solo el personal interno ve su nombre, su rol y "Cerrar sesión".
+  const conSesion = Boolean(rol) && rol !== ROLES.POSTULANTE
+
   // 3. Al salir borramos la sesión en App y volvemos al inicio.
   function cerrarSesion() {
     alCerrarSesion()
@@ -56,8 +59,8 @@ function AppNavbar({ rol, nombreUsuario, alCerrarSesion }) {
               </NavLink>
             ))}
 
-            {/* 6. Renderizado condicional: solo mostramos el usuario y "Cerrar sesión" si alguien entró. */}
-            {rol && (
+            {/* 6. Renderizado condicional: solo mostramos el usuario y "Cerrar sesión" al analista y al evaluador. */}
+            {conSesion && (
               <>
                 <span className="badge rounded-pill text-bg-light ms-lg-2">
                   {nombreUsuario ? `${nombreUsuario} · ` : ''}{NOMBRES_ROL[rol]}
