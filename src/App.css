@@ -308,6 +308,25 @@ h2 {
   width: 100%;
 }
 
+.home-branding {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.home-branding-logo {
+  height: 68px;
+  max-width: 100%;
+  object-fit: cover;
+  object-position: center;
+  width: 280px;
+}
+
+.home-branding .tag {
+  margin: 0;
+}
+
 .role-card h1 {
   margin: 8px 0;
 }
@@ -1129,6 +1148,28 @@ h2 {
 /* Navbar con el azul de AquaChile */
 .navbar-aqua {
   background: linear-gradient(90deg, #004A7C, #0277BD);
+}
+
+.navbar-aqua .navbar-brand {
+  align-items: center;
+  display: inline-flex;
+  gap: 12px;
+}
+
+.navbar-brand-divider {
+  background: #ffffff66;
+  height: 24px;
+  width: 1px;
+}
+
+.navbar-brand-logo {
+  background: #fff;
+  border-radius: 4px;
+  display: block;
+  height: 32px;
+  object-fit: cover;
+  object-position: center;
+  width: 104px;
 }
 
 .navbar-aqua .nav-link {
