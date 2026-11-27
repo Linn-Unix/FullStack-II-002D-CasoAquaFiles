@@ -1,5 +1,6 @@
 import BotonRol from '../components/BotonRol'
 import BotonTema from '../components/BotonTema'
+import logoAquaChile from '../assets/aquachile-logo.png'
 
 // Página de inicio (ruta "/").
 // El postulante entra directo. El personal de AquaChile debe iniciar sesión.
@@ -8,7 +9,10 @@ function InicioPage({ modoOscuro, alCambiarTema, alEntrarComoPostulante }) {
     <main className="role-screen">
       <BotonTema className="role-theme-toggle" modoOscuro={modoOscuro} alCambiar={alCambiarTema} />
       <section className="role-card">
-        <p className="tag">AquaChile · Gestión Laboral</p>
+        <div className="home-branding">
+          <img className="home-branding-logo" src={logoAquaChile} alt="Logo de AquaChile" />
+          <p className="tag">AquaFiles · Gestión Laboral</p>
+        </div>
         <h1>Gestión Laboral</h1>
         <p className="lead">¿Cómo quieres ingresar?</p>
         <div className="role-options three-roles">
