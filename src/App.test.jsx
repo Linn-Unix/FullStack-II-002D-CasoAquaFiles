@@ -41,6 +41,7 @@ function prepararSesionApi(rol = ROLES.SUPERVISOR) {
 describe('Navegación con React Router', () => {
   it('el inicio muestra el acceso del postulante y del personal', () => {
     renderizarApp('/')
+    expect(within(screen.getByRole('main')).getByRole('img', { name: 'Logo de AquaChile' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /postulante/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /personal aquachile/i })).toBeInTheDocument()
     expect(screen.queryByRole('link', { name: /analista de reclutamiento/i })).not.toBeInTheDocument()
