@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { cleanup, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
@@ -98,6 +98,14 @@ describe('Navegación con React Router', () => {
     expect(within(menu).getByRole('link', { name: 'Mi postulación' })).toBeInTheDocument()
     expect(within(menu).queryByRole('link', { name: 'Reclutamiento' })).not.toBeInTheDocument()
     expect(within(menu).queryByRole('link', { name: 'Evaluaciones' })).not.toBeInTheDocument()
+  })
+
+  it('sin iniciar sesión se puede abrir "Mi postulación", pero el analista no la ve', () => {
+    renderizarApp('/postulacion')
+    expect(screen.getByRole('heading', { name: 'Mi postulación' })).toBeInTheDocument()
+    cleanup()
+    renderizarApp('/postulacion', ROLES.SUPERVISOR)
+    expect(screen.getByRole('heading', { name: 'Acceso restringido' })).toBeInTheDocument()
   })
 
   it('el postulante no puede entrar al panel del supervisor', () => {
