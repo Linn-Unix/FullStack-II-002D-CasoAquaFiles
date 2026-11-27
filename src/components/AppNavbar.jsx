@@ -1,5 +1,6 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { NOMBRES_ROL, ROLES } from '../data/roles'
+import logoAquaChile from '../assets/aquachile-logo.png'
 
 // 1. Enlaces del menú. Cada enlace indica qué rol lo puede ver.
 const enlaces = [
@@ -30,7 +31,9 @@ function AppNavbar({ rol, nombreUsuario, alCerrarSesion }) {
     <nav className="navbar navbar-expand-lg navbar-aqua" data-bs-theme="dark">
       <div className="container">
         <Link className="navbar-brand" to="/">
-          AquaFiles
+          <span>AquaFiles</span>
+          <span className="navbar-brand-divider" aria-hidden="true" />
+          <img className="navbar-brand-logo" src={logoAquaChile} alt="Logo de AquaChile" />
         </Link>
 
         {/* 4. Este botón aparece cuando la pantalla es pequeña y abre/cierra el menú. */}
