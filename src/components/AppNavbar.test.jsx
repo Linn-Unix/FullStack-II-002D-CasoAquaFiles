@@ -23,6 +23,7 @@ describe('AppNavbar', () => {
 
   it('sin sesión también muestra "Mi postulación" y "Empleos", sin "Cerrar sesión"', () => {
     mostrar(null)
+    expect(screen.getByRole('img', { name: 'Logo de AquaChile' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Mi postulación' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Empleos' })).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /cerrar sesión/i })).not.toBeInTheDocument()
